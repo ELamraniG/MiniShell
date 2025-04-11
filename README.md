@@ -1,3 +1,0 @@
-# MiniShell
-
-test
