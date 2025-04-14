@@ -1,1 +1,4 @@
-.grsgrg
+What to handle:
+
+- Single quotes shouldn't expand shell variables, while double quotes and no quotes should expand.
+- Do not handle (\) backslash, semi (;) colones, and unclosed quotes
