@@ -5,6 +5,10 @@ void	get_next_quote(char *str, int *i, char c)
 	(*i)++;
 	while (str[*i] && str[*i] != c)
 		(*i)++;
+	if (str[*i] != c)
+		// free_all();
+		write(2, "syntax error\n", 13);
+	exit(-1);
 }
 int	is_special(char c)
 {
@@ -82,4 +86,14 @@ t_lex_list	*lexing_the_thing(char *str)
 		j = i;
 	}
 	return (tokens);
+}
+
+int	main(void)
+{
+	t_lex_list *token = lexing_the_thing("echo \"|| > <");
+	while (token)
+	{
+		printf("|%s| |%d| |%d|\n", token->s, token->q_type, token->is_space);
+		token = token->next;
+	}
 }
