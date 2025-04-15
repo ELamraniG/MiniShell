@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 t_lexical_list	*new_node(char *str)
 {

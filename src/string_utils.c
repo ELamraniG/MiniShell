@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   string_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 14:51:39 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/04/14 20:47:29 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/04/15 12:09:58 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
+#include "../includes/minishell.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
