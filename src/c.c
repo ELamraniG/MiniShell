@@ -24,6 +24,8 @@ void	arg_type(t_lex_list *token)
 		token->a_type = WORD;
 }
 
+
+
 void	get_next_quote(char *str, int *i, char c)
 {
 	(*i)++;
@@ -112,14 +114,87 @@ t_lex_list	*lexing_the_thing(char *str)
 	return (tokens);
 }
 
-void	set_precedence_value(t_lex_list *token)
+void	set_the_arg_type(t_lex_list *token)
 {
 	while (token)
 	{
-		if ()
+		arg_type(token);
 		token = token->next;
 	}
 }
+
+// void	set_precedence_value(t_lex_list *token)
+// {
+// 	while (token)
+// 	{
+// 		if ()
+// 		token = token->next;
+// 	}
+// }
+int	is_special_opperand(int n)
+{
+	if (n != WORD)
+		return (1);
+	return (0);
+}
+
+int	is_special_for_pipe(int n)
+{
+	if (n != WORD && n != OP_PAREN)
+		return (1);
+	return (0);
+}
+void	put_syntax_error(void)
+{
+	write(2, "bash: syntax error near unexpected token\n",
+		ft_strlen("bash: syntax error near unexpected token\n"));
+	// free_all();
+	exit(258);
+}
+
+int check_valid_parenthesis(t_lex_list *token)
+{
+	int f = 0;
+	while(token)
+	{
+		if (token->a_type == OP_PAREN)
+			f++;
+		else if (token->a_type == CL_PAREN)
+			f--;
+		if (f < 0)
+			return 0;
+	}
+	if (f == 0)
+		return 1;
+	return 0;
+}
+
+void	handle_syntax_errors(t_lex_list *token)
+{
+	if (check_valid_parenthesis(token) == 0)
+		put_syntax_error();
+	if (token->a_type == PIPE || token->a_type == AND || token->a_type == OR)
+		put_syntax_error();
+	if (token && is_special_opperand(token->a_type) && token->next
+		&& is_special_opperand(token->next))
+		put_syntax_error();
+	while (token)
+	{
+		if (token->a_type == PIPE && !token->next)
+			put_syntax_error();
+		if (token->a_type == PIPE && token->next
+			&& is_special_for_pipe(token->next))
+			put_syntax_error();
+		if (token->a_type <= 3 && !token->next)
+			put_syntax_error();
+		if (token->a_type <= 3 && token->next
+			&& is_special_opperand(token->next))
+			put_syntax_error();
+		token = token->next;
+	}
+}
+
+
 
 int	main(void)
 {
@@ -131,4 +206,4 @@ int	main(void)
 		printf("arg type is: `%d`\n\n\n", token->a_type);
 		token = token->next;
 	}
-} 
+}

@@ -35,11 +35,13 @@ typedef struct s_lex_list {
 	char				*s;
 	struct s_lex_list	*next;
 	struct s_lex_list	*prev;
-	int					prec_value;0
+	int					prec_value;
 	t_q_flags			q_type;
 	t_type_arg			a_type;
 	int					is_space;
 } t_lex_list;
+
+
 
 char					*ft_strdup(const char *s1);
 int						ft_isspace(int c);
