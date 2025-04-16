@@ -1,5 +1,29 @@
 #include "../includes/minishell.h"
 
+void	arg_type(t_lex_list *token)
+{
+	if (ft_strcmp(token->s, "(") == 0)
+		token->a_type = OP_PAREN;
+	else if (ft_strcmp(token->s, ")") == 0)
+		token->a_type = CL_PAREN;
+	else if (ft_strcmp(token->s, "||") == 0)
+		token->a_type = OR;
+	else if (ft_strcmp(token->s, "&&") == 0)
+		token->a_type = AND;
+	else if (ft_strcmp(token->s, "|") == 0)
+		token->a_type = PIPE;
+	else if (ft_strcmp(token->s, "<<") == 0)
+		token->a_type = HEREDOC;
+	else if (ft_strcmp(token->s, ">>") == 0)
+		token->a_type = APPEND;
+	else if (ft_strcmp(token->s, ">") == 0)
+		token->a_type = OUT_REDIR;
+	else if (ft_strcmp(token->s, "<") == 0)
+		token->a_type = IN_REDIR;
+	else
+		token->a_type = WORD;
+}
+
 void	get_next_quote(char *str, int *i, char c)
 {
 	(*i)++;
@@ -88,12 +112,23 @@ t_lex_list	*lexing_the_thing(char *str)
 	return (tokens);
 }
 
-int	main(void)
+void	set_precedence_value(t_lex_list *token)
 {
-	t_lex_list *token = lexing_the_thing("echo \"|| > <");
 	while (token)
 	{
-		printf("|%s| |%d| |%d|\n", token->s, token->q_type, token->is_space);
+		if ()
 		token = token->next;
 	}
 }
+
+int	main(void)
+{
+	t_lex_list *token = lexing_the_thing("echo test | cat file | echo word");
+	while (token)
+	{
+		printf("`%s` `%d` `%d`\n", token->s, token->q_type, token->is_space);
+		arg_type(token);
+		printf("arg type is: `%d`\n\n\n", token->a_type);
+		token = token->next;
+	}
+} 
