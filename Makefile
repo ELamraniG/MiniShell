@@ -1,6 +1,7 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = 
+# -Wall -Wextra -Werror
 
 SRC =	src/c.c \
 		src/list_utils.c \
