@@ -147,6 +147,8 @@ void	set_precedence_value(t_lex_list *token)
 			d->type = AND;
 		else if (ft_strcmp("||", token->s) == 0)
 			d->type = OR;
+		else if (ft_strcmp("(", token->s) == 0 || ft_strcmp(")", token->s) == 0)
+			d->type = PAREN;
 		else
 			d->type = CMD;
 		token = token->next;
