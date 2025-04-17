@@ -14,6 +14,15 @@ t_lex_list	*new_node(char *str,t_q_flags quote, int is_space)
 	return (p);
 }
 
+t_ast_tree	*new_ast_node()
+{
+	t_lex_list	*node;
+
+	node = malloc(sizeof(t_ast_tree));
+	if (!node)
+		return (NULL);
+}
+
 void	add_to_list(t_lex_list **ll, char *str, t_q_flags quote,int is_space)
 {
 	if (!ll)

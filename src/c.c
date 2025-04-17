@@ -227,6 +227,22 @@ void	handle_syntax_errors(t_lex_list *token)
 	}
 }
 
+t_lex_list	*find_last_pipe(t_lex_list *start)
+{
+	t_lex_list	*cur;
+	t_lex_list	*last_pipe;
+
+	cur = start;
+	last_pipe = NULL;
+	while(cur)
+	{
+		if (cur->a_type == PIPE)
+			last_pipe = cur;
+		cur = cur->next;
+	}
+	return (last_pipe);
+}
+
 void	create_tree(t_lex_list *token)
 {
 	t_lex_list	*tmp;
