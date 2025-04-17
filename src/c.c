@@ -154,6 +154,7 @@ void	set_precedence_value(t_lex_list *token)
 		token = token->next;
 	}
 }
+
 int	is_special_opperand(int n)
 {
 	if (n != WORD)
@@ -222,10 +223,21 @@ void	handle_syntax_errors(t_lex_list *token)
 			put_syntax_error();
 		else if (token->a_type <= 7 && !token->next)
 			put_syntax_error();
-
 		token = token->next;
 	}
-}/**
+}
+
+void	create_tree(t_lex_list *token)
+{
+	t_lex_list	*tmp;
+
+	tmp = token->s;
+	while (tmp->next)
+		tmp = tmp->next;
+	
+}
+
+/**
  * Advanced Minishell Syntax Test Suite
  * 
  * This file contains structured tests for your minishell syntax checker.
