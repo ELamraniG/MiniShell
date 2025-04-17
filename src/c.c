@@ -136,14 +136,22 @@ void	set_the_arg_type(t_lex_list *token)
 	}
 }
 
-// void	set_precedence_value(t_lex_list *token)
-// {
-// 	while (token)
-// 	{
-// 		if ()
-// 		token = token->next;
-// 	}
-// }
+void	set_precedence_value(t_lex_list *token)
+{
+	t_ast_tree	*d;
+	while (token->next)
+	{
+		if (ft_strcmp("|", token->s) == 0)
+			d->type = PIPE;
+		else if (ft_strcmp("&&", token->s) == 0)
+			d->type = AND;
+		else if (ft_strcmp("||", token->s) == 0)
+			d->type = OR;
+		else
+			d->type = CMD;
+		token = token->next;
+	}
+}
 int	is_special_opperand(int n)
 {
 	if (n != WORD)
