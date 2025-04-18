@@ -136,14 +136,25 @@ void	set_the_arg_type(t_lex_list *token)
 	}
 }
 
-// void	set_precedence_value(t_lex_list *token)
-// {
-// 	while (token)
-// 	{
-// 		if ()
-// 		token = token->next;
-// 	}
-// }
+void	set_precedence_value(t_lex_list *token)
+{
+	t_ast_tree	*d;
+	while (token->next)
+	{
+		if (ft_strcmp("|", token->s) == 0)
+			d->type = PIPE;
+		else if (ft_strcmp("&&", token->s) == 0)
+			d->type = AND;
+		else if (ft_strcmp("||", token->s) == 0)
+			d->type = OR;
+		else if (ft_strcmp("(", token->s) == 0 || ft_strcmp(")", token->s) == 0)
+			d->type = PAREN;
+		else
+			d->type = CMD;
+		token = token->next;
+	}
+}
+
 int	is_special_opperand(int n)
 {
 	if (n != WORD)
@@ -214,7 +225,35 @@ void	handle_syntax_errors(t_lex_list *token)
 			put_syntax_error();
 		token = token->next;
 	}
-}/**
+}
+
+t_lex_list	*find_last_pipe(t_lex_list *start)
+{
+	t_lex_list	*cur;
+	t_lex_list	*last_pipe;
+
+	cur = start;
+	last_pipe = NULL;
+	while(cur)
+	{
+		if (cur->a_type == PIPE)
+			last_pipe = cur;
+		cur = cur->next;
+	}
+	return (last_pipe);
+}
+
+void	create_tree(t_lex_list *token)
+{
+	t_lex_list	*tmp;
+
+	tmp = token->s;
+	while (tmp->next)
+		tmp = tmp->next;
+	
+}
+
+/**
  * Advanced Minishell Syntax Test Suite
  * 
  * This file contains structured tests for your minishell syntax checker.
