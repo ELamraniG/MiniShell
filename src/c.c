@@ -196,8 +196,8 @@ void	handle_syntax_errors(t_lex_list *token)
 		put_syntax_error();
 	while (token)
 	{
-		if (is_special_opperand(token) && token->next  && (token->next->a_type == HEREDOC || token->next->a_type == IN_REDIR))
-			write(1,"",0);
+		if (is_special_opperand(token->a_type) && token->next  && (token->next->a_type == HEREDOC || token->next->a_type == IN_REDIR))
+			token = token;
 		else if (is_special_for_specials(token->a_type) && token->next && is_special_for_specials(token->next->a_type))
 			put_syntax_error();
 		else if (token->a_type == PIPE && !token->next)
@@ -212,7 +212,6 @@ void	handle_syntax_errors(t_lex_list *token)
 			put_syntax_error();
 		else if (token->a_type <= 7 && !token->next)
 			put_syntax_error();
-
 		token = token->next;
 	}
 }/**
