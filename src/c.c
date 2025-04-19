@@ -617,7 +617,7 @@ void	handle_syntax_errors(t_lex_list *token)
 int main()
 {
 	t_lex_list *token;
-	token = lexing_the_thing("echo hello > file.txt && cat file.txt");
+	token = lexing_the_thing("echo (hello > file.txt) && cat file.txt");
 	set_the_arg_type(token);
 	handle_syntax_errors(token);
 	while (token)
