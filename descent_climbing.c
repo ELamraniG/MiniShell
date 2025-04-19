@@ -44,6 +44,84 @@ t_lex_list	*find_last_pipe(t_lex_list *start);
 void		create_tree(t_lex_list *token);
 
 
+t_lex_list *find_matching_closed_parenthesis(t_lex_list *token)
+{
+	int i = 0;
+	while (token)
+	{
+		if (token->a_type == CL_PAREN && i == 0)
+			return (token);
+		if (token->a_type == OP_PAREN)
+			i++;
+		if (token->a_type == CL_PAREN)
+			i--;
+		token = token->next;
+	}
+	return token;
+}
+
+t_lex_list *highest_prec(t_lex_list *first, t_lex_list *last)
+{
+    t_lex_list *h_prec = first;
+
+    if (!first)
+        return (NULL);
+    else if (!last)
+        return (first);
+
+    while (first != last)
+    {
+        if (get_precedence(first->a_type) < get_precedence(h_prec->a_type))
+            h_prec = first;
+        first = first->next;
+    }
+	if (last == NULL)
+		return h_prec;
+    if (get_precedence(last->a_type) < get_precedence(h_prec->a_type))
+        h_prec = last;
+
+    return (h_prec);
+}
+
+int get_precedence(t_type_arg type)
+{
+    if (type == WORD)
+        return 1;
+    else if (type == PIPE)
+        return 2;
+    else if (type == AND || type == OR)
+        return 3;
+    else
+        return 4;
+}
+
+t_ast_tree *create_ast_node(t_lex_list *token)
+{
+	if (!token)
+		return NULL;
+	t_ast_tree *ast_node = malloc(sizeof(t_ast_tree));
+	ast_node->content = token->s;
+	ast_node->type = token->a_type;
+	ast_node->right = NULL;
+	ast_node->left = NULL;
+	return ast_node;
+}
+
+t_ast_tree *create_ast_tree(t_lex_list *current,t_lex_list *last)
+{
+	t_lex_list *h_precedence= NULL ;
+	t_ast_tree *root = NULL;
+	if (!current)
+		return NULL;
+	if (current->a_type == OP_PAREN)
+		return create_ast_tree(current->next,find_natching_closed_parenthesis(current->next));
+	if (current->a_type == WORD && current->next == last)
+		return (create_ast_node(current));
+	
+	
+}
+
+
 
 
 
@@ -61,6 +139,7 @@ int	main(void)
 		printf("Token: /%s\\ Type: %d\n", token->s, token->a_type);
 		token = token->next;
 	}
+	create_ast_tree(token);
 }
 
 
