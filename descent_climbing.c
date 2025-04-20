@@ -91,7 +91,9 @@ t_lex_list	*highest_prec(t_lex_list *first, t_lex_list *last)
 			t_lex_list *tmp = find_matching_closed_parenthesis(first);
 			while (first !=  tmp)
 				first = first->next;
+			first = first->next;
 		}
+
 		if (get_precedence(first->a_type) >= get_precedence(h_prec->a_type))
 			h_prec = first;
 		first = first->next;
