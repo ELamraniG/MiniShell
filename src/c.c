@@ -138,6 +138,7 @@ void	set_the_arg_type(t_lex_list *token)
 
 
 
+
 int	is_special_opperand(int n)
 {
 	if (n != WORD)
@@ -156,6 +157,11 @@ int	is_special_for_pipe(int n)
 
 int	is_special_for_specials(int n)
 {
+	// Also allow redirection operators in the special contexts
+	if (n == WORD || n == OP_PAREN || n == CL_PAREN || 
+		n == IN_REDIR || n == OUT_REDIR || n == APPEND || n == HEREDOC)
+		return (0);
+	return (1);
 	// Also allow redirection operators in the special contexts
 	if (n == WORD || n == OP_PAREN || n == CL_PAREN || 
 		n == IN_REDIR || n == OUT_REDIR || n == APPEND || n == HEREDOC)
@@ -282,7 +288,22 @@ void handle_syntax_errors(t_lex_list *token) {
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
+#include <fcntl.h>
+
+
+typedef struct s_test {
+    char    *name;
+    char    *cmd;
+    int     expected; // 0 for valid syntax, 1 for syntax error (based on run_syntax_test logic)
+    char    *description;
+} t_test;
 #include <fcntl.h>
 
 
@@ -318,7 +339,17 @@ int run_syntax_test(char *cmd)
         // Child process: Run the syntax check
         // Redirect stderr to /dev/null to suppress minishell error messages during tests
         freopen("/dev/null", "w", stderr);
+    if (pid == 0) {
+        // Child process: Run the syntax check
+        // Redirect stderr to /dev/null to suppress minishell error messages during tests
+        freopen("/dev/null", "w", stderr);
 
+        t_lex_list *token = lexing_the_thing(cmd);
+        if (token == NULL && strlen(cmd) > 0 && strspn(cmd, " \t\n\v\f\r") != strlen(cmd)) {
+            // If lexing fails for non-empty/non-whitespace command, consider it a failure
+            // Or handle lexing errors explicitly if lexing_the_thing indicates them
+            exit(EXIT_FAILURE); // Indicate lexing error
+        }
         t_lex_list *token = lexing_the_thing(cmd);
         if (token == NULL && strlen(cmd) > 0 && strspn(cmd, " \t\n\v\f\r") != strlen(cmd)) {
             // If lexing fails for non-empty/non-whitespace command, consider it a failure
@@ -330,10 +361,20 @@ int run_syntax_test(char *cmd)
         if (token == NULL) {
              exit(EXIT_SUCCESS); // Empty/whitespace line is syntactically valid
         }
+        // Handle empty/whitespace commands gracefully (usually valid syntax)
+        if (token == NULL) {
+             exit(EXIT_SUCCESS); // Empty/whitespace line is syntactically valid
+        }
 
         set_the_arg_type(token);
         handle_syntax_errors(token); // This function should exit(2) or similar on syntax error
+        set_the_arg_type(token);
+        handle_syntax_errors(token); // This function should exit(2) or similar on syntax error
 
+        // If handle_syntax_errors returns or doesn't exit, syntax is considered valid
+        // Make sure to free tokens if handle_syntax_errors doesn't free on success
+        // free_lex_list(token); // Add your token freeing function here if needed
+        exit(EXIT_SUCCESS); // No syntax error detected
         // If handle_syntax_errors returns or doesn't exit, syntax is considered valid
         // Make sure to free tokens if handle_syntax_errors doesn't free on success
         // free_lex_list(token); // Add your token freeing function here if needed
@@ -342,7 +383,22 @@ int run_syntax_test(char *cmd)
     } else {
         // Parent process: Wait for the child and check status
         waitpid(pid, &status, 0);
+    } else {
+        // Parent process: Wait for the child and check status
+        waitpid(pid, &status, 0);
 
+        if (WIFEXITED(status)) {
+            // Child exited normally
+            // WEXITSTATUS returns the exit code of the child
+            // We expect 0 for success (valid syntax) and non-zero for error (invalid syntax)
+            return WEXITSTATUS(status) != 0; // Return 1 if exit status is non-zero (error), 0 otherwise
+        } else {
+            // Process terminated abnormally (e.g., signal)
+            printf("\033[0;31m[CRASH]\033[0m Test process for '%s' terminated abnormally.\n", cmd);
+            return 1; // Consider abnormal termination as an error
+        }
+    }
+}
         if (WIFEXITED(status)) {
             // Child exited normally
             // WEXITSTATUS returns the exit code of the child
