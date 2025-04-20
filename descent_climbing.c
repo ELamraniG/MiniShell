@@ -43,95 +43,169 @@ t_lex_list	*find_last_pipe(t_lex_list *start);
 
 void		create_tree(t_lex_list *token);
 
-
-t_lex_list *find_matching_closed_parenthesis(t_lex_list *token)
+t_lex_list	*find_matching_closed_parenthesis(t_lex_list *token)
 {
-	int i = 0;
+	int	i;
+
+	i = 1;
+	token = token->next;
 	while (token)
 	{
-		if (token->a_type == CL_PAREN && i == 0)
-			return (token);
 		if (token->a_type == OP_PAREN)
 			i++;
-		if (token->a_type == CL_PAREN)
+		else if (token->a_type == CL_PAREN)
+		{
 			i--;
+			if (i == 0)
+				return (token);
+		}
+		if (i < 0)
+			printf("\nerrror\n");
 		token = token->next;
 	}
-	return token;
+	return (token);
+}
+int	get_precedence(t_type_arg type)
+{
+	if (type == WORD)
+		return (1);
+	else if (type == PIPE)
+		return (2);
+	else if (type == AND || type == OR)
+		return (3);
+	return (0);
+}
+t_lex_list	*highest_prec(t_lex_list *first, t_lex_list *last)
+{
+	t_lex_list	*h_prec;
+
+	if (!first)
+		return (NULL);
+	while (first->a_type == OP_PAREN)
+		first = first->next;
+	h_prec = first;
+	while (first != last)
+	{
+		if (first->a_type == OP_PAREN)
+		{
+			t_lex_list *tmp = find_matching_closed_parenthesis(first);
+			while (first !=  tmp)
+				first = first->next;
+		}
+		if (get_precedence(first->a_type) >= get_precedence(h_prec->a_type))
+			h_prec = first;
+		first = first->next;
+	}
+	return (h_prec);
 }
 
-t_lex_list *highest_prec(t_lex_list *first, t_lex_list *last)
+t_ast_tree	*create_ast_node(t_lex_list *token)
 {
-    t_lex_list *h_prec = first;
+	t_ast_tree	*ast_node;
 
-    if (!first)
-        return (NULL);
-    else if (!last)
-        return (first);
-
-    while (first != last)
-    {
-        if (get_precedence(first->a_type) < get_precedence(h_prec->a_type))
-            h_prec = first;
-        first = first->next;
-    }
-	if (last == NULL)
-		return h_prec;
-    if (get_precedence(last->a_type) < get_precedence(h_prec->a_type))
-        h_prec = last;
-
-    return (h_prec);
-}
-
-int get_precedence(t_type_arg type)
-{
-    if (type == WORD)
-        return 1;
-    else if (type == PIPE)
-        return 2;
-    else if (type == AND || type == OR)
-        return 3;
-    else
-        return 4;
-}
-
-t_ast_tree *create_ast_node(t_lex_list *token)
-{
 	if (!token)
-		return NULL;
-	t_ast_tree *ast_node = malloc(sizeof(t_ast_tree));
+		return (NULL);
+	ast_node = malloc(sizeof(t_ast_tree));
 	ast_node->content = token->s;
 	ast_node->type = token->a_type;
 	ast_node->right = NULL;
 	ast_node->left = NULL;
-	return ast_node;
+	return (ast_node);
 }
 
-t_ast_tree *create_ast_tree(t_lex_list *current,t_lex_list *last)
+t_ast_tree	*create_ast_tree(t_lex_list *current, t_lex_list *last)
 {
-	t_lex_list *h_precedence= NULL ;
-	t_ast_tree *root = NULL;
+	t_lex_list	*h_precedence;
+	t_ast_tree	*root;
+	t_ast_tree	*right;
+	t_ast_tree	*left;
+
 	if (!current)
-		return NULL;
-	if (current->a_type == OP_PAREN)
-		return create_ast_tree(current->next,find_natching_closed_parenthesis(current->next));
-	if (current->a_type == WORD && current->next == last)
+		return (NULL);
+	h_precedence = highest_prec(current, last);
+	root = NULL;
+	right = NULL;
+	left = NULL;
+	if (current->next == last)
 		return (create_ast_node(current));
-	
-	
+	root = create_ast_node(h_precedence);
+	if (current->a_type == OP_PAREN)
+		return (create_ast_tree(current->next,
+				find_matching_closed_parenthesis(current)));
+	left = create_ast_tree(current, h_precedence);
+	right = create_ast_tree(h_precedence->next, last);
+	root->left = left;
+	root->right = right;
+	return (root);
 }
 
+t_ast_tree *we_tree(t_lex_list *current, t_lex_list *last)
+{
+	t_ast_tree *root = create_ast_tree(current,last);
+	return root;
+}
 
+void	print_tabs(int depth)
+{
+	while (depth--)
+		write(1, "   ", 3);
+}
 
+void	print_ast_tree(t_ast_tree *node, int position, int depth)
+{
+	if (!node)
+		return ;
+	print_tabs(depth);
+	if (position == 0)
+		printf("root: ");
+	else if (position == 1)
+		printf("left: ");
+	else
+		printf("right: ");
+	printf("%s\n", node->content);
+	print_ast_tree(node->left, 1, depth + 1);
+	print_ast_tree(node->right, 2, depth + 1);
+}
 
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
 
-
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+#include <stdbool.h>
 
 int	main(void)
 {
 	t_lex_list	*token;
+	t_lex_list	*token2;
+	t_ast_tree	*lopo;
 
-	token = lexing_the_thing("echo hello | file");
+	token = lexing_the_thing("(ls | cat)");
+	token2 = token;
 	set_the_arg_type(token);
 	handle_syntax_errors(token);
 	while (token)
@@ -139,17 +213,38 @@ int	main(void)
 		printf("Token: /%s\\ Type: %d\n", token->s, token->a_type);
 		token = token->next;
 	}
-	create_ast_tree(token);
+	lopo = we_tree(token2, NULL);
+	print_ast_tree(lopo, 0, 0);
 }
 
-
-
-
-
-
-
-
-
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
+// ghrw'khkrwh;'krwhkrwh
 
 int	ft_isspace(int c)
 {

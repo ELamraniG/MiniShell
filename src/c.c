@@ -253,7 +253,6 @@ void handle_syntax_errors(t_lex_list *token) {
             else
                 return put_syntax_error_token(NULL);
         }
-        
         current = next;
     }
 }
@@ -513,7 +512,7 @@ int bash_syntax_check(const char *cmd)
 	 // Array of test commands (approx 70)
 	 const char *tests[] = {
 		 // BASIC COMMANDS
-		 "echo hello",                               // Simple command
+		 "ls < > lopo <> ee",                               // Simple command
 		 "ls -la",                                   // Command with options
 		 "echo hello world",                         // Multiple arguments
 		 "",                                         // Empty command
