@@ -36,7 +36,6 @@ typedef struct s_ast_tree
 	struct s_ast_tree	*right;
 }						t_ast_tree;
 
-
 typedef struct s_lex_list
 {
 	char				*s;

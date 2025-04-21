@@ -12,7 +12,6 @@ char		*ft_strdup(const char *s1);
 int			ft_strcmp(const char *s1, const char *s2);
 
 t_lex_list	*new_node(char *str, t_q_flags quote, int is_space);
-t_ast_tree	*new_ast_node(void);
 
 void		add_to_list(t_lex_list **ll, char *str, t_q_flags quote,
 				int is_space);
@@ -39,122 +38,80 @@ int			check_valid_parenthesis(t_lex_list *token);
 
 void		handle_syntax_errors(t_lex_list *token);
 
-t_lex_list	*find_last_pipe(t_lex_list *start);
+t_ast_tree *parse_pipe(t_lex_list **token);
+t_ast_tree *parse_parenthesis_cmds(t_lex_list **token);
 
-void		create_tree(t_lex_list *token);
-
-t_lex_list	*find_matching_closed_parenthesis(t_lex_list *token)
+t_ast_tree	*new_ast_node(t_lex_list *node)
 {
-	int	i;
+	t_ast_tree	*tree_node;
 
-	i = 0;
-	while (token)
+	tree_node = malloc(sizeof(t_ast_tree));
+	tree_node->content = node->s;
+	return (tree_node);
+}
+t_ast_tree *parse_and_or(t_lex_list **token)
+{
+	t_ast_tree *left = parse_pipe(token);
+	while (*token && ((*token)->a_type == AND || (*token)->a_type == OR))
 	{
-		if (token->a_type == OP_PAREN)
-			i++;
-		else if (token->a_type == CL_PAREN)
-			i--;
-		
-		if (i == 0)
-			break;
-		token = token->next;
+		t_ast_tree *root = new_ast_node(*token);
+		root->type = (*token)->a_type;
+		(*token) = (*token)->next;
+		t_ast_tree *right = parse_pipe(token);
+		root->left = left;
+		root->right = right;
+		left = root;
 	}
-	return (token);
+	return (left);
 }
-int	get_precedence(t_type_arg type)
-{
-	if (type == WORD)
-		return (1);
-	else if (type == PIPE)
-		return (2);
-	else if (type == AND || type == OR)
-		return (3);
-	return (0);
-}
-t_lex_list	*highest_prec(t_lex_list *first, t_lex_list *last)
-{
-	t_lex_list	*h_prec;
 
-	if (!first)
-		return (NULL);
-	h_prec = first;
-	while (first != last)
+t_ast_tree *parse_pipe(t_lex_list **token)
+{
+	t_ast_tree *left = parse_parenthesis_cmds(token);
+	while (*token && (*token)->a_type == PIPE)
 	{
-		if(first->a_type == OP_PAREN)
-		{
-			t_lex_list *tmp = find_matching_closed_parenthesis(first);
-			while (first != tmp)
-				first = first->next;
-		}
-		if (get_precedence(first->a_type) >= get_precedence(h_prec->a_type))
-			h_prec = first;
-		first = first->next;
+		t_ast_tree *root = new_ast_node(*token);
+		root->type = (*token)->a_type;
+		(*token) = (*token)->next;
+		t_ast_tree *right = parse_parenthesis_cmds(token);
+		root->left = left;
+		root->right = right;
+		left = root;
 	}
-	return (h_prec);
+	return (left);
 }
 
-t_ast_tree	*create_ast_node(t_lex_list *token)
+t_ast_tree *parse_parenthesis_cmds(t_lex_list **token)
 {
-	t_ast_tree	*ast_node;
-
-	if (!token)
-		return (NULL);
-	ast_node = malloc(sizeof(t_ast_tree));
-	ast_node->content = token->s;
-	ast_node->type = token->a_type;
-	ast_node->right = NULL;
-	ast_node->left = NULL;
-	return (ast_node);
-}
-
-t_ast_tree	*create_ast_tree(t_lex_list *current, t_lex_list *last)
-{
-	t_lex_list	*h_precedence;
-	t_ast_tree	*root;
-	t_ast_tree	*right;
-	t_ast_tree	*left;
-
-	if (!current)
-		return (NULL);
-	root = NULL;
-	right = NULL;
-	left = NULL;
-	if (current->a_type == OP_PAREN)
+	if (*token == NULL)
+		return NULL;
+	if ((*token)->a_type == WORD)
 	{
-		if (current->next && current->next->next && current->next->next == last)
-			return (create_ast_node(current->next));
-		else
-		{
-			h_precedence = highest_prec(current->next,
-					find_matching_closed_parenthesis(current));
-			printf("|%s|\n", h_precedence->s);
-			left = create_ast_tree(current->next, h_precedence);
-			right = create_ast_tree(h_precedence->next,
-					find_matching_closed_parenthesis(current));
-			root = create_ast_node(h_precedence);
-			root->left = left;
-			root->right = right;
-		}
+		t_ast_tree *root = new_ast_node(*token);
+		root->type = (*token)->a_type;
+		root->left = NULL;
+		root->right = NULL;
+		*token = (*token)->next;
 		return (root);
 	}
-	if (current->next == last)
-		return (create_ast_node(current));
-	h_precedence = highest_prec(current, last);
-	root = create_ast_node(h_precedence);
-	left = create_ast_tree(current, h_precedence);
-	right = create_ast_tree(h_precedence->next, last);
-	root->left = left;
-	root->right = right;
-	return (root);
+	if (*token && ((*token)->a_type == OP_PAREN))
+	{
+		*token = (*token)->next;
+		t_ast_tree *root = parse_and_or(token);
+		if (*token == NULL || (*token)->a_type != CL_PAREN)
+			return root;
+		*token = (*token)->next;
+		return root;
+	}
+	return NULL;
 }
 
-t_ast_tree	*we_tree(t_lex_list *current, t_lex_list *last)
+
+t_ast_tree *create_ast_tree(t_lex_list *token)
 {
-	t_ast_tree	*root;
-
-	root = create_ast_tree(current, last);
-	return (root);
+	return (parse_and_or(&token));
 }
+
 
 void	print_tabs(int depth)
 {
@@ -211,22 +168,41 @@ void	print_ast_tree(t_ast_tree *node, int position, int depth)
 
 int	main(void)
 {
-	t_lex_list	*token;
-	t_lex_list	*token2;
-	t_ast_tree	*lopo;
+char *tests[] = {
+    // Test 1: Deeply nested parentheses with mixed operators
+    "( (ls && cat) || (echo && grep) ) | wc && sort",
 
-	token = lexing_the_thing("(ls | cat)");
-	token2 = token;
-	set_the_arg_type(token);
-	// handle_syntax_errors(token);
-	while (token)
+    // Test 2: Excessive pipe chaining with mixed && and ||
+    "ls | cat | echo | grep && wc && sort || uniq || head",
+
+    // Test 3: Multiple nested logical operators with a mix of precedence
+    "(ls || cat) && (echo && ( (grep) || wc) ) | (sort || uniq)",
+
+    // Test 4: Operator precedence and parentheses combined in an extreme case
+    "(ls || (cat && echo) ) && ( (grep || wc) | sort) && head",
+
+    // Test 5: Multiple nested parentheses with mixed &&, ||, and pipes
+    "( ( (ls && cat) | (echo || grep) ) && (wc || sort) ) || head"
+};
+
+	t_lex_list	*token;
+	t_ast_tree	*tree;
+	int			i = 0;
+
+	while (i < 5)
 	{
-		printf("Token: /%s\\ Type: %d\n", token->s, token->a_type);
-		token = token->next;
+		printf("\n=============================\n");
+		printf("TEST %d: %s\n", i + 1, tests[i]);
+		printf("=============================\n");
+		token = lexing_the_thing(tests[i]);
+		set_the_arg_type(token);
+		handle_syntax_errors(token);
+		tree = create_ast_tree(token);
+		print_ast_tree(tree, 0, 0);
+		i++;
 	}
-	lopo = create_ast_tree(token2, NULL);
-	print_ast_tree(lopo, 0, 0);
 }
+
 
 // ghrw'khkrwh;'krwhkrwh
 // ghrw'khkrwh;'krwhkrwh
@@ -585,20 +561,4 @@ void	handle_syntax_errors(t_lex_list *token)
 			put_syntax_error();
 		token = token->next;
 	}
-}
-
-t_lex_list	*find_last_pipe(t_lex_list *start)
-{
-	t_lex_list *cur;
-	t_lex_list *last_pipe;
-
-	cur = start;
-	last_pipe = NULL;
-	while (cur)
-	{
-		if (cur->a_type == PIPE)
-			last_pipe = cur;
-		cur = cur->next;
-	}
-	return (last_pipe);
 }

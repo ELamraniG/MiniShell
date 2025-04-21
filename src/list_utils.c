@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-t_lex_list	*new_node(char *str,t_q_flags quote, int is_space)
+t_lex_list	*new_node(char *str, t_q_flags quote, int is_space)
 {
 	t_lex_list	*p;
 
@@ -14,23 +14,15 @@ t_lex_list	*new_node(char *str,t_q_flags quote, int is_space)
 	return (p);
 }
 
-t_ast_tree	*new_ast_node()
-{
-	t_lex_list	*node;
 
-	node = malloc(sizeof(t_ast_tree));
-	if (!node)
-		return (NULL);
-}
-
-void	add_to_list(t_lex_list **ll, char *str, t_q_flags quote,int is_space)
+void	add_to_list(t_lex_list **ll, char *str, t_q_flags quote, int is_space)
 {
 	if (!ll)
 		return ;
 	t_lex_list *tmp = *ll;
 	while (tmp && tmp->next)
 		tmp = (tmp)->next;
-	t_lex_list *t = new_node(str,quote,is_space);
+	t_lex_list *t = new_node(str, quote, is_space);
 	if (!t)
 		return ;
 	if (!tmp)

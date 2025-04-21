@@ -371,7 +371,7 @@ int	calculate_the_tree(ast *root)
 
 int	main(void)
 {
-	char str[100] = "3 + 4 * 2";
+	char str[100] = "3 + 4 * 2 - 2";
 	printf("Evaluating expression: %s\n", str);
 
 	token *tokens = lexing_the_string(str);
