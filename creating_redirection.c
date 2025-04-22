@@ -208,6 +208,27 @@ void	print_ast_tree(t_ast_tree *node, int position, int depth)
 	print_ast_tree(node->right, 2, depth + 1);
 }
 
+t_command	*arg_counter(t_lex_list *p)
+{
+	char	*cmd;
+	int		i;
+	int		count;
+
+	cmd = p->s;
+	count = 0;
+	i = 0;
+	if (cmd[i] == '\0')
+		return (count);
+	while (cmd[i])
+	{
+		if (cmd[i] == ' ')
+			count++;
+		i++;
+	}
+	return (count);
+
+}
+
 t_redirect	*create_redirection(int type, char *filename)
 {
 	t_redirect	*new_redir;
