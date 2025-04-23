@@ -59,4 +59,13 @@ size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 t_lex_list				*new_node(char *str, t_q_flags quote, int is_space);
 t_lex_list				*lexing_the_thing(char *str);
 
+t_ast_tree				*new_ast_node(t_lex_list *node);
+t_ast_tree				*parse_and_or(t_lex_list **token);
+int						is_special_opperand(int n);
+t_ast_tree				*parse_pipe(t_lex_list **token);
+
+t_ast_tree				*parse_parenthesis_cmds(t_lex_list **token);
+
+t_ast_tree				*create_ast_tree(t_lex_list *token);
+
 #endif
