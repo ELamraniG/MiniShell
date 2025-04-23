@@ -76,5 +76,8 @@ t_ast_tree				*parse_pipe(t_lex_list **token);
 t_ast_tree				*parse_parenthesis_cmds(t_lex_list **token);
 
 t_ast_tree				*create_ast_tree(t_lex_list *token);
+t_redirect	*new_node_redir(char *str, int type);
+void	add_to_list_redir(t_redirect **ll, char *str, int type);
+
 
 #endif

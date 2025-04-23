@@ -297,11 +297,23 @@ void	print_tabs(int depth)
 void print_args(t_ast_tree *node)
 {
 	int i = 0;
+	if (node->args)
+	{
 	while (node->args[i])
 	{
-		printf("%s",node->args[i]);
+		printf("%s ",node->args[i]);
 		i++;
+
+		}	
+		}
+	while(node->redirect)
+	{
+		printf("|%s|\n",node->redirect->file_name);
+		node->redirect = node->redirect->next;
+
 	}
+
+		printf("\n");
 }
 
 void	print_tree(t_ast_tree *node)
@@ -309,15 +321,20 @@ void	print_tree(t_ast_tree *node)
 	if(!node)
 	return;
 	printf("%s\n",node->content);
-	// print_args(node);
+	print_args(node);
 	print_tree(node->left);
 	print_tree(node->right);
 }
 
-int	main()
+int	main(int ac, char *av[])
 {
 	char s[100] = "ls lapa rapa| cat || (echo && or)";
-	t_lex_list *tokens = lexing_the_thing(s);
+	if (ac != 2)
+	{
+		printf("av problen\n");
+		return 0;
+	}
+	t_lex_list *tokens = lexing_the_thing(av[1]);
 	set_the_arg_type(tokens);
 	t_lex_list *token = tokens;
 	while (tokens)
