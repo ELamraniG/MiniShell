@@ -50,7 +50,8 @@ t_ast_tree *parse_parenthesis_cmds(t_lex_list **token)
 		root->type = (*token)->a_type;
 		root->left = NULL;
 		root->right = NULL;
-		*token = (*token)->next;
+		handle_word(root,token);
+		// *token = (*token)->next;
 		return (root);
 	}
 	if (*token && ((*token)->a_type == OP_PAREN))

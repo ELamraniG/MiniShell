@@ -33,12 +33,12 @@ typedef struct 				s_redirect
 	struct s_redirect		*next;
 }							t_redirect;
 
-typedef struct s_command
+typedef struct s_cmd
 {
 	char			**args;
 	t_redirect		*redirect;
 	int				arg_count;
-}	t_command;
+}	t_comd;
 
 
 typedef struct s_ast_tree

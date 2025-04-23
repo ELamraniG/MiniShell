@@ -26,26 +26,35 @@ typedef enum e_q_flags
 	DQ
 }						t_q_flags;
 
+typedef struct s_redirect
+{
+	char				*file_name;
+	int					type;
+	struct s_redirect	*next;
+}						t_redirect;
+
 typedef struct s_ast_tree
 {
 	t_type_arg			type;
 	char				*content;
-	// add redirections
-	// add quote type
 	struct s_ast_tree	*left;
 	struct s_ast_tree	*right;
+
+	char				**args;
+	t_redirect			*redirect;
+	int					arg_count;
 }						t_ast_tree;
 
 typedef struct s_lex_list
 {
 	char				*s;
 	struct s_lex_list	*next;
-	struct s_lex_list	*prev;
 	t_q_flags			q_type;
 	t_type_arg			a_type;
 	int					is_space;
 }						t_lex_list;
 
+void					handle_word(t_ast_tree *node, t_lex_list **token);
 char					*ft_strdup(const char *s1);
 int						ft_isspace(int c);
 char					*ft_substr(char const *s, unsigned int start,

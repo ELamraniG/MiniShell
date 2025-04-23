@@ -173,6 +173,7 @@ token	*lexing_the_string(char *str)
 		}
 		else if (strcmp(token_str, "(") == 0)
 		{
+			
 			new_token->type = LPAR;
 		}
 		else if (strcmp(token_str, ")") == 0)
