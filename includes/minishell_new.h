@@ -50,6 +50,7 @@ typedef struct s_ast_tree
 
 typedef struct s_lex_list
 {
+	int					*status;
 	char				*s;
 	struct s_lex_list	*next;
 	t_q_flags			q_type;

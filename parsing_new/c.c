@@ -2,8 +2,12 @@
 
 void	put_syntax_error(void)
 {
+	t_lex_list	*p;
+
+	p->status = 258;
 	write(2, "bash: syntax error near unexpected token\n",
 		ft_strlen("bash: syntax error near unexpected token\n"));
+	
 	// free_all();
 	exit(258);
 }
@@ -34,6 +38,7 @@ void	arg_type(t_lex_list *token)
 
 void	get_next_quote(char *str, int *i, char c)
 {
+	t_lex_list	*p;
 	(*i)++;
 	while (str[*i] && str[*i] != c)
 		(*i)++;
