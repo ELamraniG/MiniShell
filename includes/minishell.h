@@ -41,6 +41,8 @@ typedef struct s_ast_tree
 	struct s_ast_tree	*right;
 
 	char				**args;
+	t_q_flags			q_type;
+	int					is_space;
 	t_redirect			*redirect;
 	int					arg_count;
 }						t_ast_tree;
@@ -54,7 +56,7 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
-void					handle_word(t_ast_tree *node, t_lex_list **token);
+void					handle_words(t_ast_tree *node, t_lex_list **token);
 char					*ft_strdup(const char *s1);
 int						ft_isspace(int c);
 char					*ft_substr(char const *s, unsigned int start,
@@ -76,8 +78,7 @@ t_ast_tree				*parse_pipe(t_lex_list **token);
 t_ast_tree				*parse_parenthesis_cmds(t_lex_list **token);
 
 t_ast_tree				*create_ast_tree(t_lex_list *token);
-t_redirect	*new_node_redir(char *str, int type);
-void	add_to_list_redir(t_redirect **ll, char *str, int type);
-
+t_redirect				*new_node_redir(char *str, int type);
+void					add_to_list_redir(t_redirect **ll, char *str, int type);
 
 #endif

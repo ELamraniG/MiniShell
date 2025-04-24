@@ -1,85 +1,58 @@
 #include "../includes/minishell.h"
-static int is_special_for_redirs(int a)
+
+static int	is_special_for_redirs(int a)
 {
-	if (a == WORD && a < 4)
-		return 1;
-	return 0;
+	if (a == WORD || a < 4)
+		return (1);
+	return (0);
 }
 
-
-void handle_redirs(t_ast_tree *node, t_lex_list **token)
+static int	calculate_words(t_lex_list *token)
 {
-	t_redirect *tmp = NULL;
-	while (*token && (*token)->a_type < 4)
+	int	n;
+
+	n = 0;
+	while (token && is_special_for_redirs(token->a_type))
 	{
-		add_to_list_redir(&tmp,(*token)->next->s,(*token)->a_type);
-		*token = (*token)->next->next;
+		if (token->a_type == WORD)
+			n++;
+		if (token->a_type > 3) // all tokens mgher redirs khsnna mchiw bwahd,f redir ghanchiw bjoj bach nskipiw lword le mor redir
+			token = token->next;
+		else if (token->a_type < 4)
+			token = token->next->next;
 	}
-	node->redirect = tmp;
+	return (n);
 }
-void	handle_word(t_ast_tree *node, t_lex_list **token)
+
+void	handle_words(t_ast_tree *node, t_lex_list **token)
 {
 	char		**args;
 	int			malc;
-	t_lex_list	*tmp;
+	t_redirect	*tmp;
 	int			i;
 
-	malc = 0;
-	tmp = *token;
-	// if (*token && (*token)->next && ((*token)->next)->a_type != WORD)
-	// {
-	// 	args = malloc(sizeof(char));
-	// 	args[0] = 0;
-	// 	node->args = args;
-	// 	*token = (*token)->next;
-	// 	return ;
-	// }
-	while (tmp && (tmp)->a_type == WORD)
-	{
-		malc++;
-		tmp = tmp->next;
-	}
-	args = malloc(sizeof(char *) * malc + 1);
-	args[malc] = 0;
 	i = 0;
-	while (*token && (*token)->a_type == WORD)
+	malc = 0;
+	tmp = NULL;
+	malc = calculate_words(*token);
+	args = malloc(sizeof(char *) * (malc + 1));
+	args[malc] = 0;
+	while (*token && is_special_for_redirs((*token)->a_type))
 	{
-		args[i] = (*token)->s;
-			//// BIG PROBLEM BIG PROBLEM    WE ASSIGN THE SAME STRING SO IF WE FREE THE LIST THEN THE TREE WE WILL HAVE DOUBLE FREE
-		*token = (*token)->next;
-		i++;
+		if ((*token)->a_type == WORD)
+		{
+			args[i] = (*token)->s;
+				//////////// WARNING WARNING WARNING THIS COULD CAUSE BIIIG NIGGER PROBLEM,WHEN WE TRYING TO FREE LISTS WE WILL END UP DOING DOUBLE FREE BECAUSE THEY SHARE THE SAME POINTER,MENBA3D EMEL STRDUP
+			i++;
+			(*token) = (*token)->next;
+		}
+		// handle_word(node,token,args);
+		else if ((*token)->a_type < 4)
+		{
+			add_to_list_redir(&tmp, (*token)->next->s, (*token)->a_type);
+			(*token) = (*token)->next->next;
+		}
 	}
 	node->args = args;
-	handle_redirs(node,token);
+	node->redirect = tmp;
 }
-
-// int calc_size(t_lex_list *token, t_lex_list *finish)
-// {
-// 	int n = 0;
-// 	while (token != finish)
-// 	{
-// 		n++;
-// 		token = token->next;
-// 	}
-// 	return (n);
-// }
-
-// void copy_all(t_lex_list *token, t_lex_list *finish)
-// {
-// 	int n = calc_size(token,finish);
-
-// 	while (token != finish)
-// 	{
-
-// 	}
-// }
-
-// t_lex_list *handle_commands(t_lex_list *token)
-// {
-// 	t_lex_list *finish = token;
-// 	while (finish && !is_special_opperand(finish->a_type))
-// 	{
-// 		finish = finish->next;
-// 	}
-// 	copy_all(token,finish);
-// }

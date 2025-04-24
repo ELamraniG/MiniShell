@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+
 
 int	calc_min(char *str)
 {
@@ -47,7 +49,8 @@ void	rip(char *str, int min, int index, int change, int size)
 {
 	int		i;
 	char	c;
-
+  if (change > min)
+      return ;
 		if (is_valid(str) && change == min)
 			puts(str);
 	i = index;
@@ -63,9 +66,13 @@ void	rip(char *str, int min, int index, int change, int size)
 	}
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
-	char str[9] = "(()(()(";
-	int min = calc_min(str);
-	rip(str, min, 0, 0, strlen(str));
+	if (ac != 2 || av[1][0] == 0)
+	{
+		write (1,"\n",1);
+		return (1);
+	}
+	int min = calc_min(av[1]);
+	rip(av[1], min, 0, 0, strlen(av[1]));
 }

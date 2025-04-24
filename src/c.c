@@ -293,60 +293,102 @@ void	print_tabs(int depth)
 	while (depth--)
 		write(1, "   ", 3);
 }
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void print_args(t_ast_tree *node)
+// Function to create a clear visual separator in output
+void print_separator(void)
 {
-	int i = 0;
-	if (node->args)
-	{
-	while (node->args[i])
-	{
-		printf("%s ",node->args[i]);
-		i++;
-
-		}	
-		}
-	while(node->redirect)
-	{
-		printf("|%s|\n",node->redirect->file_name);
-		node->redirect = node->redirect->next;
-
-	}
-
-		printf("\n");
+    printf("\n=================================================\n");
+    printf("=================================================\n");
 }
 
-void	print_tree(t_ast_tree *node)
+// Improved tree printing function with depth tracking
+void print_tree_detailed(t_ast_tree *node, int depth)
 {
-	if(!node)
-	return;
-	printf("%s\n",node->content);
-	print_args(node);
-	print_tree(node->left);
-	print_tree(node->right);
+    if (!node)
+        return;
+    
+    print_tabs(depth);
+    printf("Node type: %d, Content: \"%s\"\n", node->type, node->content ? node->content : "NULL");
+    
+    if (node->args) {
+        print_tabs(depth);
+        printf("Arguments: ");
+        for (int i = 0; node->args[i]; i++) {
+            printf("\"%s\" ", node->args[i]);
+        }
+        printf("\n");
+    }
+    
+    if (node->redirect) {
+        print_tabs(depth);
+        printf("Redirections:\n");
+        t_redirect *temp = node->redirect;
+        while (temp) {
+            print_tabs(depth + 1);
+            printf("Type: %d, File: \"%s\"\n", temp->type, temp->file_name);
+            temp = temp->next;
+        }
+    }
+    
+    if (node->left) {
+        print_tabs(depth);
+        printf("Left child:\n");
+        print_tree_detailed(node->left, depth + 1);
+    }
+    
+    if (node->right) {
+        print_tabs(depth);
+        printf("Right child:\n");
+        print_tree_detailed(node->right, depth + 1);
+    }
 }
 
-int	main(int ac, char *av[])
+// Function to test the parsing of a command
+void test_command(char *cmd)
 {
-	char s[100] = "ls lapa rapa| cat || (echo && or)";
-	if (ac != 2)
-	{
-		printf("av problen\n");
-		return 0;
-	}
-	t_lex_list *tokens = lexing_the_thing(av[1]);
+    printf("MEGA TEST: \"%s\"\n", cmd);
+    
+    t_lex_list *tokens = lexing_the_thing(cmd);
+    if (!tokens) {
+        printf("Lexing failed\n");
+        return;
+    }
+    
+    // Display tokens
+    printf("\nTOKENS:\n");
+    printf("-------\n");
+    t_lex_list *token_ptr = tokens;
+    int token_count = 0;
 	set_the_arg_type(tokens);
-	t_lex_list *token = tokens;
-	while (tokens)
-	{
-		printf(" |%s| |%d| \n", tokens->s, tokens->a_type);
-		tokens = tokens->next;
-	}
-	t_ast_tree *ast_t = create_ast_tree(token);
-	if (!ast_t)
-	{
-		printf("Erro");
-		return (1);
-	}
-	print_tree(ast_t);
+    while (token_ptr) {
+        printf("Token %d: \"%s\", Type: %d, Quote: %d, Space: %d\n", 
+               ++token_count, token_ptr->s, token_ptr->a_type, token_ptr->q_type, token_ptr->is_space);
+        token_ptr = token_ptr->next;
+    }
+    
+    // Parse and create AST
+    t_ast_tree *ast = create_ast_tree(tokens);
+    if (!ast) {
+        printf("Parsing failed - returned NULL tree\n");
+    } else {
+        printf("\nAST Tree:\n");
+        printf("---------\n");
+        print_tree_detailed(ast, 0);
+    }
+    
+    print_separator();
+}
+
+// Function to run the test
+int main(void)
+{
+    // One massive test case combining all features
+    char *mega_test = "(echo foo && echo bar || echo baz) | grep baz";
+    
+    test_command(mega_test);
+    
+    return 0;
 }

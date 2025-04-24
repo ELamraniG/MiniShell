@@ -15,6 +15,8 @@ t_ast_tree *parse_and_or(t_lex_list **token)
 	{
 		t_ast_tree *root = new_ast_node(*token);
 		root->type = (*token)->a_type;
+		root->q_type = (*token)->q_type;
+		root->is_space = (*token)->is_space;
 		(*token) = (*token)->next;
 		t_ast_tree *right = parse_pipe(token);
 		root->left = left;
@@ -31,6 +33,8 @@ t_ast_tree *parse_pipe(t_lex_list **token)
 	{
 		t_ast_tree *root = new_ast_node(*token);
 		root->type = (*token)->a_type;
+		root->q_type = (*token)->q_type;
+		root->is_space = (*token)->is_space;
 		(*token) = (*token)->next;
 		t_ast_tree *right = parse_parenthesis_cmds(token);
 		root->left = left;
@@ -47,10 +51,12 @@ t_ast_tree *parse_parenthesis_cmds(t_lex_list **token)
 	if ((*token)->a_type == WORD)
 	{
 		t_ast_tree *root = new_ast_node(*token);
+		root->q_type = (*token)->q_type;
 		root->type = (*token)->a_type;
+		root->is_space = (*token)->is_space;
 		root->left = NULL;
 		root->right = NULL;
-		handle_word(root,token);
+		handle_words(root,token);
 		// *token = (*token)->next;
 		return (root);
 	}
