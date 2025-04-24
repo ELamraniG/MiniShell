@@ -7,7 +7,8 @@ SRC =	src/c.c \
 		src/list_utils.c \
 		src/string_utils.c \
 		src/tree_parsing.c \
-		src/handle_redirs.c
+		src/handle_redirs.c \
+		src/quotes.c
 
 OBJ = $(SRC:.c=.o)
 

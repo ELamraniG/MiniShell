@@ -363,6 +363,7 @@ void test_command(char *cmd)
     t_lex_list *token_ptr = tokens;
     int token_count = 0;
 	set_the_arg_type(tokens);
+	remove_quotes(tokens);
     while (token_ptr) {
         printf("Token %d: \"%s\", Type: %d, Quote: %d, Space: %d\n", 
                ++token_count, token_ptr->s, token_ptr->a_type, token_ptr->q_type, token_ptr->is_space);
@@ -386,7 +387,10 @@ void test_command(char *cmd)
 int main(void)
 {
     // One massive test case combining all features
-    char *mega_test = "(echo foo && echo bar || echo baz) | grep baz";
+    char *mega_test = "('echo' \"complex test\" > file1.txt || (grep 'pattern' < in.txt)) && "
+                 "(cat file2.txt | sort -r | head -n 5 > out.txt) || "
+                 "((ls -la >> list.txt) && (echo \"nested quotes 'test'\" | grep test)) | "
+                 "wc -l << EOF";
     
     test_command(mega_test);
     
