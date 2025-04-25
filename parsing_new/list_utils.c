@@ -1,4 +1,4 @@
-# include "../includes/minishell_new.h"
+# include "../includes/minishell.h"
 
 t_lex_list	*new_node(char *str, t_q_flags quote, int is_space)
 {

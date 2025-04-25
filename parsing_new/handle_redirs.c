@@ -1,4 +1,4 @@
-# include "../includes/minishell_new.h"
+# include "../includes/minishell.h"
 
 static int	is_special_for_redirs(int a)
 {

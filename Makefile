@@ -16,6 +16,7 @@ SRC =	parsing_new/c.c \
 		parsing_new/tree_parsing.c \
 		parsing_new/handle_redirs.c \
 		parsing_new/quotes.c \
+		parsing_new/handle_syntax.c \
 		parsing_new/main.c 
 
 OBJ = $(SRC:.c=.o)

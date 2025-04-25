@@ -4,7 +4,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-
+#include <readline/readline.h>
+#include <readline/history.h>
 typedef enum e_type_arg
 {
 	IN_REDIR,
@@ -56,19 +57,19 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
+void	set_the_arg_type(t_lex_list *token);
 void					handle_words(t_ast_tree *node, t_lex_list **token);
 char					*ft_strdup(const char *s1);
 int						ft_isspace(int c);
 char					*ft_substr(char const *s, unsigned int start,
 							size_t len);
-void					get_next_quote(char *str, int *i, char c);
 void					add_to_list(t_lex_list **ll, char *str, t_q_flags quote,
 							int is_space);
 int						ft_strcmp(const char *s1, const char *s2);
 size_t					ft_strlen(const char *s);
 size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 t_lex_list				*new_node(char *str, t_q_flags quote, int is_space);
-t_lex_list				*lexing_the_thing(char *str);
+t_lex_list				*lexing_the_thing(char *str, int *status);
 
 t_ast_tree				*new_ast_node(t_lex_list *node);
 t_ast_tree				*parse_and_or(t_lex_list **token);
@@ -81,4 +82,5 @@ t_ast_tree				*create_ast_tree(t_lex_list *token);
 t_redirect				*new_node_redir(char *str, int type);
 void					add_to_list_redir(t_redirect **ll, char *str, int type);
 void					remove_quotes(t_lex_list *token);
+void					handle_syntax_errors(t_lex_list *token, int *status);
 #endif
