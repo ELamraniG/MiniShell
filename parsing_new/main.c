@@ -1,4 +1,6 @@
 # include "../includes/minishell.h"
+//madnsachi FREE f CASE DYALL ERRORS W CTRL D KBEL MADOZ N EXEC
+
 
 int main(int argc, char **argv)
 {
@@ -27,7 +29,6 @@ int main(int argc, char **argv)
 			continue;
 		}
 		
-		// Make sure token types are set properly
 		set_the_arg_type(tokens);
 		
 		handle_syntax_errors(tokens, &status);
@@ -38,7 +39,6 @@ int main(int argc, char **argv)
 			continue;
 		}
 		
-		// Display tokens for debugging
 		t_lex_list *temp = tokens;
 		while (temp)
 		{
