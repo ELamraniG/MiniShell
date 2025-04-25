@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	{
 		status = 0;
 		input = readline("\033[32mminishell$ \033[0m");
-		if (!input) // Handle Ctrl+D
+		if (!input) // deksaea emel free w leibat
 			break;
 			
 		if (*input)

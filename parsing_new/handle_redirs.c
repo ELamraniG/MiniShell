@@ -41,12 +41,10 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 	{
 		if ((*token)->a_type == WORD)
 		{
-			args[i] = (*token)->s;
-				//////////// WARNING WARNING WARNING THIS COULD CAUSE BIIIG NIGGER PROBLEM,WHEN WE TRYING TO FREE LISTS WE WILL END UP DOING DOUBLE FREE BECAUSE THEY SHARE THE SAME POINTER,MENBA3D EMEL STRDUP
+			args[i] = ft_strdup((*token)->s);
 			i++;
 			(*token) = (*token)->next;
 		}
-		// handle_word(node,token,args);
 		else if ((*token)->a_type < 4)
 		{
 			add_to_list_redir(&tmp, (*token)->next->s, (*token)->a_type);
