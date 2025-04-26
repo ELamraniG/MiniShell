@@ -1,5 +1,12 @@
 # include "../includes/minishell.h"
 
+int	ft_isspace(int c)
+{
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return (1);
+	return (0);
+}
+
 void	put_syntax_error(void)
 {
 	write(2, "bash: syntax error near unexpected token\n",
@@ -122,8 +129,6 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 		s = ft_substr(str, j, i - j);
 		if (s)
 			add_to_list(&tokens, s, quote, is_space);
-		if (!str[i])
-			break ;
 		j = i;
 	}
 	return (tokens);

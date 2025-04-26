@@ -1,10 +1,11 @@
-# include "../includes/minishell.h"
-//madnsachi FREE f CASE DYALL ERRORS W CTRL D KBEL MADOZ N EXEC
+#include "../includes/minishell.h"
 
-
-void free_lex_list(t_lex_list *token)
+// madnsachi FREE f CASE DYALL ERRORS W CTRL D KBEL MADOZ N EXEC
+// status f exit dyal syntax err khass men baed tfixiha
+void	free_lex_list(t_lex_list *token)
 {
-	t_lex_list *tmp;
+	t_lex_list	*tmp;
+
 	while (token)
 	{
 		tmp = token;
@@ -14,47 +15,42 @@ void free_lex_list(t_lex_list *token)
 	}
 }
 
-
-void print_lex(t_lex_list *temp)
+void	print_lex(t_lex_list *temp)
 {
 	while (temp)
-		{
-			printf("Token: '%s', Type: %d\n", temp->s, temp->a_type);
-			temp = temp->next;
-		}
+	{
+		printf("Token: '%s', Type: %d\n", temp->s, temp->a_type);
+		temp = temp->next;
+	}
 }
 
-// void lopo()
-// {
-// 	system("leaks minishell");
-// }
-
-int main(int argc, char **argv)
+void	lopo(void)
 {
-	char		*input;
-	t_lex_list	*tokens;
+	system("leaks minishell");
+}
+
+int	main(void)
+{
+	char *input;
+	t_lex_list *tokens;
 	int status = 0;
 
-	(void)argc;
-	(void)argv;
-	// atexit(lopo);
+	atexit(lopo);
 	while (1)
 	{
 		status = 0;
 		input = readline("\033[32mminishell$ \033[0m");
 		if (!input)
-		{
-			//men baedd free_everything_then_break...
-			break;
-		}	
+			break ;
 		if (input[0])
 			add_history(input);
-			
+
 		tokens = lexing_the_thing(input, &status);
-		if(status != 0)
+		if (status != 0)
 		{
+			free_lex_list(tokens);
 			free(input);
-			continue;
+			continue ;
 		}
 		set_the_arg_type(tokens);
 		handle_syntax_errors(tokens, &status);
@@ -62,10 +58,11 @@ int main(int argc, char **argv)
 		{
 			free(input);
 			free_lex_list(tokens);
-			continue;
+			continue ;
 		}
 		print_lex(tokens);
 		free_lex_list(tokens);
+		free(input);
 	}
-	return 0;
+	return (0);
 }
