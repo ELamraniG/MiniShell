@@ -101,8 +101,6 @@ static int wach_valid_tokens(t_lex_list *current, int *status)
 static int validate_parentheses(t_lex_list *token, int *status)
 {
 	t_lex_list *current;
-	t_lex_list *end_paren = NULL;
-	int has_command = 0;
 	
 	if (token->a_type == OP_PAREN && token->next && 
 		token->next->a_type == CL_PAREN)
@@ -132,12 +130,7 @@ static int validate_parentheses(t_lex_list *token, int *status)
 			else if (current->a_type == CL_PAREN)
 			{
 				depth--;
-				if (depth == 0)
-					end_paren = current;
 			}
-
-			if (depth > 0 && current->a_type == WORD)
-				has_command = 1;
 				
 			current = current->next;
 		}

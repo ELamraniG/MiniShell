@@ -4,18 +4,30 @@
 
 void free_lex_list(t_lex_list *token)
 {
+	t_lex_list *tmp;
 	while (token)
 	{
+		tmp = token;
 		free(token->s);
 		token = token->next;
+		free(tmp);
 	}
 }
 
 
-void lopo()
+void print_lex(t_lex_list *temp)
 {
-	system("leaks minishell");
+	while (temp)
+		{
+			printf("Token: '%s', Type: %d\n", temp->s, temp->a_type);
+			temp = temp->next;
+		}
 }
+
+// void lopo()
+// {
+// 	system("leaks minishell");
+// }
 
 int main(int argc, char **argv)
 {
@@ -25,7 +37,7 @@ int main(int argc, char **argv)
 
 	(void)argc;
 	(void)argv;
-	atexit(lopo);
+	// atexit(lopo);
 	while (1)
 	{
 		status = 0;
@@ -33,7 +45,6 @@ int main(int argc, char **argv)
 		if (!input)
 		{
 			//men baedd free_everything_then_break...
-			free_lex_list(tokens);
 			break;
 		}	
 		if (input[0])
@@ -45,23 +56,15 @@ int main(int argc, char **argv)
 			free(input);
 			continue;
 		}
-		
 		set_the_arg_type(tokens);
-		
 		handle_syntax_errors(tokens, &status);
 		if (status != 0)
 		{
-			// free(input);
-			// free_list(&tokens);
+			free(input);
+			free_lex_list(tokens);
 			continue;
 		}
-		
-		t_lex_list *temp = tokens;
-		while (temp)
-		{
-			printf("Token: '%s', Type: %d\n", temp->s, temp->a_type);
-			temp = temp->next;
-		}
+		print_lex(tokens);
 		free_lex_list(tokens);
 	}
 	return 0;
