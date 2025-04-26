@@ -34,7 +34,7 @@ int	main(void)
 	char *input;
 	t_lex_list *tokens;
 	int status = 0;
-
+	t_ast_tree *exec_tree = NULL;
 	atexit(lopo);
 	while (1)
 	{
@@ -48,8 +48,8 @@ int	main(void)
 		tokens = lexing_the_thing(input, &status);
 		if (status != 0)
 		{
-			free_lex_list(tokens);
 			free(input);
+			free_lex_list(tokens);
 			continue ;
 		}
 		set_the_arg_type(tokens);
@@ -60,9 +60,12 @@ int	main(void)
 			free_lex_list(tokens);
 			continue ;
 		}
+		exec_tree = create_ast_tree(tokens);
+
 		print_lex(tokens);
 		free_lex_list(tokens);
 		free(input);
 	}
+
 	return (0);
 }

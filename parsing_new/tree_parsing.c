@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tree_parsing.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 16:14:08 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/04/26 16:14:08 by moel-amr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 t_ast_tree	*new_ast_node(t_lex_list *node)
@@ -12,6 +24,7 @@ t_ast_tree	*new_ast_node(t_lex_list *node)
 	tree_node->right = NULL;
 	return (tree_node);
 }
+
 t_ast_tree	*parse_and_or(t_lex_list **token)
 {
 	t_ast_tree	*left;
@@ -59,6 +72,7 @@ t_ast_tree	*parse_pipe(t_lex_list **token)
 t_ast_tree	*parse_parenthesis_cmds(t_lex_list **token)
 {
 	t_ast_tree	*root;
+
 	if (*token == NULL)
 		return (NULL);
 	if ((*token)->a_type == WORD)

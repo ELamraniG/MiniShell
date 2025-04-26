@@ -1,4 +1,16 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_redirs.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 16:16:40 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/04/26 16:18:33 by moel-amr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minishell.h"
 
 static int	is_special_for_redirs(int a)
 {
@@ -16,7 +28,7 @@ static int	calculate_words(t_lex_list *token)
 	{
 		if (token->a_type == WORD)
 			n++;
-		if (token->a_type > 3) // all tokens mgher redirs khsnna mchiw bwahd,f redir ghanchiw bjoj bach nskipiw lword le mor redir
+		if (token->a_type > 3)
 			token = token->next;
 		else if (token->a_type < 4)
 			token = token->next->next;
@@ -32,7 +44,6 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 	int			i;
 
 	i = 0;
-	malc = 0;
 	tmp = NULL;
 	malc = calculate_words(*token);
 	args = malloc(sizeof(char *) * (malc + 1));
@@ -41,8 +52,7 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 	{
 		if ((*token)->a_type == WORD)
 		{
-			args[i] = ft_strdup((*token)->s);
-			i++;
+			args[i++] = ft_strdup((*token)->s);
 			(*token) = (*token)->next;
 		}
 		else if ((*token)->a_type < 4)

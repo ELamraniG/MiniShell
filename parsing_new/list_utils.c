@@ -1,4 +1,16 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   list_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 16:15:11 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/04/26 16:15:11 by moel-amr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minishell.h"
 
 t_lex_list	*new_node(char *str, t_q_flags quote, int is_space)
 {
@@ -14,15 +26,17 @@ t_lex_list	*new_node(char *str, t_q_flags quote, int is_space)
 	return (p);
 }
 
-
 void	add_to_list(t_lex_list **ll, char *str, t_q_flags quote, int is_space)
 {
+	t_lex_list	*tmp;
+	t_lex_list	*t;
+
 	if (!ll)
 		return ;
-	t_lex_list *tmp = *ll;
+	tmp = *ll;
 	while (tmp && tmp->next)
 		tmp = (tmp)->next;
-	t_lex_list *t = new_node(str, quote, is_space);
+	t = new_node(str, quote, is_space);
 	if (!t)
 		return ;
 	if (!tmp)
@@ -46,15 +60,17 @@ t_redirect	*new_node_redir(char *str, int type)
 	return (p);
 }
 
-
 void	add_to_list_redir(t_redirect **ll, char *str, int type)
 {
+	t_redirect	*tmp;
+	t_redirect	*t;
+
 	if (!ll)
 		return ;
-	t_redirect *tmp = *ll;
+	tmp = *ll;
 	while (tmp && tmp->next)
 		tmp = (tmp)->next;
-	t_redirect *t = new_node_redir(str, type);
+	t = new_node_redir(str, type);
 	if (!t)
 		return ;
 	if (!tmp)

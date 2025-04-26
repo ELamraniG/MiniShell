@@ -89,8 +89,8 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 		{
 			quote = SQ;
 			get_next_quote(str, &i, '\'', status);
-			if(*status == 258)
-				return (NULL);
+			if(*status != 0)
+				return (tokens);
 			if (str[i] && ft_isspace(str[i + 1]))
 				is_space = 1;
 			i++;
@@ -99,8 +99,8 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 		{
 			quote = DQ;
 			get_next_quote(str, &i, '"', status);
-			if(*status == 258)
-				return (NULL);
+			if(*status != 0)
+				return (tokens);
 			if (str[i] && ft_isspace(str[i + 1]))
 				is_space = 1;
 			i++;
