@@ -2,6 +2,21 @@
 //madnsachi FREE f CASE DYALL ERRORS W CTRL D KBEL MADOZ N EXEC
 
 
+void free_lex_list(t_lex_list *token)
+{
+	while (token)
+	{
+		free(token->s);
+		token = token->next;
+	}
+}
+
+
+void lopo()
+{
+	system("leaks minishell");
+}
+
 int main(int argc, char **argv)
 {
 	char		*input;
@@ -10,22 +25,24 @@ int main(int argc, char **argv)
 
 	(void)argc;
 	(void)argv;
-
+	atexit(lopo);
 	while (1)
 	{
 		status = 0;
 		input = readline("\033[32mminishell$ \033[0m");
-		if (!input) // deksaea emel free w leibat
+		if (!input)
+		{
+			//men baedd free_everything_then_break...
+			free_lex_list(tokens);
 			break;
-			
-		if (*input)
+		}	
+		if (input[0])
 			add_history(input);
 			
 		tokens = lexing_the_thing(input, &status);
 		if(status != 0)
 		{
-			// free(input);
-			// free_list(tokens);
+			free(input);
 			continue;
 		}
 		
@@ -45,6 +62,7 @@ int main(int argc, char **argv)
 			printf("Token: '%s', Type: %d\n", temp->s, temp->a_type);
 			temp = temp->next;
 		}
+		free_lex_list(tokens);
 	}
 	return 0;
 }
