@@ -10,6 +10,7 @@ CFLAGS = -Wall -Wextra -Werror
 # 		src/quotes.c
 
 SRC =	parsing_new/c.c \
+parsing_new/free.c \
 		parsing_new/list_utils.c \
 		parsing_new/string_utils.c \
 		parsing_new/tree_parsing.c \

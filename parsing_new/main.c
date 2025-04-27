@@ -1,19 +1,11 @@
 #include "../includes/minishell.h"
 
-// madnsachi FREE f CASE DYALL ERRORS W CTRL D KBEL MADOZ N EXEC
-// status f exit dyal syntax err khass men baed tfixiha
-void	free_lex_list(t_lex_list *token)
-{
-	t_lex_list	*tmp;
 
-	while (token)
-	{
-		tmp = token;
-		free(token->s);
-		token = token->next;
-		free(tmp);
-	}
-}
+
+// madnsachi FREE f CASE DYALL ERRORS bhal unclosed quote W CTRL D KBEL MADOZ N EXEC
+// status f exit dyal syntax err khass men baed tfixiha
+// quotes fihom mochkel when using "" or '' fix them later "" and '' gives NULL
+// you should add to history everything even the syntax errors
 
 void	print_lex(t_lex_list *temp)
 {
@@ -34,7 +26,7 @@ int	main(void)
 	char *input;
 	t_lex_list *tokens;
 	int status = 0;
-	t_ast_tree *exec_tree = NULL;
+	// t_ast_tree *exec_tree = NULL;
 	atexit(lopo);
 	while (1)
 	{
@@ -44,7 +36,6 @@ int	main(void)
 			break ;
 		if (input[0])
 			add_history(input);
-
 		tokens = lexing_the_thing(input, &status);
 		if (status != 0)
 		{
@@ -60,8 +51,9 @@ int	main(void)
 			free_lex_list(tokens);
 			continue ;
 		}
-		exec_tree = create_ast_tree(tokens);
+		// exec_tree = create_ast_tree(tokens);
 
+		remove_quotes(tokens);
 		print_lex(tokens);
 		free_lex_list(tokens);
 		free(input);

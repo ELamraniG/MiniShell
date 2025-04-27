@@ -1,4 +1,5 @@
-# include "../includes/minishell.h"
+
+#include "../includes/minishell.h"
 
 int	ft_isspace(int c)
 {
@@ -9,8 +10,8 @@ int	ft_isspace(int c)
 
 void	put_syntax_error(void)
 {
-	write(2, "bash: syntax error near unexpected token\n",
-		ft_strlen("bash: syntax error near unexpected token\n"));
+	write(2, "bash: syntax unclosed quote\n",
+		ft_strlen("bash: syntax unclosed quote\n"));
 }
 
 void	arg_type(t_lex_list *token)
@@ -44,7 +45,7 @@ static void	get_next_quote(char *str, int *i, char c, int *status)
 		(*i)++;
 	if (str[*i] != c)
 	{
-		*status = 258;
+		*status = 130;
 		put_syntax_error();
 	}
 }
@@ -63,73 +64,86 @@ int	is_quote(char c)
 		return (1);
 	return (0);
 }
+
+void	skip_spaces(char *str, int *i, int *j)
+{
+	while (ft_isspace(str[*i]))
+	{
+		(*i)++;
+		(*j)++;
+	}
+}
+
+void	handle_quote(char *str, t_vars *t, char q, int *status)
+{
+	if (q == '\'')
+		t->quote = SQ;
+	else
+		t->quote = DQ;
+	get_next_quote(str, &(t->i), q, status);
+	if (*status != 0)
+		return ;
+	if (str[t->i] && ft_isspace(str[t->i + 1]))
+		t->is_space = 1;
+	t->i++;
+}
+
+static void	init_t_vars(t_vars *t, t_lex_list **tokens)
+{
+	*tokens = NULL;
+	t->i = 0;
+	t->is_space = 0;
+	t->j = 0;
+}
+
+void	norm_lexing_the_thing(char *str, t_vars *t, int *status)
+{
+	if (str[t->i] == '\'' || str[t->i] == '"')
+	{
+		handle_quote(str, t, str[t->i], status);
+		if (*status != 0)
+			return ;
+	}
+	else if (str[t->i] == '(' || str[t->i] == ')')
+		t->i++;
+	else if (is_special(str[t->i]))
+	{
+		if ((str[t->i]) == str[t->i + 1])
+			t->i++;
+		t->i++;
+	}
+	else
+	{
+		while (str[t->i] && !ft_isspace(str[t->i]) && !is_special(str[t->i])
+			&& !is_quote(str[t->i]))
+			t->i++;
+		if (str[t->i] && ft_isspace(str[t->i]))
+			t->is_space = 1;
+	}
+}
+
 t_lex_list	*lexing_the_thing(char *str, int *status)
 {
-	int			i;
-	int			j;
 	t_lex_list	*tokens;
 	char		*s;
-	int			is_space;
-	t_q_flags	quote;
+	t_vars		t;
 
-	i = 0;
-	is_space = 0;
-	i = 0;
-	j = 0;
-	tokens = NULL;
-	while (str[i])
+	init_t_vars(&t, &tokens);
+	while (str[t.i])
 	{
-		is_space = 0;
-		while (ft_isspace(str[i]))
+		t.is_space = 0;
+		t.quote = NQ;
+		skip_spaces(str, &t.i, &t.j);
+		norm_lexing_the_thing(str, &t, status);
+		if (*status != 0)
 		{
-			j++;
-			i++;
+			free_lex_list(tokens);
+			return (NULL);
 		}
-		if (str[i] == '\'')
-		{
-			quote = SQ;
-			get_next_quote(str, &i, '\'', status);
-			if(*status != 0)
-				return (tokens);
-			if (str[i] && ft_isspace(str[i + 1]))
-				is_space = 1;
-			i++;
-		}
-		else if (str[i] == '"')
-		{
-			quote = DQ;
-			get_next_quote(str, &i, '"', status);
-			if(*status != 0)
-				return (tokens);
-			if (str[i] && ft_isspace(str[i + 1]))
-				is_space = 1;
-			i++;
-		}
-		else if (str[i] == '(' || str[i] == ')')
-		{
-			quote = NQ;
-			i++;
-		}
-		else if (is_special(str[i]))
-		{
-			quote = NQ;
-			if ((str[i]) == str[i + 1])
-				i++;
-			i++;
-		}
-		else
-		{
-			quote = NQ;
-			while (str[i] && !ft_isspace(str[i]) && !is_special(str[i])
-				&& !is_quote(str[i]))
-				i++;
-			if (str[i] && ft_isspace(str[i]))
-				is_space = 1;
-		}
-		s = ft_substr(str, j, i - j);
+		s = ft_substr(str, t.j, t.i - t.j);
 		if (s)
-			add_to_list(&tokens, s, quote, is_space);
-		j = i;
+			add_to_list(&tokens, s, t.quote, t.is_space);
+		t.j = t.i;
 	}
 	return (tokens);
 }

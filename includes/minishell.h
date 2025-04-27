@@ -1,11 +1,11 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 typedef enum e_type_arg
 {
 	IN_REDIR,
@@ -34,6 +34,14 @@ typedef struct s_redirect
 	struct s_redirect	*next;
 }						t_redirect;
 
+typedef struct s_vars
+{
+	int					i;
+	int					j;
+	int					is_space;
+	t_q_flags			quote;
+}						t_vars;
+
 typedef struct s_ast_tree
 {
 	t_type_arg			type;
@@ -57,7 +65,8 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
-void	set_the_arg_type(t_lex_list *token);
+void					free_lex_list(t_lex_list *token);
+void					set_the_arg_type(t_lex_list *token);
 void					handle_words(t_ast_tree *node, t_lex_list **token);
 char					*ft_strdup(const char *s1);
 int						ft_isspace(int c);
