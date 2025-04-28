@@ -144,6 +144,7 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 		if (s)
 			add_to_list(&tokens, s, t.quote, t.is_space);
 		t.j = t.i;
+		skip_spaces(str, &t.i, &t.j);
 	}
 	return (tokens);
 }

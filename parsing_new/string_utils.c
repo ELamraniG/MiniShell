@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:14:22 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/04/26 16:14:22 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/04/28 17:04:01 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (!s)
 		return (NULL);
 	if (len == 0)
-		return (NULL);
+	{
+		return (ft_strdup(""));
+	}
 	if (start >= ft_strlen(s))
 		return (ft_strdup(""));
 	if (len + start > ft_strlen(s))

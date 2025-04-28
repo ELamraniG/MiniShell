@@ -45,15 +45,13 @@ typedef struct s_vars
 typedef struct s_ast_tree
 {
 	t_type_arg			type;
-	char				*content;
 	struct s_ast_tree	*left;
 	struct s_ast_tree	*right;
 
 	char				**args;
-	t_q_flags			q_type;
-	int					is_space;
+	int			*q_type;
+	int					*is_space;
 	t_redirect			*redirect;
-	int					arg_count;
 }						t_ast_tree;
 
 typedef struct s_lex_list
@@ -80,7 +78,7 @@ size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 t_lex_list				*new_node(char *str, t_q_flags quote, int is_space);
 t_lex_list				*lexing_the_thing(char *str, int *status);
 
-t_ast_tree				*new_ast_node(t_lex_list *node);
+t_ast_tree				*new_ast_node(void);
 t_ast_tree				*parse_and_or(t_lex_list **token);
 int						is_special_opperand(int n);
 t_ast_tree				*parse_pipe(t_lex_list **token);
