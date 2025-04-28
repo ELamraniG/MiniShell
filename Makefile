@@ -9,15 +9,15 @@ CFLAGS = -Wall -Wextra -Werror
 # 		src/handle_redirs.c \
 # 		src/quotes.c
 
-SRC =	parsing_new/c.c \
-parsing_new/free.c \
-		parsing_new/list_utils.c \
-		parsing_new/string_utils.c \
-		parsing_new/tree_parsing.c \
-		parsing_new/handle_redirs.c \
-		parsing_new/quotes.c \
-		parsing_new/handle_syntax.c \
-		parsing_new/main.c 
+SRC =	parsing/c.c \
+parsing/free.c \
+		parsing/list_utils.c \
+		parsing/string_utils.c \
+		parsing/tree_parsing.c \
+		parsing/handle_redirs.c \
+		parsing/quotes.c \
+		parsing/handle_syntax.c \
+		parsing/main.c 
 
 OBJ = $(SRC:.c=.o)
 
