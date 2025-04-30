@@ -27,6 +27,13 @@ typedef enum e_q_flags
 	DQ
 }						t_q_flags;
 
+typedef struct s_env_list
+{
+	char				*key;
+	char				*value;
+	struct s_env_list	*next;
+}			t_env_list;
+
 typedef struct s_redirect
 {
 	char				*file_name;
@@ -90,4 +97,8 @@ t_redirect				*new_node_redir(char *str, int type);
 void					add_to_list_redir(t_redirect **ll, char *str, int type);
 void					remove_quotes(t_lex_list *token);
 void					handle_syntax_errors(t_lex_list *token, int *status);
+
+t_env_list				*new_env_node();
+void					set_up_env(char **env, t_env_list **env_list);
+
 #endif

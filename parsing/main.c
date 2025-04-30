@@ -94,44 +94,60 @@ void free_tree(t_ast_tree *root)
 	free_tree(root->right);
 	free(root);
 }
-int	main(void)
-{
-	char *input;
-	t_lex_list *tokens;
-	int status = 0;
-	t_ast_tree *exec_tree = NULL;
-	atexit(lopo);
-	while (1)
-	{
-		status = 0;
-		input = readline("\033[32mminishell$ \033[0m");
-		if (!input)
-			break ;
-		if (input[0])
-			add_history(input);
-		tokens = lexing_the_thing(input, &status);
-		if (status != 0)
-		{
-			free(input);
-			free_lex_list(tokens);
-			continue ;
-		}
-		set_the_arg_type(tokens);
-		handle_syntax_errors(tokens, &status);
-		if (status != 0)
-		{
-			free(input);
-			free_lex_list(tokens);
-			continue ;
-		}
-		remove_quotes(tokens);
-		exec_tree = create_ast_tree(tokens);
-		print_tree(exec_tree, 0);
-		free_tree(exec_tree);
-		print_lex(tokens);
-		free_lex_list(tokens);
-		free(input);
-	}
+// int	main(void)
+// {
+// 	char *input;
+// 	t_lex_list *tokens;
+// 	int status = 0;
+// 	t_ast_tree *exec_tree = NULL;
+// 	atexit(lopo);
+// 	while (1)
+// 	{
+// 		status = 0;
+// 		input = readline("\033[32mminishell$ \033[0m");
+// 		if (!input)
+// 			break ;
+// 		if (input[0])
+// 			add_history(input);
+// 		tokens = lexing_the_thing(input, &status);
+// 		if (status != 0)
+// 		{
+// 			free(input);
+// 			free_lex_list(tokens);
+// 			continue ;
+// 		}
+// 		set_the_arg_type(tokens);
+// 		handle_syntax_errors(tokens, &status);
+// 		if (status != 0)
+// 		{
+// 			free(input);
+// 			free_lex_list(tokens);
+// 			continue ;
+// 		}
+// 		remove_quotes(tokens);
+// 		exec_tree = create_ast_tree(tokens);
+// 		print_tree(exec_tree, 0);
+// 		free_tree(exec_tree);
+// 		print_lex(tokens);
+// 		free_lex_list(tokens);
+// 		free(input);
+// 	}
 
-	return (0);
+// 	return (0);
+// }
+
+
+int main(int ac, char **av, char **env)
+{
+	t_env_list	*env_list = NULL;
+	(void)ac;
+	(void)av;
+
+	set_up_env(env, &env_list);
+	while (env_list)
+	{
+		printf("%s", env_list->key);
+		printf("%s\n", env_list->value);
+		env_list = env_list->next;
+	}
 }

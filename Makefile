@@ -10,14 +10,15 @@ CFLAGS = -Wall -Wextra -Werror
 # 		src/quotes.c
 
 SRC =	parsing/c.c \
-parsing/free.c \
+		parsing/free.c \
 		parsing/list_utils.c \
 		parsing/string_utils.c \
 		parsing/tree_parsing.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
-		parsing/main.c 
+		parsing/main.c \
+		built_ins/set_up_env.c \
 
 OBJ = $(SRC:.c=.o)
 
