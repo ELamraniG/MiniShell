@@ -40,13 +40,14 @@ void	delete_node(t_env_list **env_list, char *key)
 		tmp = tmp->next;
 		mark++;
 	}
-	if (mark == 0)
+	if (mark == 0) // if node to remove was first
 	{
 		(*env_list) = (*env_list)->next;
 		free(tmp->key);
 		free(tmp->value);
+		free(tmp);
 	}
-	else if ((tmp->next == NULL) && !ft_strcmp(tmp->key, key))
+	else if ((tmp->next == NULL) && !ft_strcmp(tmp->key, key)) // if node to remove was last
 	{
 		while (i < list_size(tmp))
 			tmp = tmp->next;
@@ -56,8 +57,9 @@ void	delete_node(t_env_list **env_list, char *key)
 		while (i < list_size(tmp) - 1)
 			tmp = tmp->next;
 		tmp->next = NULL;
+		free(tmp);
 	}
-	else
+	else // if node to remove was in the middle
 	{
 		i = 0;
 		while (i != mark)
@@ -70,5 +72,6 @@ void	delete_node(t_env_list **env_list, char *key)
 		tmp->next = to_delete->next;
 		free(to_delete->key);
 		free(to_delete->value);
+		free(tmp);
 	}
 }
