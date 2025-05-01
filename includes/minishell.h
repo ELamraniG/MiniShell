@@ -101,6 +101,6 @@ void					handle_syntax_errors(t_lex_list *token, int *status);
 t_env_list				*new_env_node();
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
-void					insert_node(t_env_list *d, char *key, char *value);
+void					insert_node(t_env_list **d, char *key, char *value);
 
 #endif

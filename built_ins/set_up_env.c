@@ -19,6 +19,9 @@ void	set_up_env(char **env, t_env_list **env_list)
 	int	j = 0;
 	t_env_list	*new_node;
 	t_env_list	*last = NULL;
+
+	if (!env || !*env)
+		return ;
 	while (env[i])
 	{
 		j = 0;
@@ -27,7 +30,7 @@ void	set_up_env(char **env, t_env_list **env_list)
 			if (env[i][j] == '=')
 			{
 				new_node = new_env_node();
-				new_node->key = ft_substr(env[i], 0, j + 1);
+				new_node->key = ft_substr(env[i], 0, j);
 				new_node->value = ft_substr(env[i], j + 1, ft_strlen(env[i]) - j);
 				if (!(*env_list))
 					*env_list = new_node;

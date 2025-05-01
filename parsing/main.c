@@ -144,22 +144,32 @@ int main(int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 
+	int i = 0;
+	env = NULL;
 	set_up_env(env, &env_list);
 	tmp = env_list;
 	while (tmp)
 	{
-		printf("%s", tmp->key);
+		printf("%d | ", i);
+		printf("%s=", tmp->key);
 		printf("%s\n", tmp->value);
 		tmp = tmp->next;
+		i++;
 	}
 	tmp = env_list;
 	// printf("\n-----------------\n");
-	delete_node(&env_list, "LOGNAME=");
-	// printf("-----------------\n");
+	// delete_node(&env_list, "TERM");
+	insert_node(&env_list, "JIHAD", "HAMDAOUI");
+	insert_node(&env_list, "JIHAD3", "4HAMDAOUI");
+	insert_node(&env_list, "JIHA2D", "HAMDAOUI2");
+	printf("-----------------\n");
+	i = 0;
 	while (env_list)
 	{
-		printf("%s", env_list->key);
+		printf("%d | ", i);
+		printf("%s=", env_list->key);
 		printf("%s\n", env_list->value);
 		env_list = env_list->next;
+		i++;
 	}
 }
