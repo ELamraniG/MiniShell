@@ -140,10 +140,22 @@ void free_tree(t_ast_tree *root)
 int main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list = NULL;
+	t_env_list	*tmp;
 	(void)ac;
 	(void)av;
 
 	set_up_env(env, &env_list);
+	tmp = env_list;
+	while (tmp)
+	{
+		printf("%s", tmp->key);
+		printf("%s\n", tmp->value);
+		tmp = tmp->next;
+	}
+	tmp = env_list;
+	// printf("\n-----------------\n");
+	delete_node(&env_list, "LOGNAME=");
+	// printf("-----------------\n");
 	while (env_list)
 	{
 		printf("%s", env_list->key);

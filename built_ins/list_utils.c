@@ -33,15 +33,18 @@ void	delete_node(t_env_list **env_list, char *key)
 		return ;
 	tmp = *env_list;
 	mark = 0;
+	i = 0;
 	while (tmp)
 	{
-		if (!ft_strcmp(tmp->key, key));
+		if (!ft_strcmp(tmp->key, key))
 			break ;
 		tmp = tmp->next;
 		mark++;
+		printf("mark is: %d\n", mark);
 	}
 	if (mark == 0) // if node to remove was first
 	{
+		printf("mark: %d", mark);
 		(*env_list) = (*env_list)->next;
 		free(tmp->key);
 		free(tmp->value);
@@ -61,6 +64,7 @@ void	delete_node(t_env_list **env_list, char *key)
 	}
 	else // if node to remove was in the middle
 	{
+		printf("||||||| test||||||");
 		i = 0;
 		while (i != mark)
 			tmp = tmp->next;
