@@ -54,7 +54,6 @@ typedef struct s_ast_tree
 	t_type_arg			type;
 	struct s_ast_tree	*left;
 	struct s_ast_tree	*right;
-	int					arg_counter; 
 	char				**args;
 	int					*q_type;
 	int					*is_space;
@@ -65,6 +64,7 @@ typedef struct s_lex_list
 {
 	char				*s;
 	struct s_lex_list	*next;
+	int					arg_count; 
 	t_q_flags			q_type;
 	t_type_arg			a_type;
 	int					is_space;

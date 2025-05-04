@@ -18,7 +18,7 @@ SRC =	parsing/c.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
 		parsing/main.c \
-		built_ins/set_up_env.c \
+		built_ins/env.c \
 		built_ins/list_utils.c \
 		built_ins/cd.c \
 		built_ins/pwd.c \
