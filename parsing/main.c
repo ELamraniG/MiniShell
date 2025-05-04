@@ -105,7 +105,7 @@ int	main(void)
 	while (1)
 	{
 		status = 0;
-		input = readline("\033[32mminishell$ \033[0m");
+		input = readline("minishell$ ");
 		if (!input)
 			break ;
 		if (input[0])
@@ -126,10 +126,11 @@ int	main(void)
 			continue ;
 		}
 		remove_quotes(tokens);
-		exec_tree = create_ast_tree(tokens);
+		// exec_tree = create_ast_tree(tokens);
 		// print_tree(exec_tree, 0);
-		change_dir(tokens);
-		pwd(1);
+		// change_dir(tokens);
+		// pwd(1);
+		echo(tokens);
 		free_tree(exec_tree);
 		// print_lex(tokens);
 		free_lex_list(tokens);

@@ -22,6 +22,7 @@ SRC =	parsing/c.c \
 		built_ins/list_utils.c \
 		built_ins/cd.c \
 		built_ins/pwd.c \
+		built_ins/echo.c \
 
 OBJ = $(SRC:.c=.o)
 

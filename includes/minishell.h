@@ -54,7 +54,7 @@ typedef struct s_ast_tree
 	t_type_arg			type;
 	struct s_ast_tree	*left;
 	struct s_ast_tree	*right;
-
+	int					arg_counter; 
 	char				**args;
 	int					*q_type;
 	int					*is_space;
@@ -101,6 +101,7 @@ void					delete_node(t_env_list **env_list, char *key);
 void					insert_node(t_env_list **d, char *key, char *value);
 void					pwd(int n);
 void					change_dir(t_lex_list *d);
+void					echo(t_lex_list *d);
 
 
 #endif
