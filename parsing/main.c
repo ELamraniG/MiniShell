@@ -94,82 +94,84 @@ void free_tree(t_ast_tree *root)
 	free_tree(root->right);
 	free(root);
 }
-// int	main(void)
-// {
-// 	char *input;
-// 	t_lex_list *tokens;
-// 	int status = 0;
-// 	t_ast_tree *exec_tree = NULL;
-// 	atexit(lopo);
-// 	while (1)
-// 	{
-// 		status = 0;
-// 		input = readline("\033[32mminishell$ \033[0m");
-// 		if (!input)
-// 			break ;
-// 		if (input[0])
-// 			add_history(input);
-// 		tokens = lexing_the_thing(input, &status);
-// 		if (status != 0)
-// 		{
-// 			free(input);
-// 			free_lex_list(tokens);
-// 			continue ;
-// 		}
-// 		set_the_arg_type(tokens);
-// 		handle_syntax_errors(tokens, &status);
-// 		if (status != 0)
-// 		{
-// 			free(input);
-// 			free_lex_list(tokens);
-// 			continue ;
-// 		}
-// 		remove_quotes(tokens);
-// 		exec_tree = create_ast_tree(tokens);
-// 		print_tree(exec_tree, 0);
-// 		free_tree(exec_tree);
-// 		print_lex(tokens);
-// 		free_lex_list(tokens);
-// 		free(input);
-// 	}
 
-// 	return (0);
+int	main(void)
+{
+	char *input;
+	t_lex_list *tokens;
+	int status = 0;
+	t_ast_tree *exec_tree = NULL;
+	atexit(lopo);
+	while (1)
+	{
+		status = 0;
+		input = readline("\033[32mminishell$ \033[0m");
+		if (!input)
+			break ;
+		if (input[0])
+			add_history(input);
+		tokens = lexing_the_thing(input, &status);
+		if (status != 0)
+		{
+			free(input);
+			free_lex_list(tokens);
+			continue ;
+		}
+		set_the_arg_type(tokens);
+		handle_syntax_errors(tokens, &status);
+		if (status != 0)
+		{
+			free(input);
+			free_lex_list(tokens);
+			continue ;
+		}
+		remove_quotes(tokens);
+		exec_tree = create_ast_tree(tokens);
+		// print_tree(exec_tree, 0);
+		change_dir(tokens);
+		pwd(1);
+		free_tree(exec_tree);
+		// print_lex(tokens);
+		free_lex_list(tokens);
+		free(input);
+	}
+
+	return (0);
+}
+
+
+// int main(int ac, char **av, char **env) // this main is to test insert node and remove node
+// {
+// 	t_env_list	*env_list = NULL;
+// 	t_env_list	*tmp;
+// 	(void)ac;
+// 	(void)av;
+
+// 	int i = 0;
+// 	set_up_env(env, &env_list);
+// 	tmp = env_list;
+// 	while (tmp)
+// 	{
+// 		printf("%d | ", i);
+// 		printf("%s=", tmp->key);
+// 		printf("%s\n", tmp->value);
+// 		tmp = tmp->next;
+// 		i++;
+// 	}
+// 	tmp = env_list;
+// 	printf("\n-----------------\n");
+// 	delete_node(&env_list, "TERM");
+// 	tmp = env_list;
+// 	delete_node(&env_list, "USER_ZDOTDIR");
+// 	printf("-----------------\n");
+// 	i = 0;
+// 	while (env_list)
+// 	{
+// 		printf("%d | ", i);
+// 		printf("%s=", env_list->key);
+// 		printf("%s\n", env_list->value);
+// 		env_list = env_list->next;
+// 		i++;
+// 	}
 // }
 
-
-int main(int ac, char **av, char **env)
-{
-	t_env_list	*env_list = NULL;
-	t_env_list	*tmp;
-	(void)ac;
-	(void)av;
-
-	int i = 0;
-	env = NULL;
-	set_up_env(env, &env_list);
-	tmp = env_list;
-	while (tmp)
-	{
-		printf("%d | ", i);
-		printf("%s=", tmp->key);
-		printf("%s\n", tmp->value);
-		tmp = tmp->next;
-		i++;
-	}
-	tmp = env_list;
-	// printf("\n-----------------\n");
-	// delete_node(&env_list, "TERM");
-	insert_node(&env_list, "JIHAD", "HAMDAOUI");
-	insert_node(&env_list, "JIHAD3", "4HAMDAOUI");
-	insert_node(&env_list, "JIHA2D", "HAMDAOUI2");
-	printf("-----------------\n");
-	i = 0;
-	while (env_list)
-	{
-		printf("%d | ", i);
-		printf("%s=", env_list->key);
-		printf("%s\n", env_list->value);
-		env_list = env_list->next;
-		i++;
-	}
-}

@@ -62,7 +62,7 @@ void	delete_node(t_env_list **env_list, char *key)
 	else if ((tmp->next == NULL) && !ft_strcmp(tmp->key, key)) // if node to remove was last
 	{
 		tmp2 = *env_list;
-		while (tmp2 && tmp2->next != tmp) // create a new pointer to point to prev
+		while (tmp2 && tmp2->next != tmp)
 			tmp2 = tmp2->next;
 		tmp2->next = NULL;
 		free(tmp->key);

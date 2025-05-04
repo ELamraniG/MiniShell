@@ -32,7 +32,7 @@ typedef struct s_env_list
 	char				*key;
 	char				*value;
 	struct s_env_list	*next;
-}			t_env_list;
+}						t_env_list;
 
 typedef struct s_redirect
 {
@@ -56,7 +56,7 @@ typedef struct s_ast_tree
 	struct s_ast_tree	*right;
 
 	char				**args;
-	int			*q_type;
+	int					*q_type;
 	int					*is_space;
 	t_redirect			*redirect;
 }						t_ast_tree;
@@ -75,24 +75,21 @@ void					set_the_arg_type(t_lex_list *token);
 void					handle_words(t_ast_tree *node, t_lex_list **token);
 char					*ft_strdup(const char *s1);
 int						ft_isspace(int c);
-char					*ft_substr(char const *s, unsigned int start,
-							size_t len);
-void					add_to_list(t_lex_list **ll, char *str, t_q_flags quote,
-							int is_space);
+char					*ft_substr(char const *s, unsigned int start, size_t len);
+void					add_to_list(t_lex_list **ll, char *str, t_q_flags quote, int is_space);
 int						ft_strcmp(const char *s1, const char *s2);
 size_t					ft_strlen(const char *s);
 size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
+
 t_lex_list				*new_node(char *str, t_q_flags quote, int is_space);
 t_lex_list				*lexing_the_thing(char *str, int *status);
 
 t_ast_tree				*new_ast_node(void);
 t_ast_tree				*parse_and_or(t_lex_list **token);
-int						is_special_opperand(int n);
 t_ast_tree				*parse_pipe(t_lex_list **token);
-
 t_ast_tree				*parse_parenthesis_cmds(t_lex_list **token);
-
 t_ast_tree				*create_ast_tree(t_lex_list *token);
+
 t_redirect				*new_node_redir(char *str, int type);
 void					add_to_list_redir(t_redirect **ll, char *str, int type);
 void					remove_quotes(t_lex_list *token);
@@ -102,5 +99,8 @@ t_env_list				*new_env_node();
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
 void					insert_node(t_env_list **d, char *key, char *value);
+void					pwd(int n);
+void					change_dir(t_lex_list *d);
+
 
 #endif
