@@ -6,17 +6,11 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:16:46 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/04/26 16:16:46 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/06 14:45:19 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static void	ft_putstr_fd(int fd, char *s)
-{
-	if (s)
-		write(fd, s, ft_strlen(s));
-}
 
 static int	is_redirection(t_type_arg type)
 {

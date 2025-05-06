@@ -2,17 +2,12 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-# SRC =	src/c.c \
-# 		src/list_utils.c \
-# 		src/string_utils.c \
-# 		src/tree_parsing.c \
-# 		src/handle_redirs.c \
-# 		src/quotes.c
-
-SRC =	parsing/c.c \
+SRC =	str_utils/put_str.c \
+		str_utils/string_utils.c \
+		str_utils/ft_strjoin.c \
+		parsing/c.c \
 		parsing/free.c \
 		parsing/list_utils.c \
-		parsing/string_utils.c \
 		parsing/tree_parsing.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \

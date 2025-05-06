@@ -1,7 +1,5 @@
 #include "../includes/minishell.h"
 
-
-
 //
 
 // madnsachi FREE f CASE DYALL ERRORS bhal unclosed quote W CTRL D KBEL MADOZ N EXEC
@@ -17,7 +15,7 @@ EL | Amrani --> : ~/Desktop/1733/MiniShell
 $ "$Dd"
 bash: : command not found
 EL | Amrani --> : ~/Desktop/1733/MiniShell
-$ 
+$
 */
 
 void	print_lex(t_lex_list *temp)
@@ -34,31 +32,36 @@ void	lopo(void)
 	system("leaks minishell");
 }
 
-void print_tree(t_ast_tree *tree, int deep)
+void	print_tree(t_ast_tree *tree, int deep)
 {
+	int	i;
+
 	if (!tree)
 		return ;
 	for (int i = 0; i < deep; i++)
 		printf(" ");
 	if (tree->args)
 	{
-		int  i = 0;
+		i = 0;
 		while (tree->args[i])
 		{
-			printf(" |%s quote = %d is_space = %d|  ",tree->args[i],tree->q_type[i],tree->is_space[i]);
+			printf(" |%s quote = %d is_space = %d|  ", tree->args[i],
+				tree->q_type[i], tree->is_space[i]);
 			i++;
 		}
 		printf("\n");
 	}
 	else
-		printf("%d\n",tree->type);
+		printf("%d\n", tree->type);
 	print_tree(tree->left, deep + 1);
 	print_tree(tree->right, deep + 1);
 }
-void free_reds(t_redirect *red)
+void	free_reds(t_redirect *red)
 {
-	t_redirect *tmp = NULL;
-	while(red)
+	t_redirect	*tmp;
+
+	tmp = NULL;
+	while (red)
 	{
 		tmp = red;
 		red = red->next;
@@ -66,9 +69,11 @@ void free_reds(t_redirect *red)
 	}
 }
 
-void free_args(t_ast_tree *root)
+void	free_args(t_ast_tree *root)
 {
-	int i = 0 ;
+	int	i;
+
+	i = 0;
 	while (root->args[i])
 	{
 		free(root->args[i]);
@@ -77,10 +82,10 @@ void free_args(t_ast_tree *root)
 	printf("\n");
 }
 
-void free_tree(t_ast_tree *root)
+void	free_tree(t_ast_tree *root)
 {
 	if (!root)
-		return;
+		return ;
 	if (root->redirect)
 		free_reds(root->redirect);
 	if (root->args)
@@ -95,13 +100,80 @@ void free_tree(t_ast_tree *root)
 	free(root);
 }
 
-int	main(void)
+void	dup3(int new, int original)
 {
-	char *input;
-	t_lex_list *tokens;
-	int status = 0;
-	t_ast_tree *exec_tree = NULL;
-	atexit(lopo);
+	dup2(new, original);
+	close(new);
+}
+void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
+{
+	int			pipes[2];
+	int			pid;
+	int			exit_code;
+	struct stat	l;
+
+
+	if (!astree)
+		return ;
+	if (astree->type == PIPE)
+	{
+		if (pipe(pipes) == -1)
+		{
+			*status = 1;
+			perror(NULL);
+			return ;
+		}
+		dup3(pipes[0], STDIN_FILENO);
+		dup3(pipes[1], STDOUT_FILENO);
+		excute_the_damn_tree(astree->left, status, env);
+		excute_the_damn_tree(astree->right, status, env);
+
+	}
+	else if (astree->type == WORD)
+	{
+		pid = fork();
+		if (pid == -1)
+		{
+			*status = 1;
+			perror(NULL);
+			return ;
+		}
+		if (pid == 0)
+		{
+			printf("\n---            |%s|    --------------\n",
+				astree->args[0]);
+			stat(astree->args[0], &l);
+			if (S_ISDIR(l.st_mode))
+			{
+				ft_putstr_fd(2, "./parsing: is a directory\n");
+				exit(126);
+			}
+			astree->args[0] = ft_strjoin("/bin/",astree->args[0]);
+			execve(astree->args[0], astree->args, env);
+			perror(NULL);
+		}
+		waitpid(pid, &exit_code, 0);
+		if (WIFEXITED(exit_code))
+		{
+			//handle signal later
+			*status = WEXITSTATUS(exit_code);
+		}
+	}
+}
+
+int	main(int ac, char **av, char **env)
+{
+	char		*input;
+	t_lex_list	*tokens;
+	int			status;
+	t_ast_tree	*astree;
+
+	ac = 0;
+	av = NULL;
+	// env = NULL;
+	status = 0;
+	astree = NULL;
+	// atexit(lopo);
 	while (1)
 	{
 		status = 0;
@@ -125,23 +197,19 @@ int	main(void)
 			free_lex_list(tokens);
 			continue ;
 		}
-		remove_quotes(tokens);
-		// exec_tree = create_ast_tree(tokens);
-		// print_tree(exec_tree, 0);
-		// change_dir(tokens);
-		// pwd(1);
-		echo(tokens);
-		free_tree(exec_tree);
-		// print_lex(tokens);
+		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
+		remove_quotes(tokens);
+		excute_the_damn_tree(astree, &status, env);
+		// print_tree(astree, 0);
+		free_tree(astree);
 		free(input);
 	}
-
 	return (0);
 }
 
-
-// int main(int ac, char **av, char **env) // this main is to test insert node and remove node
+// int main(int ac, char **av, char **env)
+// this main is to test insert node and remove node
 // {
 // 	t_env_list	*env_list = NULL;
 // 	t_env_list	*tmp;
@@ -175,4 +243,3 @@ int	main(void)
 // 		i++;
 // 	}
 // }
-
