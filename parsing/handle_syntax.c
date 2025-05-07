@@ -62,7 +62,7 @@ static void	syntax_error(t_lex_list *token, int *status)
 	else if (token->s)
 		ft_putstr_fd(STDERR_FILENO, token->s);
 	ft_putstr_fd(STDERR_FILENO, "'\n");
-	*status = 258;
+	*status = 2; // Changed from 258 to 2 to match bash's standard exit code
 }
 
 static int	validate_redirection(t_lex_list *token, int *status)
@@ -97,7 +97,7 @@ static int	wach_valid_tokens(t_lex_list *current, int *status)
 static int	validate_parentheses(t_lex_list *token, int *status)
 {
 	t_lex_list	*current;
-	int			depth;
+	int			n;
 
 	if (token->a_type == OP_PAREN && token->next
 		&& token->next->a_type == CL_PAREN)
@@ -113,40 +113,40 @@ static int	validate_parentheses(t_lex_list *token, int *status)
 	if (token->a_type == OP_PAREN)
 	{
 		current = token->next;
-		depth = 1;
-		while (current && depth > 0)
+		n = 1;
+		while (current && n > 0)
 		{
 			if (current->a_type == OP_PAREN)
-				depth++;
+				n++;
 			else if (current->a_type == CL_PAREN)
 			{
-				depth--;
+				n--;
 			}
 			current = current->next;
 		}
 		current = token->next;
-		depth = 1;
-		while (current && depth > 0)
+		n = 1;
+		while (current && n > 0)
 		{
 			if (current->a_type == OP_PAREN)
-				depth++;
+				n++;
 			else if (current->a_type == CL_PAREN)
-				depth--;
-			if (depth > 0 && current->next && !wach_valid_tokens(current,
+				n--;
+			if (n > 0 && current->next && !wach_valid_tokens(current,
 					status))
 				return (0);
-			if (depth == 1 && current->a_type == PIPE && current->next
+			if (n == 1 && current->a_type == PIPE && current->next
 				&& current->next->a_type == CL_PAREN)
 			{
 				syntax_error(current, status);
 				return (0);
 			}
-			if (depth == 1 && token->next == current && current->a_type == PIPE)
+			if (n == 1 && token->next == current && current->a_type == PIPE)
 			{
 				syntax_error(current, status);
 				return (0);
 			}
-			if (depth == 1 && is_logical_operator(current->a_type)
+			if (n == 1 && is_logical_operator(current->a_type)
 				&& current->next && current->next->a_type == CL_PAREN)
 			{
 				syntax_error(current, status);

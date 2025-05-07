@@ -79,7 +79,6 @@ void	free_args(t_ast_tree *root)
 		free(root->args[i]);
 		i++;
 	}
-	printf("\n");
 }
 
 void	free_tree(t_ast_tree *root)
@@ -137,8 +136,6 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			dup3(pipes[1], STDOUT_FILENO);
 			close(pipes[0]);
 			excute_the_damn_tree(astree->left, status, env);
-			close(pipes[0]);
-			close(pipes[1]);
 			exit(*status);
 		}
 		pid2 = fork();
@@ -148,6 +145,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			close(pipes[1]);
 			*status = 1;
 			perror(NULL);
+			waitpid(pid1, NULL, 0);
 			return ;
 		}
 		if (pid2 == 0)
@@ -155,20 +153,38 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			dup3(pipes[0], STDIN_FILENO);
 			close(pipes[1]);
 			excute_the_damn_tree(astree->right, status, env);
-			close(pipes[0]);
-			close(pipes[1]);
 			exit(*status);
 		}
 		close(pipes[0]);
 		close(pipes[1]);
 		waitpid(pid1, NULL, 0);
 		waitpid(pid2, &exit_code, 0);
-
+		if (WIFEXITED(exit_code))
+			*status = WEXITSTATUS(exit_code);
+		else if (WIFSIGNALED(exit_code))
+			*status = 128 + WTERMSIG(exit_code); 
+	}
+	else if (astree->type == AND)
+	{
+		excute_the_damn_tree(astree->left, status, env);
+		if (*status == 0)
+			excute_the_damn_tree(astree->right, status, env);
+	}
+	else if (astree->type == OR)
+	{
+		excute_the_damn_tree(astree->left, status, env);
+		if (*status != 0)
+			excute_the_damn_tree(astree->right, status, env);
 	}
 	else if (astree->type == WORD)
 	{
 		pid1 = fork();
-		// if fork == -1 later
+		if (pid1 == -1)
+		{
+			*status = 1;
+			perror(NULL);
+			return;
+		}
 		if (pid1 == 0)
 		{
 			stat(astree->args[0], &l);
@@ -177,11 +193,18 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 				ft_putstr_fd(2, "./parsing: is a directory\n");
 				exit(126);
 			}
+			char *tmp = astree->args[0];
 			astree->args[0] = ft_strjoin("/bin/", astree->args[0]);
+			free(tmp);
 			execve(astree->args[0], astree->args, env);
 			perror(NULL);
+			exit(127);
 		}
 		waitpid(pid1, &exit_code, 0);
+		if (WIFEXITED(exit_code))
+			*status = WEXITSTATUS(exit_code);
+		else if (WIFSIGNALED(exit_code))
+			*status = 128 + WTERMSIG(exit_code); 
 	}
 }
 
@@ -209,6 +232,7 @@ int	main(int ac, char **av, char **env)
 		tokens = lexing_the_thing(input, &status);
 		if (status != 0)
 		{
+			printf("status = %d\n", status);
 			free(input);
 			free_lex_list(tokens);
 			continue ;
@@ -217,6 +241,7 @@ int	main(int ac, char **av, char **env)
 		handle_syntax_errors(tokens, &status);
 		if (status != 0)
 		{
+			printf("status = %d\n", status);
 			free(input);
 			free_lex_list(tokens);
 			continue ;
@@ -227,7 +252,8 @@ int	main(int ac, char **av, char **env)
 		// print_tree(astree, 0);
 		excute_the_damn_tree(astree, &status, env);
 		free_tree(astree);
-		free(input);
+		printf("status = %d\n", status);
+				free(input);
 	}
 	return (0);
 }

@@ -45,7 +45,7 @@ static void	get_next_quote(char *str, int *i, char c, int *status)
 		(*i)++;
 	if (str[*i] != c)
 	{
-		*status = 130;
+		*status = 2;
 		put_syntax_error();
 	}
 }
