@@ -1,6 +1,6 @@
 NAME = minishell
-CC = cc
-CFLAGS = 
+CC = cc 
+CFLAGS = -fsanitize=address -g
 
 SRC =	str_utils/put_str.c \
 		str_utils/string_utils.c \

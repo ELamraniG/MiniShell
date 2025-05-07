@@ -112,8 +112,6 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 	int			pid2;
 	int			exit_code;
 	struct stat	l;
-	int			old_stdout;
-	int			old_stdin;
 
 	if (!astree)
 		return ;
@@ -125,49 +123,52 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			perror(NULL);
 			return ;
 		}
-		old_stdout = dup(STDOUT_FILENO);
-		dup3(pipes[1], STDOUT_FILENO);
 		pid1 = fork();
 		if (pid1 == -1)
 		{
+			close(pipes[0]);
+			close(pipes[1]);
 			*status = 1;
 			perror(NULL);
 			return ;
 		}
 		if (pid1 == 0)
 		{
+			dup3(pipes[1], STDOUT_FILENO);
 			close(pipes[0]);
 			excute_the_damn_tree(astree->left, status, env);
+			close(pipes[0]);
+			close(pipes[1]);
+			exit(*status);
 		}
-		wait(NULL);
-		dup3(old_stdout, STDOUT_FILENO);
-		old_stdin = dup(STDIN_FILENO);
-		dup3(pipes[0], STDIN_FILENO);
 		pid2 = fork();
 		if (pid2 == -1)
 		{
+			close(pipes[0]);
+			close(pipes[1]);
 			*status = 1;
 			perror(NULL);
 			return ;
 		}
 		if (pid2 == 0)
 		{
+			dup3(pipes[0], STDIN_FILENO);
+			close(pipes[1]);
 			excute_the_damn_tree(astree->right, status, env);
+			close(pipes[0]);
+			close(pipes[1]);
+			exit(*status);
 		}
 		close(pipes[0]);
 		close(pipes[1]);
-		wait(NULL);
-		dup3(old_stdin, STDIN_FILENO);
+		waitpid(pid1, NULL, 0);
+		waitpid(pid2, &exit_code, 0);
+
 	}
 	else if (astree->type == WORD)
 	{
 		pid1 = fork();
-		if (pid1 == -1)
-		{
-			*status = 1;
-			perror(NULL);
-			return ;
-		}
+		// if fork == -1 later
 		if (pid1 == 0)
 		{
 			stat(astree->args[0], &l);
@@ -181,11 +182,6 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			perror(NULL);
 		}
 		waitpid(pid1, &exit_code, 0);
-		if (WIFEXITED(exit_code))
-		{
-			// handle signal later
-			*status = WEXITSTATUS(exit_code);
-		}
 	}
 }
 
@@ -226,10 +222,10 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		}
 		astree = create_ast_tree(tokens);
-		free_lex_list(tokens);
 		remove_quotes(tokens);
-		excute_the_damn_tree(astree, &status, env);
+		free_lex_list(tokens);
 		// print_tree(astree, 0);
+		excute_the_damn_tree(astree, &status, env);
 		free_tree(astree);
 		free(input);
 	}
