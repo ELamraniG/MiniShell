@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = 
 
 SRC =	str_utils/put_str.c \
 		str_utils/string_utils.c \

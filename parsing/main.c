@@ -108,10 +108,12 @@ void	dup3(int new, int original)
 void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 {
 	int			pipes[2];
-	int			pid;
+	int			pid1;
+	int			pid2;
 	int			exit_code;
 	struct stat	l;
-
+	int			old_stdout;
+	int			old_stdin;
 
 	if (!astree)
 		return ;
@@ -123,39 +125,65 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			perror(NULL);
 			return ;
 		}
-		dup3(pipes[0], STDIN_FILENO);
+		old_stdout = dup(STDOUT_FILENO);
 		dup3(pipes[1], STDOUT_FILENO);
-		excute_the_damn_tree(astree->left, status, env);
-		excute_the_damn_tree(astree->right, status, env);
-
-	}
-	else if (astree->type == WORD)
-	{
-		pid = fork();
-		if (pid == -1)
+		pid1 = fork();
+		if (pid1 == -1)
 		{
 			*status = 1;
 			perror(NULL);
 			return ;
 		}
-		if (pid == 0)
+		if (pid1 == 0)
 		{
-			printf("\n---            |%s|    --------------\n",
-				astree->args[0]);
+			close(pipes[0]);
+			excute_the_damn_tree(astree->left, status, env);
+		}
+		wait(NULL);
+		dup3(old_stdout, STDOUT_FILENO);
+		old_stdin = dup(STDIN_FILENO);
+		dup3(pipes[0], STDIN_FILENO);
+		pid2 = fork();
+		if (pid2 == -1)
+		{
+			*status = 1;
+			perror(NULL);
+			return ;
+		}
+		if (pid2 == 0)
+		{
+			excute_the_damn_tree(astree->right, status, env);
+		}
+		close(pipes[0]);
+		close(pipes[1]);
+		wait(NULL);
+		dup3(old_stdin, STDIN_FILENO);
+	}
+	else if (astree->type == WORD)
+	{
+		pid1 = fork();
+		if (pid1 == -1)
+		{
+			*status = 1;
+			perror(NULL);
+			return ;
+		}
+		if (pid1 == 0)
+		{
 			stat(astree->args[0], &l);
 			if (S_ISDIR(l.st_mode))
 			{
 				ft_putstr_fd(2, "./parsing: is a directory\n");
 				exit(126);
 			}
-			astree->args[0] = ft_strjoin("/bin/",astree->args[0]);
+			astree->args[0] = ft_strjoin("/bin/", astree->args[0]);
 			execve(astree->args[0], astree->args, env);
 			perror(NULL);
 		}
-		waitpid(pid, &exit_code, 0);
+		waitpid(pid1, &exit_code, 0);
 		if (WIFEXITED(exit_code))
 		{
-			//handle signal later
+			// handle signal later
 			*status = WEXITSTATUS(exit_code);
 		}
 	}
