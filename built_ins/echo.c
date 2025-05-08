@@ -1,72 +1,66 @@
 #include "../includes/minishell.h"
 
-int	kayna_n(t_lex_list *d)
+int	kayna_n(char *s)
 {
-	t_lex_list *tmp;
-	int			i;
+	int		i;
 
-	tmp = d;
 	i = 0;
-	if (tmp->s[i] != '-')
+	if (s[i] != '-')
 		return (0);
 	i++;
-	while (tmp->s[i])
+	while (s[i])
 	{
-		if (tmp->s[i] != 'n')
+		if (s[i] != 'n')
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-int	arg_counter(t_lex_list *d)
+int	arg_counter(char **d)
 {
-	t_lex_list	*p;
-	int			count;
+	int	i;
 
-	p = d;
-	count = 0;
-	while (p)
-	{
-		count++;
-		p = p->next;
-	}
-	return (count);
+	i = 0;
+	if (!d)
+		return (0);
+	while (d[i])
+		i++;
+	return (i);
 }
 
-void	echo(t_lex_list *d)
+void	echo(t_ast_tree *ast)
 {
-	t_lex_list	*tmp;
 	int			flag;
 	int			count;
+	int			i;
 
+	count = arg_counter(ast->args);
 	flag = 0;
-	tmp = d;
-	count = arg_counter(tmp);
-	if (!tmp)
+	i = 1;
+	if (!ast)
 		return ;
-	if (!ft_strcmp(tmp->s, "echo"))
+	if (ast->args[1] == NULL) // for when we use echo alone
 	{
-		if (tmp->next == NULL) // for when we use echo alone
-		{
-			printf("\n");
-			return ;
-		}
-		tmp = tmp->next; // to skip echo
-		while (tmp && kayna_n(tmp)) // checking if we have -n and -nnnnn and skipping them
-		{
-			tmp = tmp->next;
-			flag = 1;
-		}
-		while (tmp) // printing everything after echo
-		{
-			printf("%s", tmp->s);
-			count--;
-			if (count > 0)
-				printf(" ");
-			tmp = tmp->next;
-		}
+		printf("\n");
+		return ;
 	}
+	while (ast->args[i] && kayna_n(ast->args[i])) // checking if we have -n and -nnnnn and skipping them
+	{
+		i++;
+		flag = 1;
+	}
+	while (ast->args[i]) // printing everything after echo
+	{
+		printf("%s", ast->args[i]);
+		count--;
+		if (count > 0)
+			printf(" ");
+		i++;
+	}
+
 	if (!flag)
 		printf("\n");
+	// printf("%d", flag);
+
 }
