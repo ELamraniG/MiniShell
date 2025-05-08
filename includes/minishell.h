@@ -1,6 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
@@ -73,13 +74,14 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
-typedef struct 		s_env
+typedef struct s_env
 {
-	char			*var;
-	char			*key;
-	struct s_env	*next;
-}					t_env;
+	char				*var;
+	char				*key;
+	struct s_env		*next;
+}						t_env;
 
+void					dup3(int new, int original);
 char					*ft_strjoin(char const *s1, char const *s2);
 void					free_lex_list(t_lex_list *token);
 void					ft_putstr_fd(int fd, char *str);
@@ -115,6 +117,6 @@ void					delete_node(t_env_list **env_list, char *key);
 void					insert_node(t_env_list **d, char *key, char *value);
 void					pwd(int n);
 void					change_dir(t_lex_list *d);
-void					echo(t_lex_list *d);
+void					echo(t_ast_tree *ast);
 
 #endif

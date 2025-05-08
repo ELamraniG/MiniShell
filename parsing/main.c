@@ -252,7 +252,7 @@ int	main(int ac, char **av, char **env)
 		astree = create_ast_tree(tokens);
 		remove_quotes(tokens);
 		free_lex_list(tokens);
-		// print_tree(astree, 0);
+		print_tree(astree, 0);
 		excute_the_damn_tree(astree, &status, env);
 		free_tree(astree);
 		printf("status = %d\n", status);
