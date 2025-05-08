@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:16:40 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/04/28 17:36:18 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:54:27 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,18 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 	int			malc;
 	t_redirect	*tmp;
 	int			i;
-	int *q_type = NULL;
-	int *is_space = NULL;
-	
+	int			*q_type;
+	int			*is_space;
 
-	
-	
+	q_type = NULL;
+	is_space = NULL;
 	i = 0;
 	tmp = NULL;
 	malc = calculate_words(*token);
 	args = malloc(sizeof(char *) * (malc + 1));
 	q_type = malloc(sizeof(int) * (malc));
 	is_space = malloc(sizeof(int) * (malc));
-	
-	
+	node->arg_counter = malc;
 	args[malc] = 0;
 	while (*token && is_special_for_redirs((*token)->a_type))
 	{
@@ -66,7 +64,6 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 			is_space[i] = (*token)->is_space;
 			i++;
 			(*token) = (*token)->next;
-			
 		}
 		else if ((*token)->a_type < 4)
 		{

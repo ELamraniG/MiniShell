@@ -60,6 +60,7 @@ typedef struct s_ast_tree
 	int					*q_type;
 	int					*is_space;
 	t_redirect			*redirect;
+	int					arg_counter;
 }						t_ast_tree;
 
 typedef struct s_lex_list

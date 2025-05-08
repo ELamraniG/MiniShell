@@ -178,6 +178,9 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 	}
 	else if (astree->type == WORD)
 	{
+		// excute_redirs(astree, status);
+		// if (is_built_in(astree->args))
+			//
 		pid1 = fork();
 		if (pid1 == -1)
 		{
