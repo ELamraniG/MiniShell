@@ -27,6 +27,7 @@ void	excute_redirs(t_ast_tree *astree, int *status)
 		{
 			if (handle_out_redir(astree->redirect, status) == -1)
 			{
+				
 			}
 		}
 	}
