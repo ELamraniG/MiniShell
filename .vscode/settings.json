@@ -1,7 +1,8 @@
 {
   "files.associations": {
-    "history.h": "c"
-  },
+	"history.h": "c",
+	"minishell.h": "c"
+},
   "C_Cpp_Runner.cCompilerPath": "clang",
   "C_Cpp_Runner.cppCompilerPath": "clang++",
   "C_Cpp_Runner.debuggerPath": "lldb",

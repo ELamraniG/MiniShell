@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	insert_node(t_env_list **d, char *key, char *value)
+void	insert_node(t_env_list **d, char *key, char *value, int flag)
 {
 	t_env_list	*tmp;
 
@@ -10,6 +10,7 @@ void	insert_node(t_env_list **d, char *key, char *value)
 		tmp = new_env_node();
 		tmp->key = key;
 		tmp->value = value;
+		tmp->flag = flag;
 		*d = tmp;
 		return	;
 	}
@@ -17,6 +18,7 @@ void	insert_node(t_env_list **d, char *key, char *value)
 		tmp = tmp->next;
 	tmp->next = new_env_node();
 	tmp->next->key = key;
+	tmp->next->flag = flag;
 	tmp->next->value = value;
 }
 

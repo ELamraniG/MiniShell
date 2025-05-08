@@ -107,7 +107,7 @@ void					handle_syntax_errors(t_lex_list *token, int *status);
 t_env_list				*new_env_node(void);
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
-void					insert_node(t_env_list **d, char *key, char *value);
+void					insert_node(t_env_list **d, char *key, char *value, int flag);
 void					pwd(int n);
 void					change_dir(t_lex_list *d);
 void					echo(t_ast_tree *ast);

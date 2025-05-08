@@ -4,7 +4,11 @@ void	print_export(t_env_list *env_list)
 {
 	while (env_list)
 	{
-		printf("declare -x %s=\"%s\"\n", env_list->key, env_list->value);
+		printf("declare -x %s", env_list->key);
+		if (env_list->flag)
+			printf("=\"%s\"\n", env_list->value);
+		else
+			printf("\n");
 		env_list = env_list->next;
 	}
 }
@@ -19,17 +23,25 @@ int	validate_key(char *s)
 	i++;
 	while (s[i])
 	{
-		if (s[i] != '_'|| !ft_isalnum(s[i]))
+		if (s[i] != '_' || !ft_isalnum(s[i]))
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-void	exec_export(t_env_list *env, t_ast_tree *ast)
+void	edit() // 
+{
+
+}
+
+void	exec_export(t_env_list **env, t_ast_tree *ast)
 {
 	int	i;
 	int	j;
+	int	flag;
+	char	*key;
+	char	*value;
 
 	i = 0;
 	j = 0;
@@ -42,10 +54,21 @@ void	exec_export(t_env_list *env, t_ast_tree *ast)
 			j = 0;
 			while (ast->args[i][j])
 			{
-				if (validate_key(ast->args[i]) && ast->args[i][j] == '=')
+				if (validate_key(ast->args[i]))
 				{
-					env->key = ft_substr(ast->args[i], 0, j - 1);
-					env->value = ft_substr(ast->args[i], j + 1, ft_strlen(ast->args[i]) - j);
+					if (ast->args[i][j] == '=')
+					{
+						(*env)->key = ft_substr(ast->args[i], 0, j - 1);
+						(*env)->value = ft_substr(ast->args[i], j + 1, ft_strlen(ast->args[i]) - j);
+						flag = 1;
+					}
+					else
+					{
+						(*env)->key = ft_strdup(ast->args[i]);
+						(*env)->value = ft_strdup("");
+						flag = 0;
+					}
+					insert_node(env, key, value, flag);
 				}
 				j++;
 			}
