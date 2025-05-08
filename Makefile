@@ -18,6 +18,7 @@ SRC =	str_utils/put_str.c \
 		built_ins/cd.c \
 		built_ins/pwd.c \
 		built_ins/echo.c \
+		parsing/excuting_redirs.c \
 
 OBJ = $(SRC:.c=.o)
 

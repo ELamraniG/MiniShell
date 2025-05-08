@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:15:11 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/04 22:22:47 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:29:26 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ t_redirect	*new_node_redir(char *str, int type)
 	t_redirect	*p;
 
 	p = malloc(sizeof(t_redirect));
-	if (!p)
-		return (NULL);
 	p->file_name = str;
 	p->type = type;
 	p->next = NULL;

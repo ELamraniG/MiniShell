@@ -6,13 +6,13 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:14:08 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/04/28 17:29:16 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:35:41 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_ast_tree	*new_ast_node()
+t_ast_tree	*new_ast_node(void)
 {
 	t_ast_tree	*tree_node;
 
@@ -23,7 +23,6 @@ t_ast_tree	*new_ast_node()
 	tree_node->right = NULL;
 	tree_node->q_type = NULL;
 	tree_node->is_space = NULL;
-	
 	return (tree_node);
 }
 
@@ -73,12 +72,17 @@ t_ast_tree	*parse_parenthesis_cmds(t_lex_list **token)
 
 	if (*token == NULL)
 		return (NULL);
+	if ((*token)->a_type < 4)
+	{
+		root = new_ast_node();
+		root->type = (*token)->a_type;
+		handle_words(root, token);
+		return (root);
+	}
 	if ((*token)->a_type == WORD)
 	{
 		root = new_ast_node();
-		// root->q_type = (*token)->q_type;
 		root->type = (*token)->a_type;
-		// root->is_space = (*token)->is_space;
 		handle_words(root, token);
 		return (root);
 	}

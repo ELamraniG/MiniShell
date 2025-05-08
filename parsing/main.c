@@ -1,5 +1,6 @@
 #include "../includes/minishell.h"
 
+// later on msa7 argcounter mmen list
 //
 
 // madnsachi FREE f CASE DYALL ERRORS bhal unclosed quote W CTRL D KBEL MADOZ N EXEC
@@ -34,7 +35,8 @@ void	lopo(void)
 
 void	print_tree(t_ast_tree *tree, int deep)
 {
-	int	i;
+	int			i;
+	t_redirect	*t;
 
 	if (!tree)
 		return ;
@@ -53,6 +55,12 @@ void	print_tree(t_ast_tree *tree, int deep)
 	}
 	else
 		printf("%d\n", tree->type);
+	t = tree->redirect;
+	while (t)
+	{
+		printf("|%s| |%d| ", t->file_name, t->type);
+		t = t->next;
+	}
 	print_tree(tree->left, deep + 1);
 	print_tree(tree->right, deep + 1);
 }
@@ -111,6 +119,9 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 	int			pid2;
 	int			exit_code;
 	struct stat	l;
+	char		*tmp;
+	int			stdinn;
+	int			stdoutt;
 
 	if (!astree)
 		return ;
@@ -162,7 +173,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 		if (WIFEXITED(exit_code))
 			*status = WEXITSTATUS(exit_code);
 		else if (WIFSIGNALED(exit_code))
-			*status = 128 + WTERMSIG(exit_code); 
+			*status = 128 + WTERMSIG(exit_code);
 	}
 	else if (astree->type == AND)
 	{
@@ -178,15 +189,27 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 	}
 	else if (astree->type == WORD)
 	{
-		// excute_redirs(astree, status);
+		stdinn = dup(STDIN_FILENO);
+		stdoutt = dup(STDOUT_FILENO);
+		write(2, "here1\n", 5);
+		if (excute_redirs(astree) == -1)
+		{
+			close(stdinn);
+			close(stdoutt);
+			*status = 1;
+			return ;
+		}
+		write(2, "here\n", 5);
 		// if (is_built_in(astree->args))
-			//
+		//
 		pid1 = fork();
 		if (pid1 == -1)
 		{
+			close(stdinn);
+			close(stdoutt);
 			*status = 1;
 			perror(NULL);
-			return;
+			return ;
 		}
 		if (pid1 == 0)
 		{
@@ -196,7 +219,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 				ft_putstr_fd(2, "./parsing: is a directory\n");
 				exit(126);
 			}
-			char *tmp = astree->args[0];
+			tmp = astree->args[0];
 			astree->args[0] = ft_strjoin("/bin/", astree->args[0]);
 			free(tmp);
 			execve(astree->args[0], astree->args, env);
@@ -207,7 +230,9 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 		if (WIFEXITED(exit_code))
 			*status = WEXITSTATUS(exit_code);
 		else if (WIFSIGNALED(exit_code))
-			*status = 128 + WTERMSIG(exit_code); 
+			*status = 128 + WTERMSIG(exit_code);
+		dup3(stdinn, STDIN_FILENO);
+		dup3(stdoutt, STDOUT_FILENO);
 	}
 }
 
@@ -217,6 +242,7 @@ int	main(int ac, char **av, char **env)
 	t_lex_list	*tokens;
 	int			status;
 	t_ast_tree	*astree;
+	t_lex_list	*lopo;
 
 	ac = 0;
 	av = NULL;
@@ -241,6 +267,7 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		}
 		set_the_arg_type(tokens);
+		lopo = tokens;
 		handle_syntax_errors(tokens, &status);
 		if (status != 0)
 		{
@@ -256,7 +283,7 @@ int	main(int ac, char **av, char **env)
 		excute_the_damn_tree(astree, &status, env);
 		free_tree(astree);
 		printf("status = %d\n", status);
-				free(input);
+		free(input);
 	}
 	return (0);
 }

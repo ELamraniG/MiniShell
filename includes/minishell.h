@@ -68,7 +68,6 @@ typedef struct s_lex_list
 {
 	char				*s;
 	struct s_lex_list	*next;
-	int					arg_count;
 	t_q_flags			q_type;
 	t_type_arg			a_type;
 	int					is_space;
@@ -111,5 +110,6 @@ void					insert_node(t_env_list **d, char *key, char *value);
 void					pwd(int n);
 void					change_dir(t_lex_list *d);
 void					echo(t_ast_tree *ast);
+int						excute_redirs(t_ast_tree *astree);
 
 #endif

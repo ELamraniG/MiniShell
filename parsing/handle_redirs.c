@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:16:40 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/08 13:54:27 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:29:14 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 		}
 		else if ((*token)->a_type < 4)
 		{
-			add_to_list_redir(&tmp, (*token)->next->s, (*token)->a_type);
+			add_to_list_redir(&tmp, ft_strdup((*token)->next->s),
+				(*token)->a_type);
 			(*token) = (*token)->next->next;
 		}
 	}
