@@ -191,7 +191,6 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 	{
 		stdinn = dup(STDIN_FILENO);
 		stdoutt = dup(STDOUT_FILENO);
-		write(2, "here1\n", 5);
 		if (excute_redirs(astree) == -1)
 		{
 			close(stdinn);
@@ -199,7 +198,6 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			*status = 1;
 			return ;
 		}
-		write(2, "here\n", 5);
 		// if (is_built_in(astree->args))
 		//
 		pid1 = fork();
@@ -279,7 +277,6 @@ int	main(int ac, char **av, char **env)
 		astree = create_ast_tree(tokens);
 		remove_quotes(tokens);
 		free_lex_list(tokens);
-		print_tree(astree, 0);
 		excute_the_damn_tree(astree, &status, env);
 		free_tree(astree);
 		printf("status = %d\n", status);
