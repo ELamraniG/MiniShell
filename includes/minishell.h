@@ -34,6 +34,7 @@ typedef struct s_env_list
 {
 	char				*key;
 	char				*value;
+	int					flag;
 	struct s_env_list	*next;
 }						t_env_list;
 
