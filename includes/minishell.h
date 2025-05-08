@@ -73,6 +73,13 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
+typedef struct 		s_env
+{
+	char			*var;
+	char			*key;
+	struct s_env	*next;
+}					t_env;
+
 char					*ft_strjoin(char const *s1, char const *s2);
 void					free_lex_list(t_lex_list *token);
 void					ft_putstr_fd(int fd, char *str);
