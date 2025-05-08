@@ -30,7 +30,12 @@ int	validate_key(char *s)
 	return (1);
 }
 
-void	edit() // 
+void	get_value_env() // function i give it key, it returns the value, if no value found return NULL
+{
+
+}
+
+void	edit_env_list() // i give key, if found change value, else insert_node()
 {
 
 }
