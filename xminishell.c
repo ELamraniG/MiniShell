@@ -1,6 +1,6 @@
 #include "includes/minishell.h"
-// ft_putstr_fd(2,ft_itoa(i)); //change later darore
-// status f exit dyal syntax err khass men baed tfixiha
+int gstatus = 0;
+
 //$ $dd
 // handle this shit later in exec
 /*$ "$Dd
@@ -12,6 +12,14 @@ bash: : command not found
 EL | Amrani --> : ~/Desktop/1733/MiniShell
 $
 */
+
+void handle_signal(int n)
+{
+	if (n == SIGINT)
+		gstatus = 130;
+	else if (n == SIGQUIT)
+		gstatus = 131;
+}
 
 void	print_lex(t_lex_list *temp)
 {
@@ -72,10 +80,26 @@ int	main(int ac, char **av, char **env)
 	int i = 0;
 	status = 0;
 	astree = NULL;
+	signal(SIGINT,handle_signal);
+	signal(SIGQUIT,handle_signal);
 	while (1)
 	{
 		status = 0;
 		input = readline("minishell$ ");
+		if (gstatus == 130)
+		{
+			status = 130;
+			gstatus = 0;
+			rl_on_new_line();
+			rl_replace_line("",0);
+			rl_redisplay();
+			continue;
+		}
+		if(gstatus == 131)
+		{
+			gstatus = 0;
+			status = 131;
+		}
 		i++;
 		if (!input)
 			break ;
