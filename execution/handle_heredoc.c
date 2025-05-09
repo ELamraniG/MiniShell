@@ -2,37 +2,42 @@
 
 static void create_a_heredoc(t_ast_tree *node, t_redirect *redir, int i)
 {
-    int fd = open("/tmp/lopo.txt",O_CREAT | O_WRONLY | O_TRUNC, 0644);
-    if (fd == -1)
+    int pipes[2];
+    char *tmp = NULL;
+    if (pipe(pipes) == -1)
     {
-        printf("/tmp/lopo.txt wasnt created\n\n\n");
         perror(NULL);
         return ;
     }
-    
-    redir->heredoc = fd;
-    unlink("/tmp/lopo.txt");
+    redir->heredoc = pipes[0];
     char *input = NULL;
     while(1337)
     {
-        char *input = readline(">");
+        input = readline(">");
         if (!input)
         {
             ft_putstr_fd(2,"minishell: warning: here-document at line ");
-            char *tmp = ft_itoa(i);
+            tmp = ft_itoa(i);
             ft_putstr_fd(2,tmp);
             free(tmp);
             ft_putstr_fd(2," delimited by end-of-file (wanted `");
             ft_putstr_fd(2,redir->file_name);
             ft_putstr_fd(2,"')\n");
+            close(pipes[1]);
             break;
         }
         if (!ft_strcmp(redir->file_name, input))
+        {
+            close(pipes[1]);
             break;
-        write(fd,input,ft_strlen(input));
+        }
+        tmp = input;
+        input = ft_strjoin(tmp,"\n");
+        free(tmp);
+        write(pipes[1],input,ft_strlen(input));
         free(input);
-        
     }
+    close(pipes[1]);
     free(input);
 }
 
