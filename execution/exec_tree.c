@@ -137,7 +137,7 @@ char **turn_env_to_chars(t_env_list *env)
     return s;
 }
 
-void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
+void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env,int i)
 {
 	int			pipes[2];
 	int			pid1;
@@ -171,7 +171,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		{
 			dup3(pipes[1], STDOUT_FILENO);
 			close(pipes[0]);
-			excute_the_damn_tree(astree->left, status, env);
+			excute_the_damn_tree(astree->left, status, env, i);
 			exit(*status);
 		}
 		pid2 = fork();
@@ -188,7 +188,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		{
 			dup3(pipes[0], STDIN_FILENO);
 			close(pipes[1]);
-			excute_the_damn_tree(astree->right, status, env);
+			excute_the_damn_tree(astree->right, status, env, i);
 			exit(*status);
 		}
 		close(pipes[0]);
@@ -202,15 +202,15 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 	}
 	else if (astree->type == AND)
 	{
-		excute_the_damn_tree(astree->left, status, env);
+		excute_the_damn_tree(astree->left, status, env, i);
 		if (*status == 0)
-			excute_the_damn_tree(astree->right, status, env);
+			excute_the_damn_tree(astree->right, status, env, i);
 	}
 	else if (astree->type == OR)
 	{
-		excute_the_damn_tree(astree->left, status, env);
+		excute_the_damn_tree(astree->left, status, env, i);
 		if (*status != 0)
-			excute_the_damn_tree(astree->right, status, env);
+			excute_the_damn_tree(astree->right, status, env, i);
 	}
     else if (astree->type < 4)
     {
@@ -225,9 +225,9 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
             return;
         }
         if (astree->left)
-            excute_the_damn_tree(astree->left, status, env);
+            excute_the_damn_tree(astree->left, status, env, i);
         else if (astree->right)
-            excute_the_damn_tree(astree->right, status, env);
+            excute_the_damn_tree(astree->right, status, env,i);
         else
             *status = 0;
         dup3(stdinn, STDIN_FILENO);
@@ -237,6 +237,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 	{
 		stdinn = dup(STDIN_FILENO);
 		stdoutt = dup(STDOUT_FILENO);
+		handle_heredoc(astree,i);
 		if (excute_redirs(astree) == -1) 
 		{
 			dup3(stdinn, STDIN_FILENO);

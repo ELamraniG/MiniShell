@@ -53,6 +53,7 @@ t_redirect	*new_node_redir(char *str, int type)
 
 	p = malloc(sizeof(t_redirect));
 	p->file_name = str;
+	p->heredoc = -1;
 	p->type = type;
 	p->next = NULL;
 	return (p);

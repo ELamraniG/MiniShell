@@ -51,6 +51,20 @@ static int	handle_append_redir(t_redirect *redir)
 	return (0);
 }
 
+static int	handle_the_here_dawg(t_redirect *redir)
+{
+	int	fd;
+
+	fd = redir->heredoc;
+	if (fd == -1)
+	{
+		perror(NULL);
+		return (-1);
+	}
+	dup3(fd, STDIN_FILENO);
+	return (0);
+}
+
 int	excute_redirs(t_ast_tree *astree)
 {
 	int	stdinn;
@@ -83,6 +97,15 @@ int	excute_redirs(t_ast_tree *astree)
 		if (tmp->type == APPEND) 
 		{
 			if (handle_append_redir(tmp) == -1) 
+			{
+				dup3(stdinn, STDIN_FILENO);
+				dup3(stdoutt, STDOUT_FILENO);
+				return (-1);
+			}
+		}
+		if (tmp->type == HEREDOC) 
+		{
+			if (handle_the_here_dawg(tmp) == -1) 
 			{
 				dup3(stdinn, STDIN_FILENO);
 				dup3(stdoutt, STDOUT_FILENO);

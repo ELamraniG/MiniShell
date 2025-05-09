@@ -1,5 +1,5 @@
 #include "includes/minishell.h"
-
+// ft_putstr_fd(2,ft_itoa(i)); //change later darore
 // status f exit dyal syntax err khass men baed tfixiha
 //$ $dd
 // handle this shit later in exec
@@ -69,13 +69,14 @@ int	main(int ac, char **av, char **env)
 
 	ac = 0;
 	av = NULL;
-	// env = NULL;
+	int i = 0;
 	status = 0;
 	astree = NULL;
 	while (1)
 	{
 		status = 0;
 		input = readline("minishell$ ");
+		i++;
 		if (!input)
 			break ;
 		if (input[0])
@@ -101,7 +102,7 @@ int	main(int ac, char **av, char **env)
 		astree = create_ast_tree(tokens);
 		remove_quotes(tokens);
 		free_lex_list(tokens);
-		excute_the_damn_tree(astree, &status, envv);
+		excute_the_damn_tree(astree, &status, envv,i);
 		free_tree(astree);
 		printf("status = %d\n", status);
 		free(input);
