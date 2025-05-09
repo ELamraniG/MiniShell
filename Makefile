@@ -2,7 +2,9 @@ NAME = minishell
 CC = cc 
 CFLAGS = -fsanitize=address -g
 
-SRC =	str_utils/put_str.c \
+SRC =	str_utils/ft_split.c \
+		str_utils/ft_strchr.c \
+		str_utils/put_str.c \
 		str_utils/string_utils.c \
 		str_utils/ft_strjoin.c \
 		parsing/c.c \

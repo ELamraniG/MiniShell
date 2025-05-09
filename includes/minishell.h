@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include <fcntl.h>
+#include<sys/wait.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
@@ -112,5 +113,8 @@ void					pwd(int n);
 void					change_dir(t_lex_list *d);
 void					echo(t_ast_tree *ast);
 int						excute_redirs(t_ast_tree *astree);
-
+t_env_list *get_env_value(t_env_list *env_list, char *key);
+char	**ft_split(char const *s, char c);
+char	*ft_strchr(const char *s, int c);
+void free_env_list(t_env_list *env_list);
 #endif

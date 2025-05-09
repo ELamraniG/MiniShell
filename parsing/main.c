@@ -23,14 +23,9 @@ void	print_lex(t_lex_list *temp)
 {
 	while (temp)
 	{
-		printf("Token: '%s', Type: %d\n", temp->s, temp->a_type);
+		printf("Token: |%s|, Type: %d\n", temp->s, temp->a_type);
 		temp = temp->next;
 	}
-}
-
-void	lopo(void)
-{
-	system("leaks minishell");
 }
 
 void	print_tree(t_ast_tree *tree, int deep)
@@ -73,6 +68,7 @@ void	free_reds(t_redirect *red)
 	{
 		tmp = red;
 		red = red->next;
+		free(tmp->file_name);
 		free(tmp);
 	}
 }
@@ -107,12 +103,72 @@ void	free_tree(t_ast_tree *root)
 	free(root);
 }
 
+		int handle_path(char **args, t_env_list *env)
+		{
+			
+			int i = 0;
+			char *tmp_free;
+
+			if (!args || !args[0] || !*args[0])
+				return -1;
+			
+			if (ft_strchr(args[0],'/'))
+			{
+				if (!access(args[0], X_OK))
+					return 1;
+				return -1;
+			}
+			
+			env = get_env_value(env,"PATH");
+			
+			if (!env || !env->value || !env->value[0])
+				return -1;
+			char *path = env->value;
+			if(path == NULL || !*path)
+				return -1;
+			char **splited_path = ft_split(path,':');
+			
+			while(splited_path[i])
+			{
+				tmp_free = splited_path[i];
+				splited_path[i] = ft_strjoin(splited_path[i], "/");
+				free(tmp_free);
+				char *tmp_join = ft_strjoin(splited_path[i],args[0]);
+				if (!access(tmp_join, X_OK))
+				{
+					tmp_free = args[0];
+					args[0] = tmp_join;
+					i = 0;
+					while(splited_path[i])
+						free(splited_path[i++]);
+					free(splited_path);
+					return 1;
+				}
+				free(tmp_join);
+				i++;
+			}
+			if (!access(args[0], X_OK))
+			{
+				i = 0;
+				while(splited_path[i])
+					free(splited_path[i++]);
+				free(splited_path);
+				return 1;
+			}
+			i = 0;
+					while(splited_path[i])
+						free(splited_path[i++]);
+					free(splited_path);
+			return -1;
+		}
 void	dup3(int new, int original)
 {
 	dup2(new, original);
 	close(new);
 }
-void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
+
+
+void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 {
 	int			pipes[2];
 	int			pid1;
@@ -214,13 +270,17 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, char **env)
 			stat(astree->args[0], &l);
 			if (S_ISDIR(l.st_mode))
 			{
-				ft_putstr_fd(2, "./parsing: is a directory\n");
+				ft_putstr_fd(2, astree->args[0]);
+				ft_putstr_fd(2, ": is a directory\n");
 				exit(126);
 			}
-			tmp = astree->args[0];
-			astree->args[0] = ft_strjoin("/bin/", astree->args[0]);
-			free(tmp);
-			execve(astree->args[0], astree->args, env);
+			if (handle_path(astree->args, env) == -1)
+			{
+				ft_putstr_fd(2,astree->args[0]);
+				ft_putstr_fd(2, ": command not found");
+				exit(127);	
+			}
+			execve(astree->args[0], astree->args, NULL);
 			perror(NULL);
 			exit(127);
 		}
@@ -242,12 +302,14 @@ int	main(int ac, char **av, char **env)
 	t_ast_tree	*astree;
 	t_lex_list	*lopo;
 
+	t_env_list *envv = NULL; 
+	set_up_env(env, &envv);
+
 	ac = 0;
 	av = NULL;
 	// env = NULL;
 	status = 0;
 	astree = NULL;
-	// atexit(lopo);
 	while (1)
 	{
 		status = 0;
@@ -277,46 +339,15 @@ int	main(int ac, char **av, char **env)
 		astree = create_ast_tree(tokens);
 		remove_quotes(tokens);
 		free_lex_list(tokens);
-		excute_the_damn_tree(astree, &status, env);
+		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
 		printf("status = %d\n", status);
 		free(input);
+		if (!isatty(STDIN_FILENO)) {
+			free_env_list(envv);
+			return status;
+		}
 	}
-	return (0);
+	free_env_list(envv);	
+return (0);
 }
-
-// int main(int ac, char **av, char **env)
-// this main is to test insert node and remove node
-// {
-// 	t_env_list	*env_list = NULL;
-// 	t_env_list	*tmp;
-// 	(void)ac;
-// 	(void)av;
-
-// 	int i = 0;
-// 	set_up_env(env, &env_list);
-// 	tmp = env_list;
-// 	while (tmp)
-// 	{
-// 		printf("%d | ", i);
-// 		printf("%s=", tmp->key);
-// 		printf("%s\n", tmp->value);
-// 		tmp = tmp->next;
-// 		i++;
-// 	}
-// 	tmp = env_list;
-// 	printf("\n-----------------\n");
-// 	delete_node(&env_list, "TERM");
-// 	tmp = env_list;
-// 	delete_node(&env_list, "USER_ZDOTDIR");
-// 	printf("-----------------\n");
-// 	i = 0;
-// 	while (env_list)
-// 	{
-// 		printf("%d | ", i);
-// 		printf("%s=", env_list->key);
-// 		printf("%s\n", env_list->value);
-// 		env_list = env_list->next;
-// 		i++;
-// 	}
-// }

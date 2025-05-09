@@ -32,7 +32,7 @@ static int	handle_in_redir(t_redirect *redir)
 		perror(NULL);
 		return (-1);
 	}
-	dup3(fd, STDOUT_FILENO);
+	dup3(fd, STDIN_FILENO);
 	return (0);
 }
 
@@ -40,7 +40,7 @@ static int	handle_append_redir(t_redirect *redir)
 {
 	int	fd;
 
-	fd = open(redir->file_name, O_CREAT, O_TRUNC | O_RDONLY | 0644);
+	fd = open(redir->file_name, O_WRONLY | O_CREAT | O_APPEND, 0664);
 	if (fd == -1)
 	{
 		ft_putstr_fd(2, "minishell: ");
@@ -62,36 +62,38 @@ int	excute_redirs(t_ast_tree *astree)
 	stdoutt = -1;
 	stdinn = dup(STDIN_FILENO);
 	stdoutt = dup(STDOUT_FILENO);
-	while (astree->redirect)
+	t_redirect	*tmp;
+	tmp = astree->redirect;
+	while (tmp) 
 	{
-		if (astree->redirect->type == OUT_REDIR)
+		if (tmp->type == OUT_REDIR) 
 		{
-			if (handle_out_redir(astree->redirect) == -1)
+			if (handle_out_redir(tmp) == -1) 
 			{
 				dup3(stdinn, STDIN_FILENO);
 				dup3(stdoutt, STDOUT_FILENO);
 				return (-1);
 			}
 		}
-		if (astree->redirect->type == IN_REDIR)
+		if (tmp->type == IN_REDIR) 
 		{
-			if (handle_in_redir(astree->redirect) == -1)
+			if (handle_in_redir(tmp) == -1)
 			{
 				dup3(stdinn, STDIN_FILENO);
 				dup3(stdoutt, STDOUT_FILENO);
 				return (-1);
 			}
 		}
-		if (astree->redirect->type == APPEND)
+		if (tmp->type == APPEND) 
 		{
-			if (handle_append_redir(astree->redirect) == -1)
+			if (handle_append_redir(tmp) == -1) 
 			{
 				dup3(stdinn, STDIN_FILENO);
 				dup3(stdoutt, STDOUT_FILENO);
 				return (-1);
 			}
 		}
-		astree->redirect = astree->redirect->next;
+		tmp = tmp->next; 
 	}
 	close(stdinn);
 	close(stdoutt);

@@ -16,31 +16,39 @@ t_env_list	*new_env_node()
 
 void	set_up_env(char **env, t_env_list **env_list)
 {
-	int	i = 0;
-	int	j = 0;
+	int	i;
 	t_env_list	*new_node;
-	t_env_list	*last = NULL;
+	t_env_list	*last;
+	char *equals_pos;
 
-	if (!env || !*env)
+	i = 0;
+	last = NULL;
+	if (!env || !*env || !env_list)
 		return ;
+	*env_list = NULL; // Initialize the list pointer
 	while (env[i])
 	{
-		j = 0;
-		while (env[i][j])
+		equals_pos = ft_strchr(env[i], '=');
+		if (equals_pos)
 		{
-			if (env[i][j] == '=')
+			new_node = new_env_node();
+			if (!new_node)
+				return ;
+			new_node->key = ft_substr(env[i], 0, equals_pos - env[i]);
+			new_node->value = ft_substr(env[i], (equals_pos - env[i]) + 1, ft_strlen(env[i]) - (equals_pos - env[i]) - 1);
+			if (!new_node->key || !new_node->value)
 			{
-				new_node = new_env_node();
-				new_node->key = ft_substr(env[i], 0, j - 1);
-				new_node->value = ft_substr(env[i], j + 1, ft_strlen(env[i]) - j);
-				new_node->flag = 1;
-				if (!(*env_list))
-					*env_list = new_node;
-				else
-					last->next = new_node;
-				last = new_node;
+				free(new_node->key);
+				free(new_node->value);
+				free(new_node);
+				return ;
 			}
-			j++;
+			new_node->flag = 1;
+			if (!(*env_list))
+				*env_list = new_node;
+			else
+				last->next = new_node;
+			last = new_node;
 		}
 		i++;
 	}
@@ -53,5 +61,19 @@ void	print_env(t_env_list *env_list)
 		if (env_list->flag)
 			printf("%s=%s\n", env_list->key, env_list->value);
 		env_list = env_list->next;
+	}
+}
+
+void free_env_list(t_env_list *env_list)
+{
+	t_env_list *tmp;
+
+	while (env_list)
+	{
+		tmp = env_list;
+		env_list = env_list->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
 	}
 }

@@ -83,3 +83,17 @@ void	delete_node(t_env_list **env_list, char *key)
 		free(tmp);
 	}
 }
+
+t_env_list *get_env_value(t_env_list *env_list, char *key)
+{
+	t_env_list	*tmp;
+
+	tmp = env_list;
+	while (tmp)
+	{
+		if (!ft_strcmp(tmp->key, key))
+			return (tmp);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
