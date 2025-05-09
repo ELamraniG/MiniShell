@@ -13,7 +13,14 @@ void	print_export(t_env_list *env_list)
 	}
 }
 
-int	validate_key(char *s)
+static int	ft_isalnum(int c)
+{
+	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+		return (1);
+	return (0);
+}
+
+static int	validate_key(char *s)
 {
 	int	i;
 
@@ -40,7 +47,7 @@ void	edit_env_list() // i give key, if found change value, else insert_node()
 
 }
 
-void	exec_export(t_env_list **env, t_ast_tree *ast)
+int	exec_export(t_env_list **env, char **args)
 {
 	int	i;
 	int	j;
@@ -50,26 +57,26 @@ void	exec_export(t_env_list **env, t_ast_tree *ast)
 
 	i = 0;
 	j = 0;
-	if (ast->args[1] == NULL)
-		print_export(env);
+	if (args[1] == NULL)
+		print_export(*env);
 	else // with letter, underscore, number not at first
 	{
-		while (ast->args[i])
+		while (args[i])
 		{
 			j = 0;
-			while (ast->args[i][j])
+			while (args[i][j])
 			{
-				if (validate_key(ast->args[i]))
+				if (validate_key(args[i]))
 				{
-					if (ast->args[i][j] == '=')
+					if (args[i][j] == '=')
 					{
-						(*env)->key = ft_substr(ast->args[i], 0, j - 1);
-						(*env)->value = ft_substr(ast->args[i], j + 1, ft_strlen(ast->args[i]) - j);
+						(*env)->key = ft_substr(args[i], 0, j - 1);
+						(*env)->value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
 						flag = 1;
 					}
 					else
 					{
-						(*env)->key = ft_strdup(ast->args[i]);
+						(*env)->key = ft_strdup(args[i]);
 						(*env)->value = ft_strdup("");
 						flag = 0;
 					}
@@ -79,5 +86,6 @@ void	exec_export(t_env_list **env, t_ast_tree *ast)
 			}
 			i++;
 		}
-	}	
+	}
+	return 0;
 }

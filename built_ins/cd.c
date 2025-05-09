@@ -1,8 +1,9 @@
 #include "../includes/minishell.h"
 
-void	change_dir(t_lex_list *d)
+int	change_dir(char **args, t_env_list *env)
 {
-	if (!d || !d->s || ft_strcmp(d->s, "cd") != 0)
-		return ;
-	chdir(d->next->s);
+	if (!args ||  !args[0] || ft_strcmp(args[0], "cd") != 0)
+		return 1;
+	chdir(args[1]);
+	return 0;
 }

@@ -1,109 +1,6 @@
 #include "../includes/minishell.h"
 
-// later on msa7 argcounter mmen list
-//
-
-// madnsachi FREE f CASE DYALL ERRORS bhal unclosed quote W CTRL D KBEL MADOZ N EXEC
-// status f exit dyal syntax err khass men baed tfixiha
-// quotes fihom mochkel when using "" or '' fix them later "" and '' gives NULL
-// you should add to history everything even the syntax errors
-//$ $dd
-// handle this shit later in exec
-/*$ "$Dd
-> bash: unexpected EOF while looking for matching `"'
-bash: syntax error: unexpected end of file
-EL | Amrani --> : ~/Desktop/1733/MiniShell
-$ "$Dd"
-bash: : command not found
-EL | Amrani --> : ~/Desktop/1733/MiniShell
-$
-*/
-
-void	print_lex(t_lex_list *temp)
-{
-	while (temp)
-	{
-		printf("Token: |%s|, Type: %d\n", temp->s, temp->a_type);
-		temp = temp->next;
-	}
-}
-
-void	print_tree(t_ast_tree *tree, int deep)
-{
-	int			i;
-	t_redirect	*t;
-
-	if (!tree)
-		return ;
-	for (int i = 0; i < deep; i++)
-		printf(" ");
-	if (tree->args)
-	{
-		i = 0;
-		while (tree->args[i])
-		{
-			printf(" |%s quote = %d is_space = %d|  ", tree->args[i],
-				tree->q_type[i], tree->is_space[i]);
-			i++;
-		}
-		printf("\n");
-	}
-	else
-		printf("%d\n", tree->type);
-	t = tree->redirect;
-	while (t)
-	{
-		printf("|%s| |%d| ", t->file_name, t->type);
-		t = t->next;
-	}
-	print_tree(tree->left, deep + 1);
-	print_tree(tree->right, deep + 1);
-}
-void	free_reds(t_redirect *red)
-{
-	t_redirect	*tmp;
-
-	tmp = NULL;
-	while (red)
-	{
-		tmp = red;
-		red = red->next;
-		free(tmp->file_name);
-		free(tmp);
-	}
-}
-
-void	free_args(t_ast_tree *root)
-{
-	int	i;
-
-	i = 0;
-	while (root->args[i])
-	{
-		free(root->args[i]);
-		i++;
-	}
-}
-
-void	free_tree(t_ast_tree *root)
-{
-	if (!root)
-		return ;
-	if (root->redirect)
-		free_reds(root->redirect);
-	if (root->args)
-	{
-		free_args(root);
-		free(root->args);
-		free(root->is_space);
-		free(root->q_type);
-	}
-	free_tree(root->left);
-	free_tree(root->right);
-	free(root);
-}
-
-		int handle_path(char **args, t_env_list *env)
+int handle_path(char **args, t_env_list *env)
 		{
 			
 			int i = 0;
@@ -160,13 +57,85 @@ void	free_tree(t_ast_tree *root)
 						free(splited_path[i++]);
 					free(splited_path);
 			return -1;
-		}
+			}
+
+int is_built_in(char *cmd)
+{
+	char *built_ins[7];
+	built_ins[0] = "cd";
+	built_ins[1] = "echo";
+	built_ins[2] = "exit";
+	built_ins[3] = "env";
+	built_ins[4] = "setenv";
+	built_ins[5] = "unsetenv";
+	built_ins[6] = NULL;
+
+	int i = 0;
+
+	if (!cmd)
+		return 0;
+
+	while (built_ins[i])
+	{
+		if (ft_strcmp(cmd, built_ins[i]) == 0)
+			return 1;
+		i++;
+	}
+	return 0;
+}
+
+int execute_built_in(char **args, t_env_list *env)
+{
+	if (ft_strcmp(args[0], "cd") == 0)
+		return change_dir(args, env); 
+	else if (ft_strcmp(args[0], "echo") == 0)
+		return echo(args);
+	else if (ft_strcmp(args[0], "exit") == 0)
+		return exit_shell(args); 
+	else if (ft_strcmp(args[0], "env") == 0)
+		return print_env(env); 
+	else if (ft_strcmp(args[0], "setenv") == 0)
+		return exec_export(&env, args); 
+	else if (ft_strcmp(args[0], "unsetenv") == 0)
+		return exec_unset(&env, args); 
+	return 1;
+}
+
 void	dup3(int new, int original)
 {
 	dup2(new, original);
 	close(new);
 }
 
+char **turn_env_to_chars(t_env_list *env)
+{
+    char **s;
+    char *tmp_free;
+    t_env_list *tmp;
+    tmp = env;
+    int i = 0;
+    while (env)
+    {
+        i++;
+        env = env->next;
+    }
+    if (i == 0)
+        return NULL;
+    s = malloc(sizeof(char *) * (i + 1));
+    i = 0;
+    while (tmp)
+    {
+        s[i] = ft_strjoin(tmp->key,"=");
+        tmp_free = s[i];
+        s[i] = ft_strjoin(s[i],tmp->value);
+        free(tmp_free);
+        i++;
+        tmp = tmp->next;
+    }
+    s[i] = NULL;
+    i = 0;
+    return s;
+}
 
 void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 {
@@ -243,19 +212,45 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		if (*status != 0)
 			excute_the_damn_tree(astree->right, status, env);
 	}
+    else if (astree->type < 4)
+    {
+        stdinn = dup(STDIN_FILENO);
+        stdoutt = dup(STDOUT_FILENO);
+        
+        if (excute_redirs(astree) == -1) 
+        {
+            dup3(stdinn, STDIN_FILENO);
+            dup3(stdoutt, STDOUT_FILENO);
+            *status = 1;
+            return;
+        }
+        if (astree->left)
+            excute_the_damn_tree(astree->left, status, env);
+        else if (astree->right)
+            excute_the_damn_tree(astree->right, status, env);
+        else
+            *status = 0;
+        dup3(stdinn, STDIN_FILENO);
+        dup3(stdoutt, STDOUT_FILENO);
+    }
 	else if (astree->type == WORD)
 	{
 		stdinn = dup(STDIN_FILENO);
 		stdoutt = dup(STDOUT_FILENO);
-		if (excute_redirs(astree) == -1)
+		if (excute_redirs(astree) == -1) 
 		{
-			close(stdinn);
-			close(stdoutt);
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
 			*status = 1;
-			return ;
+			return;
 		}
-		// if (is_built_in(astree->args))
-		//
+		if (is_built_in(astree->args[0]))
+		{
+			*status = execute_built_in(astree->args, env);
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
+			return;
+		}
 		pid1 = fork();
 		if (pid1 == -1)
 		{
@@ -280,7 +275,8 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 				ft_putstr_fd(2, ": command not found");
 				exit(127);	
 			}
-			execve(astree->args[0], astree->args, NULL);
+            char **env_char = turn_env_to_chars(env);
+			execve(astree->args[0], astree->args, env_char);
 			perror(NULL);
 			exit(127);
 		}
@@ -292,62 +288,4 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		dup3(stdinn, STDIN_FILENO);
 		dup3(stdoutt, STDOUT_FILENO);
 	}
-}
-
-int	main(int ac, char **av, char **env)
-{
-	char		*input;
-	t_lex_list	*tokens;
-	int			status;
-	t_ast_tree	*astree;
-	t_lex_list	*lopo;
-
-	t_env_list *envv = NULL; 
-	set_up_env(env, &envv);
-
-	ac = 0;
-	av = NULL;
-	// env = NULL;
-	status = 0;
-	astree = NULL;
-	while (1)
-	{
-		status = 0;
-		input = readline("minishell$ ");
-		if (!input)
-			break ;
-		if (input[0])
-			add_history(input);
-		tokens = lexing_the_thing(input, &status);
-		if (status != 0)
-		{
-			printf("status = %d\n", status);
-			free(input);
-			free_lex_list(tokens);
-			continue ;
-		}
-		set_the_arg_type(tokens);
-		lopo = tokens;
-		handle_syntax_errors(tokens, &status);
-		if (status != 0)
-		{
-			printf("status = %d\n", status);
-			free(input);
-			free_lex_list(tokens);
-			continue ;
-		}
-		astree = create_ast_tree(tokens);
-		remove_quotes(tokens);
-		free_lex_list(tokens);
-		excute_the_damn_tree(astree, &status, envv);
-		free_tree(astree);
-		printf("status = %d\n", status);
-		free(input);
-		if (!isatty(STDIN_FILENO)) {
-			free_env_list(envv);
-			return status;
-		}
-	}
-	free_env_list(envv);	
-return (0);
 }

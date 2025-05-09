@@ -109,12 +109,25 @@ t_env_list				*new_env_node(void);
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
 void					insert_node(t_env_list **d, char *key, char *value, int flag);
-void					pwd(int n);
-void					change_dir(t_lex_list *d);
-void					echo(t_ast_tree *ast);
+int						pwd(int n);
+int	change_dir(char **args, t_env_list *env);
+int						echo(char **args);
 int						excute_redirs(t_ast_tree *astree);
 t_env_list *get_env_value(t_env_list *env_list, char *key);
 char	**ft_split(char const *s, char c);
 char	*ft_strchr(const char *s, int c);
 void free_env_list(t_env_list *env_list);
+void	free_tree(t_ast_tree *root);
+void	free_args(t_ast_tree *root);
+void	free_reds(t_redirect *red);
+	int handle_path(char **args, t_env_list *env);
+	void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env);
+	void	dup3(int new, int original);
+	char **turn_env_to_chars(t_env_list *env);
+int	exec_export(t_env_list **env, char **args);
+int exec_unset(t_env_list **env, char **args);
+int exit_shell(char **args);
+int	print_env(t_env_list *env_list);
+
+
 #endif

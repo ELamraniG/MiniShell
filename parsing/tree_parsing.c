@@ -72,14 +72,7 @@ t_ast_tree	*parse_parenthesis_cmds(t_lex_list **token)
 
 	if (*token == NULL)
 		return (NULL);
-	if ((*token)->a_type < 4)
-	{
-		root = new_ast_node();
-		root->type = (*token)->a_type;
-		handle_words(root, token);
-		return (root);
-	}
-	if ((*token)->a_type == WORD)
+	if ((*token)->a_type < 4 || (*token)->a_type == WORD)
 	{
 		root = new_ast_node();
 		root->type = (*token)->a_type;

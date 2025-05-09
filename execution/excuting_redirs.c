@@ -1,12 +1,10 @@
 #include "../includes/minishell.h"
 
-// later on msa7 argcounter mmen list
-
 static int	handle_out_redir(t_redirect *redir)
 {
 	int	fd;
 
-	fd = open(redir->file_name, O_WRONLY | O_CREAT, 0664);
+	fd = open(redir->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd == -1)
 	{
 		ft_putstr_fd(2, "minishell: ");
@@ -23,7 +21,7 @@ static int	handle_in_redir(t_redirect *redir)
 {
 	int	fd;
 
-	fd = open(redir->file_name, O_RDONLY | 0644);
+	fd = open(redir->file_name, O_RDONLY);
 	if (fd == -1)
 	{
 		ft_putstr_fd(2, "minishell: ");
@@ -58,8 +56,6 @@ int	excute_redirs(t_ast_tree *astree)
 	int	stdinn;
 	int	stdoutt;
 
-	stdinn = -1;
-	stdoutt = -1;
 	stdinn = dup(STDIN_FILENO);
 	stdoutt = dup(STDOUT_FILENO);
 	t_redirect	*tmp;

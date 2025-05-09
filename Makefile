@@ -14,13 +14,17 @@ SRC =	str_utils/ft_split.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
-		parsing/main.c \
+		xminishell.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \
 		built_ins/cd.c \
 		built_ins/pwd.c \
 		built_ins/echo.c \
-		parsing/excuting_redirs.c \
+		built_ins/export.c \
+		built_ins/unset.c \
+		built_ins/exit.c \
+		execution/excuting_redirs.c \
+		execution/exec_tree.c \
 
 OBJ = $(SRC:.c=.o)
 

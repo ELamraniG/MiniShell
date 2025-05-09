@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	pwd(int n)
+int	pwd(int n)
 {
 	char	*cwd;
 
@@ -9,5 +9,7 @@ void	pwd(int n)
 	{
 		printf("%s\n", cwd);
 		free(cwd);
+		return (0); 
 	}
+	return (1); 
 }

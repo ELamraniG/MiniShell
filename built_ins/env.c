@@ -54,16 +54,18 @@ void	set_up_env(char **env, t_env_list **env_list)
 	}
 }
 
-void	print_env(t_env_list *env_list)
+int	print_env(t_env_list *env_list)
 {
+	if (!env_list)
+		return (1);
 	while (env_list)
 	{
 		if (env_list->flag)
 			printf("%s=%s\n", env_list->key, env_list->value);
 		env_list = env_list->next;
 	}
+	return (0); 
 }
-
 void free_env_list(t_env_list *env_list)
 {
 	t_env_list *tmp;

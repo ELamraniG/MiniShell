@@ -29,38 +29,36 @@ int	arg_counter(char **d)
 	return (i);
 }
 
-void	echo(t_ast_tree *ast)
+int	echo(char **args)
 {
 	int			flag;
 	int			count;
 	int			i;
 
-	count = arg_counter(ast->args);
+	count = arg_counter(args);
 	flag = 0;
 	i = 1;
-	if (!ast)
-		return ;
-	if (ast->args[1] == NULL) // for when we use echo alone
+	if (!args)
+		return (1); 
+	if (args[1] == NULL) // for when we use echo alone
 	{
 		printf("\n");
-		return ;
+		return (0); 
 	}
-	while (ast->args[i] && kayna_n(ast->args[i])) // checking if we have -n and -nnnnn and skipping them
+	while (args[i] && kayna_n(args[i])) // checking if we have -n and -nnnnn and skipping them
 	{
 		i++;
 		flag = 1;
 	}
-	while (ast->args[i]) // printing everything after echo
+	while (args[i]) // printing everything after echo
 	{
-		printf("%s", ast->args[i]);
+		printf("%s", args[i]);
 		count--;
 		if (count > 0)
 			printf(" ");
 		i++;
 	}
-
 	if (!flag)
 		printf("\n");
-	// printf("%d", flag);
-
+	return (0); 
 }
