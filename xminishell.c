@@ -1,5 +1,6 @@
 #include "includes/minishell.h"
-int gstatus = 0;
+#include <signal.h>
+volatile sig_atomic_t  gstatus = 0;
 
 //$ $dd
 // handle this shit later in exec
@@ -13,13 +14,6 @@ EL | Amrani --> : ~/Desktop/1733/MiniShell
 $
 */
 
-void handle_signal(int n)
-{
-	if (n == SIGINT)
-		gstatus = 130;
-	else if (n == SIGQUIT)
-		gstatus = 131;
-}
 
 void	print_lex(t_lex_list *temp)
 {
@@ -71,35 +65,31 @@ int	main(int ac, char **av, char **env)
 	int			status;
 	t_ast_tree	*astree;
 	t_lex_list	*lopo;
+	struct sigaction sa;
 
 	t_env_list *envv = NULL; 
 	set_up_env(env, &envv);
 
+	// Enable raw mode to disable Ctrl+C default behavior
+	enable_raw_mode();
+	
 	ac = 0;
 	av = NULL;
 	int i = 0;
 	status = 0;
 	astree = NULL;
-	signal(SIGINT,handle_signal);
-	signal(SIGQUIT,handle_signal);
+	
+
 	while (1)
 	{
-		status = 0;
+		// Disable raw mode before readline to let readline handle input normally
+		disable_raw_mode();
+		
 		input = readline("minishell$ ");
-		if (gstatus == 130)
-		{
-			status = 130;
-			gstatus = 0;
-			rl_on_new_line();
-			rl_replace_line("",0);
-			rl_redisplay();
-			continue;
-		}
-		if(gstatus == 131)
-		{
-			gstatus = 0;
-			status = 131;
-		}
+		
+		// Re-enable raw mode after readline
+		enable_raw_mode();
+		
 		i++;
 		if (!input)
 			break ;
@@ -136,5 +126,5 @@ int	main(int ac, char **av, char **env)
 		}
 	}
 	free_env_list(envv);	
-return (0);
+	return (0);
 }

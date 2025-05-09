@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc 
-CFLAGS = -fsanitize=address -g
+CFLAGS =  -fsanitize=address -lreadline
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
@@ -27,7 +27,7 @@ SRC =	str_utils/ft_split.c \
 		execution/excuting_redirs.c \
 		execution/exec_tree.c \
 		execution/handle_heredoc.c \
-	
+		term_control.c \
 
 OBJ = $(SRC:.c=.o)
 

@@ -146,6 +146,7 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 		t.j = t.i;
 		skip_spaces(str, &t.i, &t.j);
 	}
+	*status = 0;
 	return (tokens);
 }
 

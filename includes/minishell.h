@@ -9,6 +9,7 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <unistd.h>
+# include <termios.h>  // Add termios header
 
 typedef enum e_type_arg
 {
@@ -131,5 +132,9 @@ int exec_unset(t_env_list **env, char **args);
 int exit_shell(char **args);
 int	print_env(t_env_list *env_list);
 void handle_heredoc(t_ast_tree *node, int i);
+
+// Add terminal control function declarations
+void disable_raw_mode(void);
+void enable_raw_mode(void);
 
 #endif
