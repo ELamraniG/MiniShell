@@ -99,8 +99,8 @@ int	main(int ac, char **av, char **env)
 			free_lex_list(tokens);
 			continue ;
 		}
-		astree = create_ast_tree(tokens);
 		remove_quotes(tokens);
+		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
 		excute_the_damn_tree(astree, &status, envv,i);
 		free_tree(astree);

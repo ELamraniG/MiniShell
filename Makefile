@@ -15,6 +15,7 @@ SRC =	str_utils/ft_split.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
+		parsing/expand_vars.c \
 		xminishell.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \

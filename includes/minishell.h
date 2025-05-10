@@ -131,5 +131,8 @@ int exec_unset(t_env_list **env, char **args);
 int exit_shell(char **args);
 int	print_env(t_env_list *env_list);
 void handle_heredoc(t_ast_tree *node, int i);
-
+char **join_args_without_spaces(t_ast_tree *node);
+void expand_variables(t_ast_tree *node, t_env_list *env, int *status);
+int ft_isalpha(char c);
+int ft_isalnum(char c);
 #endif

@@ -12,14 +12,6 @@ void	print_export(t_env_list *env_list)
 		env_list = env_list->next;
 	}
 }
-
-static int	ft_isalnum(int c)
-{
-	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))
-		return (1);
-	return (0);
-}
-
 static int	validate_key(char *s)
 {
 	int	i;

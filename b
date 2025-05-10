@@ -1,0 +1,14 @@
+$l
+$r
+Makefile
+a
+b
+built_ins
+complex_test.sh
+execution
+good_test.sh
+includes
+minishell
+parsing
+str_utils
+xminishell.c

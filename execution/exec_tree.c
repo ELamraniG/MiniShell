@@ -1,63 +1,109 @@
 #include "../includes/minishell.h"
 
-int handle_path(char **args, t_env_list *env)
-		{
-			
-			int i = 0;
-			char *tmp_free;
+char **join_args_without_spaces(t_ast_tree *node)
+{
+    char **args2;
+    char *tmp;
+    int i, j, count;
+    
+    if (!node->args || !node->args[0] || !node->is_space || node->arg_counter == 0)
+        return node->args;
+    
+    count = 1;
+    i = 0;
+    while (i < node->arg_counter - 1) {
+        if (node->is_space[i])
+            count++;
+        i++;
+    }
+    if (count == node->arg_counter)
+        return node->args;
+    args2 = malloc(sizeof(char*) * (count + 1));
+    
+    j = 0;
+    args2[0] = ft_strdup(node->args[0]);
+    i = 1;
+    while (i < node->arg_counter) {
+        if (node->is_space[i-1]) {
+            j++;
+            args2[j] = ft_strdup(node->args[i]);
+        }
+        else {
+            tmp = args2[j];
+            args2[j] = ft_strjoin(tmp, node->args[i]);
+            free(tmp);
+        }
+        i++;
+    }
+    args2[count] = NULL;
+    
+    i = 0;
+    while (i < node->arg_counter) {
+        free(node->args[i]);
+        i++;
+    }
+    free(node->args);
+    node->arg_counter = count;
+    return args2;
+}
 
-			if (!args || !args[0] || !*args[0])
-				return -1;
-			
-			if (ft_strchr(args[0],'/'))
-			{
-				if (!access(args[0], X_OK))
-					return 1;
-				return -1;
-			}
-			
-			env = get_env_value(env,"PATH");
-			
-			if (!env || !env->value || !env->value[0])
-				return -1;
-			char *path = env->value;
-			if(path == NULL || !*path)
-				return -1;
-			char **splited_path = ft_split(path,':');
-			
-			while(splited_path[i])
-			{
-				tmp_free = splited_path[i];
-				splited_path[i] = ft_strjoin(splited_path[i], "/");
-				free(tmp_free);
-				char *tmp_join = ft_strjoin(splited_path[i],args[0]);
-				if (!access(tmp_join, X_OK))
-				{
-					tmp_free = args[0];
-					args[0] = tmp_join;
-					i = 0;
-					while(splited_path[i])
-						free(splited_path[i++]);
-					free(splited_path);
-					return 1;
-				}
-				free(tmp_join);
-				i++;
-			}
-			if (!access(args[0], X_OK))
-			{
-				i = 0;
-				while(splited_path[i])
-					free(splited_path[i++]);
-				free(splited_path);
-				return 1;
-			}
+int handle_path(char **args, t_env_list *env)
+{
+	int i = 0;
+	char *tmp_free;
+
+	if (!args || !args[0] || !*args[0])
+		return -1;
+
+	if (ft_strchr(args[0],'/'))
+	{
+		if (!access(args[0], X_OK))
+			return 1;
+		return -1;
+	}
+
+	env = get_env_value(env,"PATH");
+
+	if (!env || !env->value || !env->value[0])
+		return -1;
+	char *path = env->value;
+	if(path == NULL || !*path)
+		return -1;
+	char **splited_path = ft_split(path,':');
+
+	while(splited_path[i])
+	{
+		tmp_free = splited_path[i];
+		splited_path[i] = ft_strjoin(splited_path[i], "/");
+		free(tmp_free);
+		char *tmp_join = ft_strjoin(splited_path[i],args[0]);
+		if (!access(tmp_join, X_OK))
+		{
+			tmp_free = args[0];
+			args[0] = tmp_join;
 			i = 0;
-					while(splited_path[i])
-						free(splited_path[i++]);
-					free(splited_path);
-			return -1;
-			}
+			while(splited_path[i])
+				free(splited_path[i++]);
+			free(splited_path);
+			return 1;
+		}
+		free(tmp_join);
+		i++;
+	}
+	if (!access(args[0], X_OK))
+	{
+		i = 0;
+		while(splited_path[i])
+			free(splited_path[i++]);
+		free(splited_path);
+		return 1;
+	}
+	i = 0;
+	while(splited_path[i])
+		free(splited_path[i++]);
+	free(splited_path);
+	return -1;
+}
 
 int is_built_in(char *cmd)
 {
@@ -238,6 +284,10 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env,int i
 		stdinn = dup(STDIN_FILENO);
 		stdoutt = dup(STDOUT_FILENO);
 		handle_heredoc(astree,i);
+		
+		expand_variables(astree, env, status);
+		astree->args = join_args_without_spaces(astree);
+		
 		if (excute_redirs(astree) == -1) 
 		{
 			dup3(stdinn, STDIN_FILENO);
@@ -263,8 +313,8 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env,int i
 		}
 		if (pid1 == 0)
 		{
-			stat(astree->args[0], &l);
-			if (S_ISDIR(l.st_mode))
+			struct stat	l;
+			if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
 			{
 				ft_putstr_fd(2, astree->args[0]);
 				ft_putstr_fd(2, ": is a directory\n");

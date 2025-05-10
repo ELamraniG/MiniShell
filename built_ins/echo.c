@@ -1,64 +1,50 @@
 #include "../includes/minishell.h"
 
-int	kayna_n(char *s)
+static int	kayna_n(char *s)
 {
-	int		i;
+	int i;
 
-	i = 0;
-	if (s[i] != '-')
+	if (!s || s[0] != '-')
 		return (0);
-	i++;
+	i = 1;
 	while (s[i])
 	{
 		if (s[i] != 'n')
 			return (0);
 		i++;
 	}
-	return (1);
-}
-
-int	arg_counter(char **d)
-{
-	int	i;
-
-	i = 0;
-	if (!d)
+	if (i == 1) 
 		return (0);
-	while (d[i])
-		i++;
-	return (i);
+	return (1);
 }
 
 int	echo(char **args)
 {
-	int			flag;
-	int			count;
-	int			i;
+	int	i;
+	int	n_flag;
 
-	count = arg_counter(args);
-	flag = 0;
-	i = 1;
 	if (!args)
-		return (1); 
-	if (args[1] == NULL) // for when we use echo alone
+		return (1);
+	
+	n_flag = 0;
+	i = 1;
+
+	while (args[i] && kayna_n(args[i]))
 	{
-		printf("\n");
-		return (0); 
-	}
-	while (args[i] && kayna_n(args[i])) // checking if we have -n and -nnnnn and skipping them
-	{
+		n_flag = 1;
 		i++;
-		flag = 1;
 	}
-	while (args[i]) // printing everything after echo
+
+	while (args[i])
 	{
 		printf("%s", args[i]);
-		count--;
-		if (count > 0)
-			printf(" ");
 		i++;
+		if (args[i])
+			printf(" ");
 	}
-	if (!flag)
+
+	if (!n_flag)
 		printf("\n");
-	return (0); 
+	
+	return (0);
 }
