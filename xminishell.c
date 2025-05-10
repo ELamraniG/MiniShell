@@ -1,6 +1,7 @@
 #include "includes/minishell.h"
-// ft_putstr_fd(2,ft_itoa(i)); //change later darore
-// status f exit dyal syntax err khass men baed tfixiha
+#include <signal.h>
+volatile sig_atomic_t  gstatus = 0;
+
 //$ $dd
 // handle this shit later in exec
 /*$ "$Dd
@@ -12,6 +13,7 @@ bash: : command not found
 EL | Amrani --> : ~/Desktop/1733/MiniShell
 $
 */
+
 
 void	print_lex(t_lex_list *temp)
 {
@@ -63,19 +65,31 @@ int	main(int ac, char **av, char **env)
 	int			status;
 	t_ast_tree	*astree;
 	t_lex_list	*lopo;
+	struct sigaction sa;
 
 	t_env_list *envv = NULL; 
 	set_up_env(env, &envv);
 
+	// Enable raw mode to disable Ctrl+C default behavior
+	enable_raw_mode();
+	
 	ac = 0;
 	av = NULL;
 	int i = 0;
 	status = 0;
 	astree = NULL;
+	
+
 	while (1)
 	{
-		status = 0;
+		// Disable raw mode before readline to let readline handle input normally
+		disable_raw_mode();
+		
 		input = readline("minishell$ ");
+		
+		// Re-enable raw mode after readline
+		enable_raw_mode();
+		
 		i++;
 		if (!input)
 			break ;
@@ -112,5 +126,5 @@ int	main(int ac, char **av, char **env)
 		}
 	}
 	free_env_list(envv);	
-return (0);
+	return (0);
 }

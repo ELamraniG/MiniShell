@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	insert_node(t_env_list **d, char *key, char *value, int flag)
+void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 {
 	t_env_list	*tmp;
 

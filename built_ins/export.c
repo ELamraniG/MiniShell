@@ -29,29 +29,58 @@ static int	validate_key(char *s)
 	return (1);
 }
 
-void	get_value_env() // function i give it key, it returns the value, if no value found return NULL
+char	*get_value_env(t_env_list**d, char *key) // function i give it key, it returns the value, if no value found return NULL
 {
+	t_env_list	*env;
 
+	if (!key)
+		return (NULL);
+	env = *d;
+	while (env)
+	{
+		if (!ft_strcmp(env->key, key))
+			return (env->value);
+		env = env->next;
+	}
+	return (NULL);
 }
 
-void	edit_env_list() // i give key, if found change value, else insert_node()
+void	edit_env_list(t_env_list **d, char *key, char *value) // i give key, if found change value, else insert_node()
 {
+	t_env_list	*env;
 
+	if (*d == NULL) // if list doesn't exist
+	{
+		insert_node_last(d, key, value, 0);
+		return ;
+	}
+	env = *d;
+	while (env)
+	{
+		if (!ft_strcmp(env->key, key))
+		{
+			free(env->value);
+			env->value = value;
+			return ;
+		}
+		env = env->next;
+	}
+	insert_node_last(d, key, value, 0);
 }
 
 int	exec_export(t_env_list **env, char **args)
 {
-	int	i;
-	int	j;
-	int	flag;
+	int		i;
+	int		j;
+	int		flag;
 	char	*key;
 	char	*value;
 
-	i = 0;
+	i = 1;
 	j = 0;
 	if (args[1] == NULL)
 		print_export(*env);
-	else // with letter, underscore, number not at first
+	else // with letter, underscore, number not at first.
 	{
 		while (args[i])
 		{
@@ -72,7 +101,7 @@ int	exec_export(t_env_list **env, char **args)
 						(*env)->value = ft_strdup("");
 						flag = 0;
 					}
-					insert_node(env, key, value, flag);
+					insert_node_last(env, key, value, flag);
 				}
 				j++;
 			}

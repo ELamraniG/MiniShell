@@ -9,6 +9,7 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <unistd.h>
+# include <termios.h>  // Add termios header
 
 typedef enum e_type_arg
 {
@@ -110,7 +111,7 @@ void					handle_syntax_errors(t_lex_list *token, int *status);
 t_env_list				*new_env_node(void);
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
-void					insert_node(t_env_list **d, char *key, char *value, int flag);
+void					insert_node_last(t_env_list **d, char *key, char *value, int flag);
 int						pwd(int n);
 int	change_dir(char **args, t_env_list *env);
 int						echo(char **args);
@@ -135,4 +136,8 @@ char **join_args_without_spaces(t_ast_tree *node);
 void expand_variables(t_ast_tree *node, t_env_list *env, int *status);
 int ft_isalpha(char c);
 int ft_isalnum(char c);
+// Add terminal control function declarations
+void disable_raw_mode(void);
+void enable_raw_mode(void);
+
 #endif
