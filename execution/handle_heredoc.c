@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void create_a_heredoc(t_ast_tree *node, t_redirect *redir, int i)
+static void create_a_heredoc(t_ast_tree *node, t_redirect *redir)
 {
     int pipes[2];
     char *tmp = NULL;
@@ -11,9 +11,11 @@ static void create_a_heredoc(t_ast_tree *node, t_redirect *redir, int i)
     }
     redir->heredoc = pipes[0];
     char *input = NULL;
+    int i = 1;
+    
     while(1337)
     {
-        input = readline(">");
+        input = readline("> "); 
         if (!input)
         {
             ft_putstr_fd(2,"minishell: warning: here-document at line ");
@@ -31,23 +33,22 @@ static void create_a_heredoc(t_ast_tree *node, t_redirect *redir, int i)
             close(pipes[1]);
             break;
         }
-        tmp = input;
-        input = ft_strjoin(tmp,"\n");
-        free(tmp);
-        write(pipes[1],input,ft_strlen(input));
+        write(pipes[1], input, ft_strlen(input));
+        write(pipes[1], "\n", 1);
         free(input);
+        i++;
     }
     close(pipes[1]);
     free(input);
 }
 
-void handle_heredoc(t_ast_tree *node, int i)
+void handle_heredoc(t_ast_tree *node)
 {
     t_redirect *redir = node->redirect;
     while(redir)
     {
         if (redir->type == HEREDOC)
-            create_a_heredoc(node,redir,i);
+            create_a_heredoc(node,redir);
         redir = redir->next;
     }
 }

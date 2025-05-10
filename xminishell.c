@@ -70,8 +70,8 @@ int	main(int ac, char **av, char **env)
 	t_env_list *envv = NULL; 
 	set_up_env(env, &envv);
 
-	// Enable raw mode to disable Ctrl+C default behavior
-	enable_raw_mode();
+	
+	// enable_raw_mode();
 	
 	ac = 0;
 	av = NULL;
@@ -82,13 +82,13 @@ int	main(int ac, char **av, char **env)
 
 	while (1)
 	{
-		// Disable raw mode before readline to let readline handle input normally
-		disable_raw_mode();
+
+		// disable_raw_mode();
 		
 		input = readline("minishell$ ");
 		
-		// Re-enable raw mode after readline
-		enable_raw_mode();
+	
+		// enable_raw_mode();
 		
 		i++;
 		if (!input)
@@ -116,7 +116,7 @@ int	main(int ac, char **av, char **env)
 		remove_quotes(tokens);
 		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
-		excute_the_damn_tree(astree, &status, envv,i);
+		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
 		printf("status = %d\n", status);
 		free(input);
