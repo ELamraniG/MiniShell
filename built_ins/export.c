@@ -88,7 +88,7 @@ int	exec_export(t_env_list **env, char **args)
 	j = 0;
 	if (args[1] == NULL)
 		print_export(*env);
-	else // with letter, underscore, number not at first
+	else // with letter, underscore, number not at first.
 	{
 		while (args[i])
 		{
