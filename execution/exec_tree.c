@@ -267,6 +267,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
         stdinn = dup(STDIN_FILENO);
         stdoutt = dup(STDOUT_FILENO);
         
+		expand_variables(astree, env, status);
         if (excute_redirs(astree) == -1) 
         {
             dup3(stdinn, STDIN_FILENO);
