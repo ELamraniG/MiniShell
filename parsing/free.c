@@ -18,12 +18,26 @@ void	free_reds(t_redirect *red)
 {
 	t_redirect	*tmp;
 
-	tmp = NULL;
 	while (red)
 	{
 		tmp = red;
+		
+
+			int i = 0;
+			while (i < red->file_str_count)
+			{
+					free(red->file_name[i]);
+				i++;
+			}
+			free(red->file_name);
+		
+			free(red->q_types);
+			
+			free(red->is_space);
+			
+			free(red->LAST_DAMN_FILE_NAME);
+		
 		red = red->next;
-		free(tmp->file_name);
 		free(tmp);
 	}
 }

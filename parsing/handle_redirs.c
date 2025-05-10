@@ -19,21 +19,116 @@ static int	is_special_for_redirs(int a)
 	return (0);
 }
 
+static int wach_skip(t_lex_list *token)
+{
+    if (!token || !token->next)
+        return 0;
+    if (!token->is_space && token->next->a_type == WORD)
+        return 1;
+    return 0;
+}
+
 static int	calculate_words(t_lex_list *token)
 {
 	int	n;
+	t_lex_list *t;
 
 	n = 0;
 	while (token && is_special_for_redirs(token->a_type))
 	{
 		if (token->a_type == WORD)
+		{
 			n++;
-		if (token->a_type > 3)
 			token = token->next;
+		}
 		else if (token->a_type < 4)
-			token = token->next->next;
+		{
+			token = token->next;
+			t = token;
+			token = token->next;
+			while (wach_skip(t))
+			{
+				t = token;
+				token = token->next;
+			}
+		}
 	}
 	return (n);
+}
+
+static int	calculate_parts(t_lex_list *token)
+{
+	int	count;
+	t_lex_list *current;
+
+	count = 1;  // Start with 1 for the first token
+	current = token;
+	
+	while (wach_skip(current))
+	{
+		count++;
+		current = current->next;
+	}
+	
+	return count;
+}
+
+static void collect_redirect_parts(t_lex_list **token, t_redirect *redir)
+{
+    int i = 0;
+    t_lex_list *current;
+    
+    // Allocate arrays for parts
+    int parts = calculate_parts(*token);
+    redir->file_str_count = parts;
+    redir->file_name = malloc(sizeof(char *) * parts);
+    redir->q_types = malloc(sizeof(int) * parts);
+    redir->is_space = malloc(sizeof(int) * parts);
+    
+    // Store first part
+    redir->file_name[i] = ft_strdup((*token)->s);
+    redir->q_types[i] = (*token)->q_type;
+    redir->is_space[i] = (*token)->is_space;
+    i++;
+    
+    current = *token;
+    *token = (*token)->next;
+    
+    // Store additional parts if they exist
+    while (i < parts && wach_skip(current))
+    {
+        redir->file_name[i] = ft_strdup((*token)->s);
+        redir->q_types[i] = (*token)->q_type;
+        redir->is_space[i] = (*token)->is_space;
+        i++;
+        
+        current = *token;
+        *token = (*token)->next;
+    }
+}
+
+static void add_to_list_redir_with_parts(t_redirect **ll, int type, t_lex_list **token)
+{
+    t_redirect *new_node;
+    t_redirect *tmp;
+    
+    new_node = malloc(sizeof(t_redirect));
+    new_node->type = type;
+    new_node->next = NULL;
+    new_node->heredoc = 0;
+    new_node->LAST_DAMN_FILE_NAME = NULL;  // Initialize to NULL to prevent segfaults
+    
+    collect_redirect_parts(token, new_node);
+    
+    if (*ll == NULL)
+        *ll = new_node;
+    else
+    {
+        tmp = *ll;
+        while (tmp->next)
+            tmp = tmp->next;
+        tmp->next = new_node;
+    }
 }
 
 void	handle_words(t_ast_tree *node, t_lex_list **token)
@@ -67,9 +162,9 @@ void	handle_words(t_ast_tree *node, t_lex_list **token)
 		}
 		else if ((*token)->a_type < 4)
 		{
-			add_to_list_redir(&tmp, ft_strdup((*token)->next->s),
-				(*token)->a_type);
-			(*token) = (*token)->next->next;
+			int r_type = (*token)->a_type;
+			(*token) = (*token)->next;
+			add_to_list_redir_with_parts(&tmp, r_type, token);
 		}
 	}
 	node->is_space = is_space;

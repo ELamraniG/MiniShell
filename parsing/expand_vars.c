@@ -110,20 +110,51 @@ static char *var_to_str(char *str, t_env_list *env, int *status, int quote_type)
     return result;
 }
 
+static char *join_expanded_parts(t_redirect *redir, t_env_list *env, int *status)
+{
+    char *result = ft_strdup("");
+    char *tmp;
+    int i = 0;
+    
+    while (i < redir->file_str_count)
+    {
+        if (redir->file_name[i])
+        {
+            char *expanded = var_to_str(ft_strdup(redir->file_name[i]), env, status, redir->q_types[i]);
+            tmp = result;
+            result = ft_strjoin(result, expanded);
+            free(tmp);
+            free(expanded);
+        }
+        i++;
+    }
+    
+    return result;
+}
+
 void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
 {
     int i = 0;
 
-    if (!node || !node->args)
-        return;
-
-    while (i < node->arg_counter && node->args[i])
-    {
-        if (node->q_type)
-            node->args[i] = var_to_str(node->args[i], env, status, node->q_type[i]);
-        else
-            node->args[i] = var_to_str(node->args[i], env, status, NQ);
-        i++;
+    if (node->args) {
+        while (i < node->arg_counter && node->args[i])
+        {
+            if (node->q_type)
+                node->args[i] = var_to_str(node->args[i], env, status, node->q_type[i]);
+            else
+                node->args[i] = var_to_str(node->args[i], env, status, NQ);
+            i++;
+        }
     }
-    //redirs should have q type too later do it
+    
+    t_redirect *redir = node->redirect;
+    while (redir)
+    {
+        if (redir->type != HEREDOC)
+        {
+            char *LAST_DAMN_FILE_NAME = join_expanded_parts(redir, env, status);
+            redir->LAST_DAMN_FILE_NAME = LAST_DAMN_FILE_NAME;
+        }
+        redir = redir->next;
+    }
 }

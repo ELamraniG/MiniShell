@@ -47,6 +47,7 @@ char **join_args_without_spaces(t_ast_tree *node)
     return args2;
 }
 
+
 int handle_path(char **args, t_env_list *env)
 {
 	int i = 0;
@@ -107,14 +108,15 @@ int handle_path(char **args, t_env_list *env)
 
 int is_built_in(char *cmd)
 {
-	char *built_ins[7];
+	char *built_ins[8]; 
 	built_ins[0] = "cd";
 	built_ins[1] = "echo";
 	built_ins[2] = "exit";
 	built_ins[3] = "env";
 	built_ins[4] = "setenv";
 	built_ins[5] = "unsetenv";
-	built_ins[6] = NULL;
+	built_ins[6] = "export"; 
+	built_ins[7] = NULL;    
 
 	int i = 0;
 
@@ -144,6 +146,8 @@ int execute_built_in(char **args, t_env_list *env)
 		return exec_export(&env, args); 
 	else if (ft_strcmp(args[0], "unsetenv") == 0)
 		return exec_unset(&env, args); 
+	else if (ft_strcmp(args[0], "export") == 0)
+		return exec_export(&env, args);
 	return 1;
 }
 
@@ -183,7 +187,7 @@ char **turn_env_to_chars(t_env_list *env)
     return s;
 }
 
-void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
+void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 {
 	int			pipes[2];
 	int			pid1;
@@ -262,7 +266,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
     {
         stdinn = dup(STDIN_FILENO);
         stdoutt = dup(STDOUT_FILENO);
-        handle_heredoc(astree);
+        
         if (excute_redirs(astree) == -1) 
         {
             dup3(stdinn, STDIN_FILENO);
@@ -284,9 +288,9 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		stdinn = dup(STDIN_FILENO);
 		stdoutt = dup(STDOUT_FILENO);
 		
-		handle_heredoc(astree);
 		astree->args = join_args_without_spaces(astree);
 		expand_variables(astree, env, status);
+		
 		
 		if (excute_redirs(astree) == -1) 
 		{
@@ -323,7 +327,7 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 			if (handle_path(astree->args, env) == -1)
 			{
 				ft_putstr_fd(2,astree->args[0]);
-				ft_putstr_fd(2, ": command not found");
+				ft_putstr_fd(2, ": command not found\n");
 				exit(127);	
 			}
             char **env_char = turn_env_to_chars(env);
@@ -340,3 +344,4 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		dup3(stdoutt, STDOUT_FILENO);
 	}
 }
+

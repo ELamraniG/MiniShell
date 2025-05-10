@@ -42,7 +42,11 @@ typedef struct s_env_list
 
 typedef struct s_redirect
 {
-	char				*file_name;
+	char				**file_name;  
+	int					*q_types;      
+	int					*is_space;     
+	int					file_str_count; 
+	char				*LAST_DAMN_FILE_NAME;
 	int					type;
 	struct s_redirect	*next;
 	int heredoc;
@@ -102,9 +106,6 @@ t_ast_tree				*parse_and_or(t_lex_list **token);
 t_ast_tree				*parse_pipe(t_lex_list **token);
 t_ast_tree				*parse_parenthesis_cmds(t_lex_list **token);
 t_ast_tree				*create_ast_tree(t_lex_list *token);
-
-t_redirect				*new_node_redir(char *str, int type);
-void					add_to_list_redir(t_redirect **ll, char *str, int type);
 void					remove_quotes(t_lex_list *token);
 void					handle_syntax_errors(t_lex_list *token, int *status);
 
@@ -132,10 +133,16 @@ int exec_unset(t_env_list **env, char **args);
 int exit_shell(char **args);
 int	print_env(t_env_list *env_list);
 void handle_heredoc(t_ast_tree *node);
+void process_all_heredocs(t_ast_tree *node); // Add this new function prototype
 char **join_args_without_spaces(t_ast_tree *node);
 void expand_variables(t_ast_tree *node, t_env_list *env, int *status);
 int ft_isalpha(char c);
 int ft_isalnum(char c);
+
+t_redirect	*new_node_redir(char *str, int type,int q_type);
+
+void	add_to_list_redir(t_redirect **ll, char *str, int type,int q_type);
+
 
 // void disable_raw_mode(void);
 // void enable_raw_mode(void);

@@ -47,11 +47,11 @@ void	print_tree(t_ast_tree *tree, int deep)
 	else
 		printf("%d\n", tree->type);
 	t = tree->redirect;
-	while (t)
-	{
-		printf("|%s| |%d| ", t->file_name, t->type);
-		t = t->next;
-	}
+	// while (t)
+	// {
+	// 	printf("|%s| |%d| ", t->file_name, t->type);
+	// 	t = t->next;
+	// }
 	print_tree(tree->left, deep + 1);
 	print_tree(tree->right, deep + 1);
 }
@@ -82,7 +82,7 @@ int	main(int ac, char **av, char **env)
 
 	while (1)
 	{
-
+		status = 0;
 		// disable_raw_mode();
 		
 		input = readline("minishell$ ");
@@ -116,9 +116,13 @@ int	main(int ac, char **av, char **env)
 		remove_quotes(tokens);
 		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
+		
+		handle_heredoc(astree);
+		
 		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
 		printf("status = %d\n", status);
+		
 		free(input);
 		if (!isatty(STDIN_FILENO)) {
 			free_env_list(envv);

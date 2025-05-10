@@ -1,54 +1,73 @@
 #include "../includes/minishell.h"
-
-static void create_a_heredoc(t_ast_tree *node, t_redirect *redir)
+char *join_all_names(char **file_name,int count)
 {
-    int pipes[2];
-    char *tmp = NULL;
-    if (pipe(pipes) == -1)
+    int i = 0;
+    char *s = ft_strdup("");
+    char *tmp_free;
+    while(i < count)
     {
-        perror(NULL);
-        return ;
-    }
-    redir->heredoc = pipes[0];
-    char *input = NULL;
-    int i = 1;
-    
-    while(1337)
-    {
-        input = readline("> "); 
-        if (!input)
-        {
-            ft_putstr_fd(2,"minishell: warning: here-document at line ");
-            tmp = ft_itoa(i);
-            ft_putstr_fd(2,tmp);
-            free(tmp);
-            ft_putstr_fd(2," delimited by end-of-file (wanted `");
-            ft_putstr_fd(2,redir->file_name);
-            ft_putstr_fd(2,"')\n");
-            close(pipes[1]);
-            break;
-        }
-        if (!ft_strcmp(redir->file_name, input))
-        {
-            close(pipes[1]);
-            break;
-        }
-        write(pipes[1], input, ft_strlen(input));
-        write(pipes[1], "\n", 1);
-        free(input);
+        tmp_free = s;
+        s = ft_strjoin(s,file_name[i]);
+        free(tmp_free);
         i++;
     }
-    close(pipes[1]);
-    free(input);
+    return (s);
 }
+
+static void create_a_heredoc(t_redirect *redir)
+{
+    redir->LAST_DAMN_FILE_NAME = join_all_names(redir->file_name, redir->file_str_count);
+    char *input;
+    int pipes[2];
+    if (pipe(pipes) == -1)
+    {
+        perror("pipe");
+        return;
+    }
+    
+    while (1337)
+    {
+        input = readline("> ");
+        if (!input)
+        {
+            ft_putstr_fd(2, "minishell: warning: here-document delimited by end-of-file (wanted ");
+            ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
+            ft_putstr_fd(2, ")\n");
+            break;
+        }
+        if (!ft_strcmp(redir->LAST_DAMN_FILE_NAME, input))
+        {
+            free(input);
+            break;
+        }
+        
+        ft_putstr_fd(pipes[1], input);
+        ft_putstr_fd(pipes[1], "\n");
+        free(input);
+    }
+    
+    close(pipes[1]);
+    redir->heredoc = pipes[0];
+}
+
 
 void handle_heredoc(t_ast_tree *node)
 {
-    t_redirect *redir = node->redirect;
-    while(redir)
+    if (!node)
+        return;
+
+    if (node->redirect)
     {
-        if (redir->type == HEREDOC)
-            create_a_heredoc(node,redir);
-        redir = redir->next;
+        t_redirect *redir = node->redirect;
+        while (redir)
+        {
+            if (redir->type == HEREDOC)
+            {
+                create_a_heredoc(redir);
+            }
+            redir = redir->next;
+        }
     }
+    handle_heredoc(node->left);
+    handle_heredoc(node->right);
 }

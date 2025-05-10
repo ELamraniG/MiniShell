@@ -5,19 +5,19 @@ static int	handle_out_redir(t_redirect *redir)
 	int	fd;
 	struct stat l;
 
-	if (stat(redir->file_name, &l) == 0 && S_ISDIR(l.st_mode))
+	if (stat(redir->LAST_DAMN_FILE_NAME, &l) == 0 && S_ISDIR(l.st_mode))
 	{
 		ft_putstr_fd(2, "minishell: ");
-		ft_putstr_fd(2, redir->file_name);
+		ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
 		ft_putstr_fd(2, ": Is a directory\n");
 		return (-1);
 	}
 
-	fd = open(redir->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	fd = open(redir->LAST_DAMN_FILE_NAME, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd == -1)
 	{
 		ft_putstr_fd(2, "minishell: ");
-		ft_putstr_fd(2, redir->file_name);
+		ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
 		ft_putstr_fd(2, " ");
 		perror(NULL);
 		return (-1);
@@ -31,19 +31,19 @@ static int	handle_in_redir(t_redirect *redir)
 	int	fd;
 	struct stat l;
 
-	if (stat(redir->file_name, &l) == 0 && S_ISDIR(l.st_mode))
+	if (stat(redir->LAST_DAMN_FILE_NAME, &l) == 0 && S_ISDIR(l.st_mode))
 	{
 		ft_putstr_fd(2, "minishell: ");
-		ft_putstr_fd(2, redir->file_name);
+		ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
 		ft_putstr_fd(2, ": Is a directory\n");
 		return (-1);
 	}
 
-	fd = open(redir->file_name, O_RDONLY);
+	fd = open(redir->LAST_DAMN_FILE_NAME, O_RDONLY);
 	if (fd == -1)
 	{
 		ft_putstr_fd(2, "minishell: ");
-		ft_putstr_fd(2, redir->file_name);
+		ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
 		ft_putstr_fd(2, " ");
 		perror(NULL);
 		return (-1);
@@ -57,19 +57,19 @@ static int	handle_append_redir(t_redirect *redir)
 	int	fd;
 	struct stat l;
 
-	if (stat(redir->file_name, &l) == 0 && S_ISDIR(l.st_mode))
+	if (stat(redir->LAST_DAMN_FILE_NAME, &l) == 0 && S_ISDIR(l.st_mode))
 	{
 		ft_putstr_fd(2, "minishell: ");
-		ft_putstr_fd(2, redir->file_name);
+		ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
 		ft_putstr_fd(2, ": Is a directory\n");
 		return (-1);
 	}
 
-	fd = open(redir->file_name, O_WRONLY | O_CREAT | O_APPEND, 0664);
+	fd = open(redir->LAST_DAMN_FILE_NAME, O_WRONLY | O_CREAT | O_APPEND, 0664);
 	if (fd == -1)
 	{
 		ft_putstr_fd(2, "minishell: ");
-		ft_putstr_fd(2, redir->file_name);
+		ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
 		ft_putstr_fd(2, " ");
 		perror(NULL);
 		return (-1);
