@@ -1,0 +1,23 @@
+
+### Memory Management
+2. Make sure you're closing all file descriptors in `excuting_redirs.c` when errors occur.
+
+### Signal Handling
+1. There's a `struct sigaction sa` declaration in `xminishell.c` but it doesn't appear to be used.
+2. Your minishell should handle signals properly (CTRL+C, CTRL+D, etc.).
+
+### Error Handling
+1. In `exec_tree.c`, some of your error handling might not be comprehensive enough, especially in complex pipelines.
+2. The error messages could be more consistent across different commands.
+
+### Built-ins
+1. Your `exit` command in `exit.c` has a hardcoded exit code (5222) which isn't standard behavior.
+2. The `cd` command in `cd.c` is quite basic and doesn't handle edge cases like `cd -` or update `PWD/OLDPWD` environment variables.
+
+### Other Issues
+1. There are duplicate implementations of some functions like `ft_isalpha` and `ft_isalnum` in different files.
+2. The term_control.c file is commented out, suggesting terminal control functionality isn't implemented.
+3. Heredoc handling might leak file descriptors if used extensively.
+4. Variable expansion might need more thorough testing for edge cases.
+
+Overall, your minishell looks solid for passing tests, but addressing these issues would make it more robust and reliable for real-world use.
