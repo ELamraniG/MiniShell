@@ -21,3 +21,117 @@
 4. Variable expansion might need more thorough testing for edge cases.
 
 Overall, your minishell looks solid for passing tests, but addressing these issues would make it more robust and reliable for real-world use.
+
+
+
+
+
+# Error Handling Issues in exec_tree.c for Complex Pipelines
+
+After analyzing your `exec_tree.c` and `excuting_redirs.c` files, I've identified several issues with the error handling, particularly in complex pipelines:
+
+## 1. File Descriptor Leaks in Pipe Error Paths
+
+In `excute_the_damn_tree` function, when handling pipes, if a fork fails after the first child process has been created, you close the pipes but don't properly wait for the first child process:
+
+```c
+if (pid2 == -1)
+{
+    close(pipes[0]);
+    close(pipes[1]);
+    *status = 1;
+    perror(NULL);
+    waitpid(pid1, NULL, 0);  // This is correct, but there are other places where this pattern isn't followed
+    return ;
+}
+```
+
+## 2. Error Propagation Issues in Pipelines
+
+You're only capturing the exit code from the right side of the pipe:
+
+```c
+waitpid(pid1, NULL, 0);  // Left side exit code is ignored
+waitpid(pid2, &exit_code, 0);  // Only right side exit code is used
+if (WIFEXITED(exit_code))
+    *status = WEXITSTATUS(exit_code);
+```
+
+This means if the left command fails but the right succeeds, the pipeline reports success, which is different from bash behavior where pipefail can be enabled.
+
+## 3. Incomplete File Descriptor Cleanup
+
+In `excute_redirs`, if a redirection fails, you restore stdin/stdout but never close the file descriptors created for redirections that already succeeded:
+
+```c
+if (handle_out_redir(tmp) == -1) 
+{
+    dup3(stdinn, STDIN_FILENO);
+    dup3(stdoutt, STDOUT_FILENO);
+    return (-1);  // Previous redirections' FDs might be leaked
+}
+```
+
+## 4. Inconsistent Error Reporting
+
+Some errors use `perror()`, some use custom messages, leading to inconsistent error reporting:
+
+```c
+ft_putstr_fd(2, astree->args[0]);
+ft_putstr_fd(2, ": command not found\n");
+```
+
+vs.
+
+```c
+perror(astree->args[0]);
+```
+
+## 5. Potential Memory Leaks in Error Paths
+
+When handling environment variables for execve:
+
+```c
+char **env_char = turn_env_to_chars(env);
+execve(astree->args[0], astree->args, env_char);
+// If execve fails, env_char is freed, but what about astree->args?
+```
+
+## 6. Signal Handling Issues in Complex Pipelines
+
+Your code handles normal exit (WIFEXITED) and signal termination (WIFSIGNALED), but deep pipeline chains might have complex signal propagation issues.
+
+## 7. Missing Validation in Redirection Functions
+
+In `excuting_redirs.c`, there's no check that `redir->LAST_DAMN_FILE_NAME` is not NULL before trying to access it:
+
+```c
+if (stat(redir->LAST_DAMN_FILE_NAME, &l) == 0 && S_ISDIR(l.st_mode))
+```
+
+## 8. Resource Management in Nested Subshells
+
+When executing a complex command with nested parentheses, the recursive approach might lead to resource leaks if errors occur at different levels of nesting.
+
+## Recommendation
+
+To improve error handling in complex pipelines:
+
+1. Implement consistent cleanup paths for all resources (file descriptors, processes, memory)
+2. Add proper validation for all pointer dereferences 
+3. Consider tracking file descriptors more systematically
+4. Add more detailed error messages that indicate exactly which part of a complex pipeline failed
+5. Consider implementing a POSIX-compliant way to propagate exit codes through pipelines
+
+These changes would make your shell more robust when handling complex pipeline structures and edge cases.
+
+
+
+
+
+
+
+
+leaks in export
+
+free args and path after fail execv

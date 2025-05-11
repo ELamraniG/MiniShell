@@ -97,21 +97,35 @@ int	exec_export(t_env_list **env, char **args)
 						value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
 						flag = 1; // flag is for variable with = sign so we print them with export and not print with env
 						insert_node_last(env, key, value, flag);
-						return (0);
+						free(key); // Free key after use
+						free(value); // Free value after use
+						break; // Skip the rest of the loop since we've found '='
+					}
+					else
+					{
+						free(key); // Free invalid key
+						printf("export: `%s': not a valid identifier\n", args[i]);
+						break;
 					}
 				}
 				j++;
 			}
-			key = ft_substr(args[i], 0, j);
-			if (validate_key(key))
+			if (args[i][j] == '\0' && j > 0) // No '=' found in the argument
 			{
-				value = ft_strdup("");
-				flag = 0;
-				insert_node_last(env, key, value, flag);
-			}
-			else
-			{
-				printf("export: `%s': not a valid identifier\n", key);
+				key = ft_substr(args[i], 0, j);
+				if (validate_key(key))
+				{
+					value = ft_strdup("");
+					flag = 0;
+					insert_node_last(env, key, value, flag);
+					free(key); // Free key after use
+					free(value); // Free value after use
+				}
+				else
+				{
+					printf("export: `%s': not a valid identifier\n", key);
+					free(key); // Free invalid key
+				}
 			}
 			i++;
 		}
