@@ -9,7 +9,8 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <unistd.h>
-# include <termios.h>  // Add termios header
+#include <signal.h>
+// # include <termios.h>
 
 typedef enum e_type_arg
 {
@@ -125,7 +126,7 @@ void	free_tree(t_ast_tree *root);
 void	free_args(t_ast_tree *root);
 void	free_reds(t_redirect *red);
 	int handle_path(char **args, t_env_list *env);
-	void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env);
+void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env, int prev_status);
 	void	dup3(int new, int original);
 	char **turn_env_to_chars(t_env_list *env);
 int	exec_export(t_env_list **env, char **args);
@@ -133,9 +134,9 @@ int exec_unset(t_env_list **env, char **args);
 int exit_shell(char **args);
 int	print_env(t_env_list *env_list);
 void handle_heredoc(t_ast_tree *node);
-void process_all_heredocs(t_ast_tree *node); // Add this new function prototype
+void process_all_heredocs(t_ast_tree *node); 
 char **join_args_without_spaces(t_ast_tree *node);
-void expand_variables(t_ast_tree *node, t_env_list *env, int *status);
+void expand_variables(t_ast_tree *node, t_env_list *env, int prev_status);
 int ft_isalpha(char c);
 int ft_isalnum(char c);
 

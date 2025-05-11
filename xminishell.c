@@ -1,17 +1,8 @@
 #include "includes/minishell.h"
-#include <signal.h>
-volatile sig_atomic_t  gstatus = 0;
 
-//$ $dd
-// handle this shit later in exec
-/*$ "$Dd
+/*
 > bash: unexpected EOF while looking for matching `"'
 bash: syntax error: unexpected end of file
-EL | Amrani --> : ~/Desktop/1733/MiniShell
-$ "$Dd"
-bash: : command not found
-EL | Amrani --> : ~/Desktop/1733/MiniShell
-$
 */
 
 
@@ -56,13 +47,21 @@ void	print_tree(t_ast_tree *tree, int deep)
 	print_tree(tree->right, deep + 1);
 }
 
-	
+// Add this function to properly cleanup readline history
+void cleanup_readline(void)
+{
+    // Clear history
+    clear_history();
+    // Tell readline to free its internal buffers
+    rl_clear_history();
+}
 
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
 	t_lex_list	*tokens;
 	int			status;
+	int			prev_status;
 	t_ast_tree	*astree;
 	t_lex_list	*lopo;
 	struct sigaction sa;
@@ -77,38 +76,43 @@ int	main(int ac, char **av, char **env)
 	av = NULL;
 	int i = 0;
 	status = 0;
+	prev_status = 0;
 	astree = NULL;
 	
 
 	while (1)
 	{
-		status = 0;
 		// disable_raw_mode();
 		
 		input = readline("minishell$ ");
 		
-	
 		// enable_raw_mode();
 		
 		i++;
 		if (!input)
+		{
+			cleanup_readline();
 			break ;
+		}
 		if (input[0])
 			add_history(input);
+			
+		prev_status = status;
+		status = 0;
+		
 		tokens = lexing_the_thing(input, &status);
-		if (status != 0)
+		if (status == 2)
 		{
-			printf("status = %d\n", status);
 			free(input);
 			free_lex_list(tokens);
 			continue ;
-		}
+			}
+		
 		set_the_arg_type(tokens);
 		lopo = tokens;
 		handle_syntax_errors(tokens, &status);
-		if (status != 0)
+		if (status == 2)
 		{
-			printf("status = %d\n", status);
 			free(input);
 			free_lex_list(tokens);
 			continue ;
@@ -118,17 +122,17 @@ int	main(int ac, char **av, char **env)
 		free_lex_list(tokens);
 		
 		handle_heredoc(astree);
-		
-		excute_the_damn_tree(astree, &status, envv);
+		excute_the_damn_tree(astree, &status, envv, prev_status);
 		free_tree(astree);
-		printf("status = %d\n", status);
 		
 		free(input);
 		if (!isatty(STDIN_FILENO)) {
+			cleanup_readline();
 			free_env_list(envv);
 			return status;
 		}
 	}
+	cleanup_readline();
 	free_env_list(envv);	
 	return (0);
 }
