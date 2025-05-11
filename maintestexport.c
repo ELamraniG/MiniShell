@@ -119,7 +119,7 @@ int	main(int ac, char **av, char **env)
 		free_lex_list(tokens);
 		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
-		printf("status = %d\n", status);
+		// printf("status = %d\n", status);
 		free(input);
 		if (!isatty(STDIN_FILENO)) {
 			free_env_list(envv);

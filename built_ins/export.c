@@ -96,7 +96,6 @@ int	exec_export(t_env_list **env, char **args)
 					{
 						value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
 						flag = 1; // flag is for variable with = sign so we print them with export and not print with env
-						printf("we are here");
 						insert_node_last(env, key, value, flag);
 						return (0);
 					}
@@ -110,10 +109,9 @@ int	exec_export(t_env_list **env, char **args)
 				flag = 0;
 				insert_node_last(env, key, value, flag);
 			}
-			else\
+			else
 			{
 				printf("export: `%s': not a valid identifier\n", key);
-				
 			}
 			i++;
 		}
