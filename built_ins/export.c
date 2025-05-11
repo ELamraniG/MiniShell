@@ -49,7 +49,7 @@ void	edit_env_list(t_env_list **d, char *key, char *value) // i give key, if fou
 		if (!ft_strcmp(env->key, key))
 		{
 			free(env->value);
-			env->value = ft_strdup(key);
+			env->value = ft_strdup(value);
 			return ;
 		}
 		env = env->next;

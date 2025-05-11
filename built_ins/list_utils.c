@@ -17,9 +17,9 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new_env_node();
-	tmp->next->key = key;
+	tmp->next->key = ft_strdup(key);
+	tmp->next->value = ft_strdup(value);
 	tmp->next->flag = flag;
-	tmp->next->value = value;
 }
 
 int	list_size(t_env_list *list)
@@ -35,53 +35,31 @@ int	list_size(t_env_list *list)
 	return (count);
 }
 
-void	delete_node(t_env_list **env_list, char *key)
+void	delete_node(t_env_list **head, char *key)
 {
-	t_env_list	*tmp;
-	t_env_list	*tmp2;
-	t_env_list	*to_delete;
-	int			i;
+	t_env_list	*current;
+	t_env_list	*prev;
 
-	if (!key || !(*env_list))
+	if (!key || !*head)
 		return ;
-	tmp = *env_list;
-	i = 0;
-	while (tmp)
+	current = *head;
+	prev = NULL;
+	while (current)
 	{
-		if (!ft_strcmp(tmp->key, key))
+		if (ft_strcmp(current->key, key) == 0)
 			break ;
-		tmp = tmp->next;
+		prev = current;
+		current = current->next;
 	}
-	if (tmp == NULL)
+	if (!current)
 		return ;
-	if (tmp == (*env_list)) // if node to remove was first
-	{
-		(*env_list) = (*env_list)->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-	}
-	else if ((tmp->next == NULL) && !ft_strcmp(tmp->key, key)) // if node to remove was last
-	{
-		tmp2 = *env_list;
-		while (tmp2 && tmp2->next != tmp)
-			tmp2 = tmp2->next;
-		tmp2->next = NULL;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-	}
-	else // if node to remove was in the middle
-	{
-		to_delete = tmp;
-		tmp = *env_list;
-		while (tmp && tmp->next != to_delete)
-			tmp = tmp->next;
-		tmp->next = to_delete->next;
-		free(to_delete->key);
-		free(to_delete->value);
-		free(tmp);
-	}
+	if (prev == NULL)
+		*head = current->next;
+	else
+		prev->next = current->next;
+	free(current->key);
+	free(current->value);
+	free(current);
 }
 
 t_env_list *get_env_value(t_env_list *env_list, char *key)
