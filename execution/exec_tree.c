@@ -60,7 +60,9 @@ int handle_path(char **args, t_env_list *env)
 	{
 		if (!access(args[0], X_OK))
 			return 1;
-		return -1;
+		if (access(args[0], F_OK) == 0)
+			return -2; 
+		return -1; 
 	}
 
 	env = get_env_value(env,"PATH");
@@ -90,14 +92,6 @@ int handle_path(char **args, t_env_list *env)
 		}
 		free(tmp_join);
 		i++;
-	}
-	if (!access(args[0], X_OK))
-	{
-		i = 0;
-		while(splited_path[i])
-			free(splited_path[i++]);
-		free(splited_path);
-		return 1;
 	}
 	i = 0;
 	while(splited_path[i])
@@ -292,6 +286,13 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		astree->args = join_args_without_spaces(astree);
 		expand_variables(astree, env, status);
 		
+		if (excute_redirs(astree) == -1)
+		{
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
+			*status = 1;
+			return;
+		}
 		
 		if (is_built_in(astree->args[0]))
 		{
@@ -317,25 +318,39 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 				ft_putstr_fd(2, astree->args[0]);
 				ft_putstr_fd(2, ": is a directory\n");
 				exit(126);
+				}
+				i = handle_path(astree->args, env);
+				if (i == -1)
+				{
+					ft_putstr_fd(2, astree->args[0]);
+					ft_putstr_fd(2, ": command not found\n");
+					exit(127);	
+				}
+				else if (i == -2)
+				{
+					ft_putstr_fd(2, astree->args[0]);
+					ft_putstr_fd(2, ": Permission denied\n");
+					exit(126);
+				}				
+				char **env_char = turn_env_to_chars(env);
+				execve(astree->args[0], astree->args, env_char);
+				perror(astree->args[0]);
+				if (env_char)
+				{
+					int i = 0;
+					while (env_char[i])
+						free(env_char[i++]);
+					free(env_char);
+				}
+				exit(127);
 			}
-			if (handle_path(astree->args, env) == -1)
-			{
-				ft_putstr_fd(2,astree->args[0]);
-				ft_putstr_fd(2, ": command not found\n");
-				exit(127);	
-			}
-            char **env_char = turn_env_to_chars(env);
-			execve(astree->args[0], astree->args, env_char);
-			perror(NULL);
-			exit(127);
+			waitpid(pid1, &exit_code, 0);
+			if (WIFEXITED(exit_code))
+				*status = WEXITSTATUS(exit_code);
+			else if (WIFSIGNALED(exit_code))
+				*status = 128 + WTERMSIG(exit_code);
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
 		}
-		waitpid(pid1, &exit_code, 0);
-		if (WIFEXITED(exit_code))
-			*status = WEXITSTATUS(exit_code);
-		else if (WIFSIGNALED(exit_code))
-			*status = 128 + WTERMSIG(exit_code);
-		dup3(stdinn, STDIN_FILENO);
-		dup3(stdoutt, STDOUT_FILENO);
 	}
-}
-
+	

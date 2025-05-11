@@ -62,7 +62,7 @@ static void	syntax_error(t_lex_list *token, int *status)
 	else if (token->s)
 		ft_putstr_fd(STDERR_FILENO, token->s);
 	ft_putstr_fd(STDERR_FILENO, "'\n");
-	*status = 2; // Changed from 258 to 2 to match bash's standard exit code
+	*status = 2;
 }
 
 static int	validate_redirection(t_lex_list *token, int *status)
@@ -176,49 +176,49 @@ static int	check_initial_redirection(t_lex_list *token, int *status)
 	return (1);
 }
 
-void	handle_syntax_errors(t_lex_list *token, int *status)
+int	handle_syntax_errors(t_lex_list *token, int *status)
 {
 	t_lex_list	*current;
 
 	if (!token)
-		return ;
+		return (1);
 	if (!check_valid_parentheses(token))
 	{
 		syntax_error(NULL, status);
-		return ;
+		return (0);
 	}
 	if (token->a_type == PIPE || token->a_type == AND || token->a_type == OR)
 	{
 		syntax_error(token, status);
-		return ;
+		return (0);
 	}
 	if (is_redirection(token->a_type) && !check_initial_redirection(token,
 			status))
-		return ;
+		return (0);
 	current = token;
 	while (current)
 	{
 		if (is_redirection(current->a_type) && !validate_redirection(current,
 				status))
-			return ;
+			return (0);
 		if (!validate_parentheses(current, status))
-			return ;
+			return (0);
 		if (current->a_type == PIPE)
 		{
 			if (!current->next)
 			{
 				syntax_error(NULL, status);
-				return ;
+				return (0);
 			}
 			if (current->next->a_type == PIPE)
 			{
 				syntax_error(current->next, status);
-				return ;
+				return (0);
 			}
 			if (current->next && is_redirection(current->next->a_type))
 			{
 				syntax_error(current->next, status);
-				return ;
+				return (0);
 			}
 		}
 		if (is_logical_operator(current->a_type))
@@ -226,17 +226,18 @@ void	handle_syntax_errors(t_lex_list *token, int *status)
 			if (!current->next)
 			{
 				syntax_error(NULL, status);
-				return ;
+				return (0);
 			}
 			if (current->next->a_type == PIPE || current->next->a_type == AND
 				|| current->next->a_type == OR)
 			{
 				syntax_error(current->next, status);
-				return ;
+				return (0);
 			}
 		}
 		if (current->next && !wach_valid_tokens(current, status))
-			return ;
+			return (0);
 		current = current->next;
 	}
+	return (1);
 }

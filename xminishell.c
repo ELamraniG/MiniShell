@@ -47,12 +47,9 @@ void	print_tree(t_ast_tree *tree, int deep)
 	print_tree(tree->right, deep + 1);
 }
 
-// Add this function to properly cleanup readline history
-void cleanup_readline(void)
+void free_read_line(void)
 {
-    // Clear history
     clear_history();
-    // Tell readline to free its internal buffers
     rl_clear_history();
 }
 
@@ -68,47 +65,35 @@ int	main(int ac, char **av, char **env)
 	t_env_list *envv = NULL; 
 	set_up_env(env, &envv);
 
-	
-	// enable_raw_mode();
-	
 	ac = 0;
 	av = NULL;
 	int i = 0;
-	status = 0;
 	astree = NULL;
 	
-
 	while (1)
 	{
-		// disable_raw_mode();
-		
 		input = readline("minishell$ ");
-		
-		// enable_raw_mode();
 		
 		i++;
 		if (!input)
 		{
-			cleanup_readline();
+			free_read_line
+		();
 			break ;
 		}
 		if (input[0])
 			add_history(input);
 			
-		status = 0;
-		
 		tokens = lexing_the_thing(input, &status);
-		if (status == 2)
+		if (!tokens)
 		{
 			free(input);
-			free_lex_list(tokens);
-			continue ;
-			}
+			continue;
+		}
 		
 		set_the_arg_type(tokens);
 		lopo = tokens;
-		handle_syntax_errors(tokens, &status);
-		if (status == 2)
+		if (!handle_syntax_errors(tokens, &status))
 		{
 			free(input);
 			free_lex_list(tokens);
@@ -124,12 +109,12 @@ int	main(int ac, char **av, char **env)
 		
 		free(input);
 		if (!isatty(STDIN_FILENO)) {
-			cleanup_readline();
+			free_read_line();
 			free_env_list(envv);
 			return status;
 		}
 	}
-	cleanup_readline();
+	free_read_line();
 	free_env_list(envv);	
 	return (0);
 }

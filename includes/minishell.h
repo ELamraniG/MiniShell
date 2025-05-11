@@ -108,7 +108,7 @@ t_ast_tree				*parse_pipe(t_lex_list **token);
 t_ast_tree				*parse_parenthesis_cmds(t_lex_list **token);
 t_ast_tree				*create_ast_tree(t_lex_list *token);
 void					remove_quotes(t_lex_list *token);
-void					handle_syntax_errors(t_lex_list *token, int *status);
+int						handle_syntax_errors(t_lex_list *token, int *status);
 
 t_env_list				*new_env_node(void);
 void					set_up_env(char **env, t_env_list **env_list);
@@ -141,6 +141,9 @@ int ft_isalpha(char c);
 int ft_isalnum(char c);
 
 t_redirect	*new_node_redir(char *str, int type,int q_type);
+
+// Add global variable for last exit status
+extern int g_exit_status;
 
 void	add_to_list_redir(t_redirect **ll, char *str, int type,int q_type);
 

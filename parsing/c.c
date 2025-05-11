@@ -7,10 +7,11 @@ int	ft_isspace(int c)
 	return (0);
 }
 
-void	put_syntax_error(void)
+void	put_syntax_error(int *status)
 {
 	write(2, "bash: syntax unclosed quote\n",
 		ft_strlen("bash: syntax unclosed quote\n"));
+	*status = 2;
 }
 
 void	arg_type(t_lex_list *token)
@@ -37,7 +38,7 @@ void	arg_type(t_lex_list *token)
 		token->a_type = WORD;
 }
 
-static void	get_next_quote(char *str, int *i, char c, int *status)
+static int	get_next_quote(char *str, int *i, char c, int *status)
 {
 	(*i)++;
 	while (str[*i] && str[*i] != c)
@@ -45,9 +46,12 @@ static void	get_next_quote(char *str, int *i, char c, int *status)
 	if (str[*i] != c)
 	{
 		*status = 2;
-		put_syntax_error();
+		put_syntax_error(status);
+		return (0);
 	}
+	return (1);
 }
+
 int	is_special(char c)
 {
 	if (c == '|' || c == '<' || c == '>')
@@ -73,18 +77,18 @@ void	skip_spaces(char *str, int *i, int *j)
 	}
 }
 
-void	handle_quote(char *str, t_vars *t, char q, int *status)
+int	handle_quote(char *str, t_vars *t, char q, int *status)
 {
 	if (q == '\'')
 		t->quote = SQ;
 	else
 		t->quote = DQ;
-	get_next_quote(str, &(t->i), q, status);
-	if (*status != 0)
-		return ;
+	if (!get_next_quote(str, &(t->i), q, status))
+		return (0); 
 	if (str[t->i] && ft_isspace(str[t->i + 1]))
 		t->is_space = 1;
 	t->i++;
+	return 1;
 }
 
 static void	init_t_vars(t_vars *t, t_lex_list **tokens)
@@ -95,13 +99,12 @@ static void	init_t_vars(t_vars *t, t_lex_list **tokens)
 	t->j = 0;
 }
 
-void	norm_lexing_the_thing(char *str, t_vars *t, int *status)
+int	norm_lexing_the_thing(char *str, t_vars *t, int *status)
 {
 	if (str[t->i] == '\'' || str[t->i] == '"')
 	{
-		handle_quote(str, t, str[t->i], status);
-		if (*status != 0)
-			return ;
+		if (!handle_quote(str, t, str[t->i], status))
+			return 0;
 	}
 	else if (str[t->i] == '(' || str[t->i] == ')')
 		t->i++;
@@ -119,6 +122,7 @@ void	norm_lexing_the_thing(char *str, t_vars *t, int *status)
 		if (str[t->i] && ft_isspace(str[t->i]))
 			t->is_space = 1;
 	}
+	return 1;
 }
 
 t_lex_list	*lexing_the_thing(char *str, int *status)
@@ -133,8 +137,8 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 		t.is_space = 0;
 		t.quote = NQ;
 		skip_spaces(str, &t.i, &t.j);
-		norm_lexing_the_thing(str, &t, status);
-		if (*status != 0)
+		
+		if (!norm_lexing_the_thing(str, &t, status))
 		{
 			free_lex_list(tokens);
 			return (NULL);
