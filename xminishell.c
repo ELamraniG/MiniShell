@@ -61,7 +61,6 @@ int	main(int ac, char **av, char **env)
 	char		*input;
 	t_lex_list	*tokens;
 	int			status;
-	int			prev_status;
 	t_ast_tree	*astree;
 	t_lex_list	*lopo;
 	struct sigaction sa;
@@ -76,7 +75,6 @@ int	main(int ac, char **av, char **env)
 	av = NULL;
 	int i = 0;
 	status = 0;
-	prev_status = 0;
 	astree = NULL;
 	
 
@@ -97,7 +95,6 @@ int	main(int ac, char **av, char **env)
 		if (input[0])
 			add_history(input);
 			
-		prev_status = status;
 		status = 0;
 		
 		tokens = lexing_the_thing(input, &status);
@@ -122,7 +119,7 @@ int	main(int ac, char **av, char **env)
 		free_lex_list(tokens);
 		
 		handle_heredoc(astree);
-		excute_the_damn_tree(astree, &status, envv, prev_status);
+		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
 		
 		free(input);

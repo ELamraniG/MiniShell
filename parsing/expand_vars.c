@@ -130,7 +130,7 @@ static char *join_expanded_parts(t_redirect *redir, t_env_list *env, int *status
     return result;
 }
 
-void expand_variables(t_ast_tree *node, t_env_list *env, int prev_status)
+void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
 {
     int i = 0;
 
@@ -138,9 +138,9 @@ void expand_variables(t_ast_tree *node, t_env_list *env, int prev_status)
         while (i < node->arg_counter && node->args[i])
         {
             if (node->q_type)
-                node->args[i] = var_to_str(node->args[i], env, &prev_status, node->q_type[i]);
+                node->args[i] = var_to_str(node->args[i], env, status, node->q_type[i]);
             else
-                node->args[i] = var_to_str(node->args[i], env, &prev_status, NQ);
+                node->args[i] = var_to_str(node->args[i], env, status, NQ);
             i++;
         }
     }
@@ -150,7 +150,7 @@ void expand_variables(t_ast_tree *node, t_env_list *env, int prev_status)
     {
         if (redir->type != HEREDOC)
         {
-            char *LAST_DAMN_FILE_NAME = join_expanded_parts(redir, env, &prev_status);
+            char *LAST_DAMN_FILE_NAME = join_expanded_parts(redir, env, status);
             redir->LAST_DAMN_FILE_NAME = LAST_DAMN_FILE_NAME;
         }
         redir = redir->next;
