@@ -1,17 +1,12 @@
 #include "../includes/minishell.h"
 
-void	print_export(t_env_list *env_list)
+static int	ft_isalnum(int c)
 {
-	while (env_list)
-	{
-		printf("declare -x %s", env_list->key);
-		if (env_list->flag)
-			printf("=\"%s\"\n", env_list->value);
-		else
-			printf("\n");
-		env_list = env_list->next;
-	}
+	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+		return (1);
+	return (0);
 }
+
 static int	validate_key(char *s)
 {
 	int	i;
@@ -22,7 +17,7 @@ static int	validate_key(char *s)
 	i++;
 	while (s[i])
 	{
-		if (s[i] != '_' || !ft_isalnum(s[i]))
+		if (s[i] != '_' && !ft_isalnum(s[i]))
 			return (0);
 		i++;
 	}
@@ -60,12 +55,25 @@ void	edit_env_list(t_env_list **d, char *key, char *value) // i give key, if fou
 		if (!ft_strcmp(env->key, key))
 		{
 			free(env->value);
-			env->value = value;
+			env->value = ft_strdup(key);
 			return ;
 		}
 		env = env->next;
 	}
 	insert_node_last(d, key, value, 0);
+}
+
+void	print_export(t_env_list *env_list)
+{
+	while (env_list)
+	{
+		printf("declare -x %s", env_list->key);
+		if (env_list->flag)
+			printf("=\"%s\"\n", env_list->value);
+		else
+			printf("\n");
+		env_list = env_list->next;
+	}
 }
 
 int	exec_export(t_env_list **env, char **args)
@@ -78,32 +86,40 @@ int	exec_export(t_env_list **env, char **args)
 
 	i = 1;
 	j = 0;
-	if (args[1] == NULL)
+	if (args[1] == NULL) 
 		print_export(*env);
 	else // with letter, underscore, number not at first.
 	{
 		while (args[i])
 		{
 			j = 0;
-			while (args[i][j])
+			while (args[i][j]) // either we will have 'key' | 'key=' | 'key=abc' or invalid key
 			{
-				if (validate_key(args[i]))
+				if (args[i][j] == '=')
 				{
-					if (args[i][j] == '=')
+					key = ft_substr(args[i], 0, j);
+					if (validate_key(key))
 					{
-						(*env)->key = ft_substr(args[i], 0, j - 1);
-						(*env)->value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
-						flag = 1;
+						value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
+						flag = 1; // flag is for variable with = sign so we print them with export and not print with env
+						printf("we are here");
+						insert_node_last(env, key, value, flag);
+						return (0);
 					}
-					else
-					{
-						(*env)->key = ft_strdup(args[i]);
-						(*env)->value = ft_strdup("");
-						flag = 0;
-					}
-					insert_node_last(env, key, value, flag);
 				}
 				j++;
+			}
+			key = ft_substr(args[i], 0, j);
+			if (validate_key(key))
+			{
+				value = ft_strdup("");
+				flag = 0;
+				insert_node_last(env, key, value, flag);
+			}
+			else\
+			{
+				printf("export: `%s': not a valid identifier\n", key);
+				
 			}
 			i++;
 		}
