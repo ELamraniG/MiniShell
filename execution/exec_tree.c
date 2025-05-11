@@ -319,14 +319,15 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 				ft_putstr_fd(2, ": is a directory\n");
 				exit(126);
 				}
-				i = handle_path(astree->args, env);
-				if (i == -1)
+				//i used pid just for norminette
+				pid2 = handle_path(astree->args, env);
+				if (pid2 == -1)
 				{
 					ft_putstr_fd(2, astree->args[0]);
 					ft_putstr_fd(2, ": command not found\n");
 					exit(127);	
 				}
-				else if (i == -2)
+				else if (pid2 == -2)
 				{
 					ft_putstr_fd(2, astree->args[0]);
 					ft_putstr_fd(2, ": Permission denied\n");
@@ -337,9 +338,10 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 				perror(astree->args[0]);
 				if (env_char)
 				{
-					int i = 0;
-					while (env_char[i])
-						free(env_char[i++]);
+					//again pid just for norm
+					pid2 = 0;
+					while (env_char[pid2])
+						free(env_char[pid2++]);
 					free(env_char);
 				}
 				exit(127);
