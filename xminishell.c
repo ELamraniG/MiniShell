@@ -77,8 +77,7 @@ int	main(int ac, char **av, char **env)
 		i++;
 		if (!input)
 		{
-			free_read_line
-		();
+			free_read_line();
 			break ;
 		}
 		if (input[0])
