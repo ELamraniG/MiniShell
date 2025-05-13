@@ -18,6 +18,7 @@ static int	validate_key(char *s)
 	return (1);
 }
 
+
 char	*get_value_env(t_env_list**d, char *key) // function i give it key, it returns the value, if no value found return NULL
 {
 	t_env_list	*env;
