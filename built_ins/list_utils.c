@@ -4,6 +4,8 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 {
 	t_env_list	*tmp;
 
+	if (!d)
+		return ;
 	tmp = (*d);
 	if (!tmp)
 	{
@@ -14,6 +16,18 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 		*d = tmp;
 		return	;
 	}
+	tmp = (*d);
+	while (tmp)
+	{
+		if (!ft_strcmp(tmp->key, key))
+		{
+			free(tmp->value);
+			tmp->value = ft_strdup(value);
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	tmp = (*d);
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new_env_node();

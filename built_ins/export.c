@@ -1,6 +1,5 @@
 #include "../includes/minishell.h"
 
-
 static int	validate_key(char *s)
 {
 	int	i;
@@ -18,7 +17,6 @@ static int	validate_key(char *s)
 	return (1);
 }
 
-
 char	*get_value_env(t_env_list**d, char *key) // function i give it key, it returns the value, if no value found return NULL
 {
 	t_env_list	*env;
@@ -33,29 +31,6 @@ char	*get_value_env(t_env_list**d, char *key) // function i give it key, it retu
 		env = env->next;
 	}
 	return (NULL);
-}
-
-void	edit_env_list(t_env_list **d, char *key, char *value) // i give key, if found change value, else insert_node()
-{
-	t_env_list	*env;
-
-	if (*d == NULL) // if list doesn't exist
-	{
-		insert_node_last(d, key, value, 0);
-		return ;
-	}
-	env = *d;
-	while (env)
-	{
-		if (!ft_strcmp(env->key, key))
-		{
-			free(env->value);
-			env->value = ft_strdup(value);
-			return ;
-		}
-		env = env->next;
-	}
-	insert_node_last(d, key, value, 0);
 }
 
 void	print_export(t_env_list *env_list)
