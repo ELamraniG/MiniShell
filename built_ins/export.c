@@ -46,65 +46,101 @@ void	print_export(t_env_list *env_list)
 	}
 }
 
+int	find_key(t_env_list *d, char *key)
+{
+	while (d)
+	{
+		if (!ft_strcmp(d->key, key))
+			return (1);
+		d = d->next;
+	}
+	return (0);
+}
+
 int	exec_export(t_env_list **env, char **args)
 {
-	int		i;
-	int		j;
-	int		flag;
-	char	*key;
-	char	*value;
+	int			i;
+	int			j;
+	char		*key;
+	char		*value;
+	t_env_list	*exists;
 
-	i = 1;
-	j = 0;
-	if (args[1] == NULL) 
-		print_export(*env);
-	else // with letter, underscore, number not at first.
+	i = 0;
+	if (!args[1]) 
 	{
-		while (args[i])
+		print_export(*env);
+		return (0);
+	}
+	while (args[++i])
+	{
+		j = -1;
+		while (args[i][++j])
 		{
-			j = 0;
-			while (args[i][j]) // either we will have 'key' | 'key=' | 'key=abc' or invalid key
+			if (args[i][j] == '=')
 			{
-				if (args[i][j] == '=')
+				// handling empty key case (export =value)
+				if (j == 0)
 				{
-					key = ft_substr(args[i], 0, j);
-					if (validate_key(key))
+					printf("export: `%s': not a valid identifier\n", args[i]);
+					break;
+				}
+				// handling += case
+				if (j > 0 && args[i][j - 1] == '+')
+				{
+					key = ft_substr(args[i], 0, j-1);
+					if (!validate_key(key))
 					{
-						value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
-						flag = 1; // flag is for variable with = sign so we print them with export and not print with env
-						insert_node_last(env, key, value, flag);
-						free(key); // Free key after use
-						free(value); // Free value after use
-						break; // Skip the rest of the loop since we've found '='
-					}
-					else
-					{
-						free(key); // Free invalid key
-						printf("export: `%s': not a valid identifier\n", args[i]);
+						printf("export: `%s': not a valid identifier\n", key);
+						free(key);
 						break;
 					}
+					value = ft_substr(args[i], j+1, ft_strlen(args[i])-j);
+					exists = get_env_value(*env, key);
+					if (exists)
+					{
+						char *new_val = ft_strjoin(exists->value, value);
+						free(exists->value);
+						exists->value = new_val;
+						exists->flag = 1;
+					}
+					else
+						insert_node_last(env, key, value, 1);
+					free(key);
+					free(value);
 				}
-				j++;
-			}
-			if (args[i][j] == '\0' && j > 0) // No '=' found in the argument
-			{
-				key = ft_substr(args[i], 0, j);
-				if (validate_key(key))
-				{
-					value = ft_strdup("");
-					flag = 0;
-					insert_node_last(env, key, value, flag);
-					free(key); // Free key after use
-					free(value); // Free value after use
-				}
+				// normal = case
 				else
 				{
-					printf("export: `%s': not a valid identifier\n", key);
-					free(key); // Free invalid key
+					key = ft_substr(args[i], 0, j);
+					if (!validate_key(key))
+					{
+						printf("export: `%s': not a valid identifier\n", key);
+						free(key);
+						break;
+					}
+					value = ft_substr(args[i], j+1, ft_strlen(args[i])-j);
+					insert_node_last(env, key, value, 1);
+					free(key);
+					free(value);
 				}
+				break;
 			}
-			i++;
+		}
+		// No = found, just key
+		if (!args[i][j] && j > 0)
+		{
+			key = ft_strdup(args[i]);
+			if (!validate_key(key))
+			{
+				printf("export: `%s': not a valid identifier\n", key);
+				free(key);
+				continue;
+			}
+			exists = get_env_value(*env, key);
+			if (!exists)
+				insert_node_last(env, key, "", 0);
+			free(key);
 		}
 	}
-	return 0;
+	return (0);
 }
