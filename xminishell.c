@@ -49,12 +49,21 @@ void	print_tree(t_ast_tree *tree, int deep)
 void	free_read_line(void)
 {
 	clear_history();
-	// rl_clear_history();
+	rl_clear_history();
+}
+
+void	handlectrlc(int n)
+{
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 int	main(int ac, char **av, char **env)
 {
 	char *input;
+	int here_doc = 0;
 	t_lex_list *tokens;
 	int status;
 	t_ast_tree *astree;
@@ -69,6 +78,9 @@ int	main(int ac, char **av, char **env)
 	int i = 0;
 	astree = NULL;
 
+	signal(SIGINT, handlectrlc);
+	signal(SIGQUIT, SIG_IGN);
+	rl_catch_signals = 0;
 	while (1)
 	{
 		input = readline("minishell$ ");
@@ -101,7 +113,12 @@ int	main(int ac, char **av, char **env)
 		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
 
-		handle_heredoc(astree);
+		if (handle_heredoc(astree, 0) == -1)
+		{
+			free_tree(astree);
+			free(input);
+			continue ;
+		}
 		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
 

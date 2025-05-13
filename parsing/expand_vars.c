@@ -139,8 +139,6 @@ void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
         {
             if (node->q_type)
                 node->args[i] = var_to_str(node->args[i], env, status, node->q_type[i]);
-            else
-                node->args[i] = var_to_str(node->args[i], env, status, NQ);
             i++;
         }
     }

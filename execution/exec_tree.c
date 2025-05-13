@@ -313,12 +313,6 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		if (pid1 == 0)
 		{
 			struct stat	l;
-			if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
-			{
-				ft_putstr_fd(2, astree->args[0]);
-				ft_putstr_fd(2, ": is a directory\n");
-				exit(126);
-				}
 				//i used pid just for norminette
 				pid2 = handle_path(astree->args, env);
 				if (pid2 == -1)
@@ -332,7 +326,13 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 					ft_putstr_fd(2, astree->args[0]);
 					ft_putstr_fd(2, ": Permission denied\n");
 					exit(126);
-				}				
+				}
+				if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
+				{
+				ft_putstr_fd(2, astree->args[0]);
+				ft_putstr_fd(2, ": is a directory\n");
+				exit(126);
+				}			
 				char **env_char = turn_env_to_chars(env);
 				execve(astree->args[0], astree->args, env_char);
 				perror(astree->args[0]);
