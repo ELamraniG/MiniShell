@@ -237,8 +237,10 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		}
 		close(pipes[0]);
 		close(pipes[1]);
+		ignore_signals();
 		waitpid(pid1, NULL, 0);
 		waitpid(pid2, &exit_code, 0);
+		handle_main_sigs();
 		if (WIFEXITED(exit_code))
 			*status = WEXITSTATUS(exit_code);
 		else if (WIFSIGNALED(exit_code))
@@ -312,47 +314,52 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		}
 		if (pid1 == 0)
 		{
-			struct stat	l;
-				//i used pid just for norminette
-				pid2 = handle_path(astree->args, env);
-				if (pid2 == -1)
-				{
-					ft_putstr_fd(2, astree->args[0]);
-					ft_putstr_fd(2, ": command not found\n");
-					exit(127);	
-				}
-				else if (pid2 == -2)
-				{
-					ft_putstr_fd(2, astree->args[0]);
-					ft_putstr_fd(2, ": Permission denied\n");
-					exit(126);
-				}
-				if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
-				{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
+
+			struct stat l;
+			//i used pid just for norminette
+			pid2 = handle_path(astree->args, env);
+			if (pid2 == -1)
+			{
+				ft_putstr_fd(2, astree->args[0]);
+				ft_putstr_fd(2, ": command not found\n");
+				exit(127);
+			}
+			else if (pid2 == -2)
+			{
+				ft_putstr_fd(2, astree->args[0]);
+				ft_putstr_fd(2, ": Permission denied\n");
+				exit(126);
+			}
+			if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
+			{
 				ft_putstr_fd(2, astree->args[0]);
 				ft_putstr_fd(2, ": is a directory\n");
 				exit(126);
-				}			
-				char **env_char = turn_env_to_chars(env);
-				execve(astree->args[0], astree->args, env_char);
-				perror(astree->args[0]);
-				if (env_char)
-				{
-					//again pid just for norm
-					pid2 = 0;
-					while (env_char[pid2])
-						free(env_char[pid2++]);
-					free(env_char);
-				}
-				exit(127);
 			}
-			waitpid(pid1, &exit_code, 0);
-			if (WIFEXITED(exit_code))
-				*status = WEXITSTATUS(exit_code);
-			else if (WIFSIGNALED(exit_code))
-				*status = 128 + WTERMSIG(exit_code);
-			dup3(stdinn, STDIN_FILENO);
-			dup3(stdoutt, STDOUT_FILENO);
+			char **env_char = turn_env_to_chars(env);
+			execve(astree->args[0], astree->args, env_char);
+			perror(astree->args[0]);
+			if (env_char)
+			{
+				//again,,,pid just for norminette
+				pid2 = 0;
+				while (env_char[pid2])
+					free(env_char[pid2++]);
+				free(env_char);
+			}
+			exit(127);
 		}
+		ignore_signals();
+		waitpid(pid1, &exit_code, 0);
+		handle_main_sigs();
+		if (WIFEXITED(exit_code))
+			*status = WEXITSTATUS(exit_code);
+		else if (WIFSIGNALED(exit_code))
+			*status = 128 + WTERMSIG(exit_code);
+		dup3(stdinn, STDIN_FILENO);
+		dup3(stdoutt, STDOUT_FILENO);
 	}
-	
+}
+

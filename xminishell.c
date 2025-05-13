@@ -54,6 +54,7 @@ void	free_read_line(void)
 
 void	handlectrlc(int n)
 {
+	sigarette = 130;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -68,8 +69,7 @@ int	main(int ac, char **av, char **env)
 	int status;
 	t_ast_tree *astree;
 	t_lex_list *lopo;
-	struct sigaction sa;
-
+	
 	t_env_list *envv = NULL;
 	set_up_env(env, &envv);
 
@@ -78,13 +78,16 @@ int	main(int ac, char **av, char **env)
 	int i = 0;
 	astree = NULL;
 
-	signal(SIGINT, handlectrlc);
-	signal(SIGQUIT, SIG_IGN);
-	rl_catch_signals = 0;
-	while (1)
-	{
-		input = readline("minishell$ ");
+	handle_main_sigs();
 
+	while (1)
+	{	
+		input = readline("minishell$ ");
+		if (sigarette != 0)
+		{
+			status = sigarette;
+			sigarette = 0;
+		}
 		i++;
 		if (!input)
 		{

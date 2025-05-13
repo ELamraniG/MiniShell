@@ -30,6 +30,7 @@ SRC =	str_utils/ft_split.c \
 		execution/excuting_redirs.c \
 		execution/exec_tree.c \
 		execution/handle_heredoc.c \
+		utils/signals.c \
 		term_control.c \
 
 OBJ = $(SRC:.c=.o)

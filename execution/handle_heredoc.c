@@ -1,126 +1,122 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_heredoc.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By:                                             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/14 10:00:00                     #+#    #+#             */
+/*   Updated: 2025/05/14 10:00:00                     ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-char	*join_all_names(char **file_name, int count)
+static char	*join_all_file_names(t_redirect *redir)
 {
-	int		i;
 	char	*s;
 	char	*tmp_free;
-
-	i = 0;
-	s = ft_strdup("");
-	while (i < count)
+	int		i;
+	
+	s = ft_strdup(redir->file_name[0]);
+	i = 1;
+	while (i < redir->file_str_count)
 	{
 		tmp_free = s;
-		s = ft_strjoin(s, file_name[i]);
+		s = ft_strjoin(s, redir->file_name[i]);
 		free(tmp_free);
 		i++;
 	}
 	return (s);
 }
-void	handle_sig_doc(int n)
-{
-	sigarette = 130;
-}
 
-void	zbi(int sig)
+static void	get_heredoc(t_redirect *redir, int pipe_fd[2])
 {
-	(void)sig;
-	write(1, "\n", 1);
-	exit(1);
-}
+	char	*line;
+	char	*delimiter;
 
-static void	create_a_heredoc(t_redirect *redir, int *sss)
-{
-	char	*input;
-	struct termios terma;
-	void            (*original_sigint)(int);
-	int		pipes[2];
-	int		pid;
-	int		status;
+	signal(SIGINT, heredoc_child_signal);
+	close(pipe_fd[0]);
+	
+	if (!redir->LAST_DAMN_FILE_NAME)
+		redir->LAST_DAMN_FILE_NAME = join_all_file_names(redir);
+	delimiter = redir->LAST_DAMN_FILE_NAME;
 
-	status = 0;
-	if (pipe(pipes) == -1)
+	while (1337)
 	{
-		perror("pipe");
-		return ;
-	}
-	tcgetattr(STDIN_FILENO, &terma);
-	original_sigint = signal(SIGINT, SIG_IGN);
-	pid = fork();
-	if (pid == -1)
-	{
-		close(pipes[0]);
-		close(pipes[1]);
-	}
-	if (pid == 0)
-	{
-		signal(SIGINT, zbi);
-		redir->LAST_DAMN_FILE_NAME = join_all_names(redir->file_name,
-				redir->file_str_count);
-		while (1337)
+		line = readline("> ");
+		if (!line || !ft_strcmp(line, delimiter))
 		{
-			input = readline("> ");
-			if (!input)
-			{
-				ft_putstr_fd(2,
-					"minishell: warning: here-document delimited by end-of-file (wanted ");
-				ft_putstr_fd(2, redir->LAST_DAMN_FILE_NAME);
-				ft_putstr_fd(2, ")\n");
-				break ;
-			}
-			if (!ft_strcmp(redir->LAST_DAMN_FILE_NAME, input))
-			{
-				free(input);
-				break ;
-			}
-			ft_putstr_fd(pipes[1], input);
-			ft_putstr_fd(pipes[1], "\n");
-			free(input);
+			free(line);
+			break;
 		}
-		close(pipes[0]);
-		close(pipes[1]);
-		exit(0);
+		ft_putstr_fd(pipe_fd[1], line);
+		ft_putstr_fd(pipe_fd[1], "\n");
+		free(line);
 	}
-	close(pipes[1]);
-	tcsetattr(STDIN_FILENO, 0, &terma);
-	signal(SIGINT, original_sigint);
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		*sss = WEXITSTATUS(status);
-	if (*sss != 0)
-		close(pipes[0]);
-	redir->heredoc = pipes[0];
+	close(pipe_fd[1]);
+	exit(0);
 }
 
-int	handle_heredoc(t_ast_tree *node, int sss)
+static int	create_the_dawg(t_redirect *redir)
 {
-	t_redirect	*redir;
+	int				pipe_fd[2];
+	struct termios	original_term;
+	pid_t			pid;
+	int				status;
 
-	if (!node)
-		return (0);
-	if (sss != 0)
+	tcgetattr(STDIN_FILENO, &original_term);
+	if (pipe(pipe_fd) == -1)
+		return (-1);
+		
+	pid = fork();
+	if (pid)
 	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 		return (-1);
 	}
-	if (node->redirect)
-	{
-		redir = node->redirect;
-		while (redir)
+	if (pid == 0)
+		get_heredoc(redir, pipe_fd);
+	close(pipe_fd[1]);
+	waitpid(pid, &status, 0);
+	tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
+	handle_main_sigs();
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
 		{
-			if (redir->type == HEREDOC)
-				create_a_heredoc(redir, &sss);
-			if (sss != 0)
-			{
-				printf("\n");
-				rl_on_new_line();
-				rl_replace_line("", 0);
-				rl_redisplay();
-				return (-1);
-			}
-			redir = redir->next;
+			close(pipe_fd[0]);
+			sigarette = 130;
+			return (-1);
 		}
+		redir->heredoc = pipe_fd[0];
+	
+	
+	
+	return (0);
+}
+
+int	handle_heredoc(t_ast_tree *node, int n)
+{
+	t_redirect	*redir;
+	
+	if (!node)
+		return (0);
+		
+	if (node->left && handle_heredoc(node->left, n) == -1)
+		return (-1);
+	if (node->right && handle_heredoc(node->right, n) == -1)
+		return (-1);
+		
+	redir = node->redirect;
+	while (redir)
+	{
+		if (redir->type == HEREDOC)
+		{
+			if (create_the_dawg(redir) == -1)
+				return (-1);
+		}
+		redir = redir->next;
 	}
-	handle_heredoc(node->left, sss);
-	handle_heredoc(node->right, sss);
+	
 	return (0);
 }

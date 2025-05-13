@@ -10,8 +10,8 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-// # include <termios.h>
-int						sigarette = 0;
+# include <termios.h>
+static int						sigarette = 0;
 typedef enum e_type_arg
 {
 	IN_REDIR,
@@ -146,7 +146,12 @@ void					add_to_list_redir(t_redirect **ll, t_redirect *t);
 t_redirect				*new_node_redir(char *str, int type, int q_type);
 void					handlectrlc(int n);
 
-// void disable_raw_mode(void);
-// void enable_raw_mode(void);
+// Signal handling functions
+void					ft_handle_sigint(int sig);
+void					handle_sig_exec_ve(int sig);
+void					heredoc_child_signal(int sig);
+void					handle_main_sigs(void);
+void					reset_signals(void);
+void					ignore_signals(void);
 
 #endif
