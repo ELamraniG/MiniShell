@@ -1,17 +1,17 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <termios.h>
-static int						sigarette = 0;
+// # include <termios.h>
+int						sigarette = 0;
 typedef enum e_type_arg
 {
 	IN_REDIR,
