@@ -30,15 +30,13 @@ static char	*join_all_file_names(t_redirect *redir)
 	return (s);
 }
 
-static void	get_heredoc(t_redirect *redir, int pipe_fd[2])
+static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2])
 {
 	char	*line;
 	char	*delimiter;
 
 	signal(SIGINT, heredoc_child_signal);
 	close(pipe_fd[0]);
-	
-	if (!redir->LAST_DAMN_FILE_NAME)
 		redir->LAST_DAMN_FILE_NAME = join_all_file_names(redir);
 	delimiter = redir->LAST_DAMN_FILE_NAME;
 
@@ -50,6 +48,8 @@ static void	get_heredoc(t_redirect *redir, int pipe_fd[2])
 			free(line);
 			break;
 		}
+		
+		
 		ft_putstr_fd(pipe_fd[1], line);
 		ft_putstr_fd(pipe_fd[1], "\n");
 		free(line);
@@ -70,27 +70,36 @@ static int	create_the_dawg(t_redirect *redir)
 		return (-1);
 		
 	pid = fork();
-	if (pid)
+	if (pid == -1)
 	{
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 		return (-1);
 	}
 	if (pid == 0)
-		get_heredoc(redir, pipe_fd);
+		process_heredoc_content(redir, pipe_fd);
 	close(pipe_fd[1]);
+	ignore_signals();
 	waitpid(pid, &status, 0);
 	tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
 	handle_main_sigs();
-	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
-		{
-			close(pipe_fd[0]);
-			sigarette = 130;
-			return (-1);
-		}
-		redir->heredoc = pipe_fd[0];
 	
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		close(pipe_fd[0]);
+		sigarette = 130;
 	
+		return (-1);
+	}
+	else if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+	{
+		close(pipe_fd[0]);
+		sigarette = 130;
+		ft_putstr_fd(2, "\n\n\n\n\n\n\n\n");
+		printf("we exited with sig = %d\n", sigarette);
+		return (-1);
+	}
+	redir->heredoc = pipe_fd[0];
 	
 	return (0);
 }

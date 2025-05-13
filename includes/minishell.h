@@ -11,7 +11,8 @@
 # include <sys/wait.h>
 # include <unistd.h>
 # include <termios.h>
-static int						sigarette = 0;
+
+extern int						sigarette;
 typedef enum e_type_arg
 {
 	IN_REDIR,
@@ -145,8 +146,6 @@ int						ft_isalnum(char c);
 void					add_to_list_redir(t_redirect **ll, t_redirect *t);
 t_redirect				*new_node_redir(char *str, int type, int q_type);
 void					handlectrlc(int n);
-
-// Signal handling functions
 void					ft_handle_sigint(int sig);
 void					handle_sig_exec_ve(int sig);
 void					heredoc_child_signal(int sig);

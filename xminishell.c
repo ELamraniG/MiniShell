@@ -1,5 +1,8 @@
 #include "includes/minishell.h"
 
+// Global variable definition
+int sigarette = 0;
+
 /*
 > bash: unexpected EOF while looking for matching `"'
 bash: syntax error: unexpected end of file
@@ -120,7 +123,13 @@ int	main(int ac, char **av, char **env)
 		{
 			free_tree(astree);
 			free(input);
-			continue ;
+			if (sigarette == 130)
+			{
+				status = 130;
+				sigarette = 0;
+				
+			}
+			continue;
 		}
 		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
