@@ -114,7 +114,7 @@ t_env_list				*new_env_node(void);
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
 void					insert_node_last(t_env_list **d, char *key, char *value, int flag);
-int						pwd(int n);
+int						exec_pwd(int n);
 int	change_dir(char **args, t_env_list *env);
 int						echo(char **args);
 int						excute_redirs(t_ast_tree *astree);

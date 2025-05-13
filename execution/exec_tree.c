@@ -107,8 +107,8 @@ int is_built_in(char *cmd)
 	built_ins[1] = "echo";
 	built_ins[2] = "exit";
 	built_ins[3] = "env";
-	built_ins[4] = "setenv";
-	built_ins[5] = "unsetenv";
+	built_ins[4] = "pwd";
+	built_ins[5] = "unset";
 	built_ins[6] = "export"; 
 	built_ins[7] = NULL;    
 
@@ -136,9 +136,9 @@ int execute_built_in(char **args, t_env_list *env)
 		return exit_shell(args); 
 	else if (ft_strcmp(args[0], "env") == 0)
 		return print_env(env); 
-	else if (ft_strcmp(args[0], "setenv") == 0)
-		return exec_export(&env, args); 
-	else if (ft_strcmp(args[0], "unsetenv") == 0)
+	else if (ft_strcmp(args[0], "pwd") == 0)
+		return exec_pwd(1); 
+	else if (ft_strcmp(args[0], "unset") == 0)
 		return exec_unset(&env, args); 
 	else if (ft_strcmp(args[0], "export") == 0)
 		return exec_export(&env, args);
