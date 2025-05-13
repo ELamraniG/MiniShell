@@ -43,10 +43,10 @@ typedef struct s_env_list
 
 typedef struct s_redirect
 {
-	char				**file_name;  
-	int					*q_types;      
-	int					*is_space;     
-	int					file_str_count; 
+	char				**file_name;
+	int					*q_types;
+	int					*is_space;
+	int					file_str_count;
 	char				*LAST_DAMN_FILE_NAME;
 	int					type;
 	struct s_redirect	*next;
@@ -139,13 +139,12 @@ char **join_args_without_spaces(t_ast_tree *node);
 void expand_variables(t_ast_tree *node, t_env_list *env, int *status);
 int ft_isalpha(char c);
 int ft_isalnum(char c);
-
+void	add_to_list_redir(t_redirect **ll, t_redirect *t);
 t_redirect	*new_node_redir(char *str, int type,int q_type);
 
 // Add global variable for last exit status
 extern int g_exit_status;
 
-void	add_to_list_redir(t_redirect **ll, char *str, int type,int q_type);
 
 
 // void disable_raw_mode(void);

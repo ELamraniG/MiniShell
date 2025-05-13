@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:15:11 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/08 16:29:26 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/13 12:50:45 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,23 +58,21 @@ void	add_to_list(t_lex_list **ll, char *str, t_q_flags quote, int is_space)
 // 	return (p);
 // }
 
-// void	add_to_list_redir(t_redirect **ll, char *str, int type, int q_type)
-// {
-// 	t_redirect	*tmp;
-// 	t_redirect	*t;
+void	add_to_list_redir(t_redirect **ll, t_redirect *t)
+{
+	t_redirect	*tmp;
 
-// 	if (!ll)
-// 		return ;
-// 	tmp = *ll;
-// 	while (tmp && tmp->next)
-// 		tmp = (tmp)->next;
-// 	t = new_node_redir(str, type, q_type); 
-// 	if (!t)
-// 		return ;
-// 	if (!tmp)
-// 	{
-// 		*ll = t;
-// 		return ;
-// 	}
-// 	(tmp)->next = t;
-// }
+	if (!ll)
+		return ;
+	tmp = *ll;
+	while (tmp && tmp->next)
+		tmp = (tmp)->next;
+	if (!t)
+		return ;
+	if (!tmp)
+	{
+		*ll = t;
+		return ;
+	}
+	(tmp)->next = t;
+}

@@ -50,7 +50,7 @@ void	print_tree(t_ast_tree *tree, int deep)
 void free_read_line(void)
 {
     clear_history();
-    rl_clear_history();
+    // rl_clear_history();
 }
 
 int	main(int ac, char **av, char **env)
