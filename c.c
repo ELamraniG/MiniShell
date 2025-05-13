@@ -24,11 +24,3 @@ int	validate_key(char *s)
 	}
 	return (1);
 }
-
-int main()
-{
-	int i = 0;
-	char *s = "jihad";
-	i = validate_key(s);
-	printf("%d", i);
-}

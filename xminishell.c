@@ -5,7 +5,6 @@
 bash: syntax error: unexpected end of file
 */
 
-
 void	print_lex(t_lex_list *temp)
 {
 	while (temp)
@@ -47,33 +46,33 @@ void	print_tree(t_ast_tree *tree, int deep)
 	print_tree(tree->right, deep + 1);
 }
 
-void free_read_line(void)
+void	free_read_line(void)
 {
-    clear_history();
-    // rl_clear_history();
+	clear_history();
+	// rl_clear_history();
 }
 
 int	main(int ac, char **av, char **env)
 {
-	char		*input;
-	t_lex_list	*tokens;
-	int			status;
-	t_ast_tree	*astree;
-	t_lex_list	*lopo;
+	char *input;
+	t_lex_list *tokens;
+	int status;
+	t_ast_tree *astree;
+	t_lex_list *lopo;
 	struct sigaction sa;
 
-	t_env_list *envv = NULL; 
+	t_env_list *envv = NULL;
 	set_up_env(env, &envv);
 
 	ac = 0;
 	av = NULL;
 	int i = 0;
 	astree = NULL;
-	
+
 	while (1)
 	{
 		input = readline("minishell$ ");
-		
+
 		i++;
 		if (!input)
 		{
@@ -82,14 +81,14 @@ int	main(int ac, char **av, char **env)
 		}
 		if (input[0])
 			add_history(input);
-			
+
 		tokens = lexing_the_thing(input, &status);
 		if (!tokens)
 		{
 			free(input);
-			continue;
+			continue ;
 		}
-		
+
 		set_the_arg_type(tokens);
 		lopo = tokens;
 		if (!handle_syntax_errors(tokens, &status))
@@ -101,19 +100,20 @@ int	main(int ac, char **av, char **env)
 		remove_quotes(tokens);
 		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
-		
+
 		handle_heredoc(astree);
 		excute_the_damn_tree(astree, &status, envv);
 		free_tree(astree);
-		
+
 		free(input);
-		if (!isatty(STDIN_FILENO)) {
+		if (!isatty(STDIN_FILENO))
+		{
 			free_read_line();
 			free_env_list(envv);
-			return status;
+			return (status);
 		}
 	}
 	free_read_line();
-	free_env_list(envv);	
+	free_env_list(envv);
 	return (0);
 }

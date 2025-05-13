@@ -65,14 +65,8 @@ void	handle_heredoc(t_ast_tree *node)
 		redir = node->redirect;
 		while (redir)
 		{
-			printf("==== %d\n\n\n\n\n\n\n\n", redir->type);
 			if (redir->type == HEREDOC)
-			{
-				printf("==== %d\n\n\n\n\n\n\n\n", redir->type);
 				create_a_heredoc(redir);
-				printf("==== %d\n\n\n\n\n\n\n\n", redir->type);
-			}
-			printf("==== %d\n\n\n\n\n\n\n\n", redir->type);
 			redir = redir->next;
 		}
 	}
