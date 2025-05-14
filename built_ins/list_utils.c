@@ -16,7 +16,6 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 		*d = tmp;
 		return	;
 	}
-	tmp = (*d);
 	while (tmp) // checking if we already have the key, so we only change the value instead of creating a new node
 	{
 		if (!ft_strcmp(tmp->key, key))

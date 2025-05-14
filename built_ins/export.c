@@ -37,11 +37,14 @@ void	print_export(t_env_list *env_list)
 {
 	while (env_list)
 	{
-		printf("declare -x %s", env_list->key);
-		if (env_list->flag)
-			printf("=\"%s\"\n", env_list->value);
-		else
-			printf("\n");
+		if (env_list->key)
+		{
+			printf("declare -x %s", env_list->key);
+			if (env_list->flag)
+				printf("=\"%s\"\n", env_list->value);
+			else
+				printf("\n");
+		}
 		env_list = env_list->next;
 	}
 }

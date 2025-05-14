@@ -2,7 +2,7 @@ LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
 INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
-CFLAGS =  -fsanitize=address 
+# CFLAGS =  -fsanitize=address 
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
