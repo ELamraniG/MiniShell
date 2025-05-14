@@ -4,10 +4,10 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 {
 	t_env_list	*tmp;
 
-	if (!d)
+	if (!d || !key)
 		return ;
 	tmp = (*d);
-	if (!tmp)
+	if (!tmp) // if first node is empty
 	{
 		tmp = new_env_node();
 		tmp->key = key;
@@ -17,7 +17,7 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 		return	;
 	}
 	tmp = (*d);
-	while (tmp)
+	while (tmp) // checking if we already have the key, so we only change the value instead of creating a new node
 	{
 		if (!ft_strcmp(tmp->key, key))
 		{
@@ -28,7 +28,7 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 		tmp = tmp->next;
 	}
 	tmp = (*d);
-	while (tmp->next)
+	while (tmp->next) // iterating to the end to add the node at the end
 		tmp = tmp->next;
 	tmp->next = new_env_node();
 	tmp->next->key = ft_strdup(key);
