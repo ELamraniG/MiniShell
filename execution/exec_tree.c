@@ -126,22 +126,22 @@ int is_built_in(char *cmd)
 	return 0;
 }
 
-int execute_built_in(char **args, t_env_list *env)
+int execute_built_in(char **args, t_env_list **env)
 {
 	if (ft_strcmp(args[0], "cd") == 0)
-		return change_dir(args, env); 
+		return change_dir(args, *env); 
 	else if (ft_strcmp(args[0], "echo") == 0)
 		return echo(args);
 	else if (ft_strcmp(args[0], "exit") == 0)
 		return exit_shell(args); 
 	else if (ft_strcmp(args[0], "env") == 0)
-		return print_env(env); 
+		return print_env(*env); 
 	else if (ft_strcmp(args[0], "pwd") == 0)
 		return exec_pwd(1); 
 	else if (ft_strcmp(args[0], "unset") == 0)
-		return exec_unset(&env, args); 
+		return exec_unset(env, args); 
 	else if (ft_strcmp(args[0], "export") == 0)
-		return exec_export(&env, args);
+		return exec_export(env, args);
 	return 1;
 }
 
@@ -181,7 +181,7 @@ char **turn_env_to_chars(t_env_list *env)
     return s;
 }
 
-void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
+void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 {
 	int			pipes[2];
 	int			pid1;
@@ -263,7 +263,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
         stdinn = dup(STDIN_FILENO);
         stdoutt = dup(STDOUT_FILENO);
         
-		expand_variables(astree, env, status);
+		expand_variables(astree, *env, status);
         if (excute_redirs(astree) == -1) 
         {
             dup3(stdinn, STDIN_FILENO);
@@ -286,7 +286,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 		stdoutt = dup(STDOUT_FILENO);
 		
 		astree->args = join_args_without_spaces(astree);
-		expand_variables(astree, env, status);
+		expand_variables(astree, *env, status);
 		
 		if (excute_redirs(astree) == -1)
 		{
@@ -319,7 +319,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 
 			struct stat l;
 			//i used pid just for norminette
-			pid2 = handle_path(astree->args, env);
+			pid2 = handle_path(astree->args, *env);
 			if (pid2 == -1)
 			{
 				ft_putstr_fd(2, astree->args[0]);
@@ -338,7 +338,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list *env)
 				ft_putstr_fd(2, ": is a directory\n");
 				exit(126);
 			}
-			char **env_char = turn_env_to_chars(env);
+			char **env_char = turn_env_to_chars(*env);
 			execve(astree->args[0], astree->args, env_char);
 			perror(astree->args[0]);
 			if (env_char)

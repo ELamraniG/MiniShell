@@ -64,6 +64,14 @@ void	delete_node(t_env_list **head, char *key)
 		prev = current;
 		current = current->next;
 	}
+		if (current == (*head))
+		{
+			(*head) = (*head)->next;
+			free(current->key);
+			free(current->value);
+			free(current);
+			return ;
+		}
 	if (!current)
 		return ;
 	if (prev == NULL)

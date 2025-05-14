@@ -95,8 +95,6 @@ static int	create_the_dawg(t_redirect *redir)
 	{
 		close(pipe_fd[0]);
 		sigarette = 130;
-		ft_putstr_fd(2, "\n\n\n\n\n\n\n\n");
-		printf("we exited with sig = %d\n", sigarette);
 		return (-1);
 	}
 	redir->heredoc = pipe_fd[0];

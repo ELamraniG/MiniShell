@@ -129,7 +129,7 @@ void					free_args(t_ast_tree *root);
 void					free_reds(t_redirect *red);
 int						handle_path(char **args, t_env_list *env);
 void					excute_the_damn_tree(t_ast_tree *astree, int *status,
-							t_env_list *env);
+							t_env_list **env);
 void					dup3(int new, int original);
 char					**turn_env_to_chars(t_env_list *env);
 int						exec_export(t_env_list **env, char **args);
@@ -152,5 +152,7 @@ void					heredoc_child_signal(int sig);
 void					handle_main_sigs(void);
 void					reset_signals(void);
 void					ignore_signals(void);
+void					print_export(t_env_list *env_list);
+
 
 #endif
