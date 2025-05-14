@@ -1,8 +1,8 @@
-LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
-INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
+LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
+INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
-CFLAGS =  -fsanitize=address
+CFLAGS =  -fsanitize=address 
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
@@ -31,16 +31,15 @@ SRC =	str_utils/ft_split.c \
 		execution/exec_tree.c \
 		execution/handle_heredoc.c \
 		utils/signals.c \
-		term_control.c \
 
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline -o $(NAME)
 
 %.o: %.c includes/minishell.h
-	$(CC) $(CFLAGS) -I/goinfre/jhamdaou/homebrew/opt/readline/include -c $< -o $@
+	$(CC) $(CFLAGS) -I/goinfre/moel-amr/homebrew/opt/readline/include -c $< -o $@
 
 clean:
 	rm -rf $(OBJ)

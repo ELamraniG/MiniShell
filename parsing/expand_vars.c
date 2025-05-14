@@ -1,12 +1,5 @@
 #include "../includes/minishell.h"
 
-static int is_valid_var_char(char c, int first_char)
-{
-    if (first_char)
-        return (ft_isalpha(c) || c == '_');
-    return (ft_isalnum(c) || c == '_');
-}
-
 
 static char *get_key(char *str, int *i)
 {
@@ -21,7 +14,7 @@ static char *get_key(char *str, int *i)
         return ft_strdup("?");
     }
     
-    while (str[*i] && is_valid_var_char(str[*i], len == 0))
+    while (str[*i])
     {
         (*i)++;
         len++;
@@ -37,12 +30,11 @@ static char *get_value(t_env_list *env, char *key, int *status)
     if (ft_strcmp(key, "?") == 0)
         return ft_itoa(*status);
     
-    t_env_list *tmp = env;
-    while (tmp)
+    while (env)
     {
-        if (ft_strcmp(tmp->key, key) == 0)
-            return ft_strdup(tmp->value);
-        tmp = tmp->next;
+        if (ft_strcmp(env->key, key) == 0)
+            return ft_strdup(env->value);
+        env = env->next;
     }
     
     return ft_strdup("");  
@@ -68,7 +60,7 @@ static char *var_to_str(char *str, t_env_list *env, int *status, int quote_type)
         }
         
         if (str[i] == '$')
-        {
+        { 
 
             if (i > last_pos)
             {
@@ -103,7 +95,6 @@ static char *var_to_str(char *str, t_env_list *env, int *status, int quote_type)
         free(tmp);
         free(after_var);
     }
-    
     free(str);
     return result;
 }

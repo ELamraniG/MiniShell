@@ -118,7 +118,7 @@ run_test "pipe_success" "ls | grep test" 0
 run_test "pipe_left_fails" "nonexistentcommand | echo hello" 0
 run_test "pipe_right_fails" "echo hello | nonexistentcommand" 127
 run_test "complex_pipe_success" "cat /etc/passwd | grep root | wc -l" 0
-run_test "complex_pipe_fails_middle" "cat /etc/passwd | nonexistentcommand | wc -l" 127
+run_test "complex_pipe_fails_middle" "cat /etc/passwd | nonexistentcommand | wc -l" 0
 
 print_section "LOGICAL OPERATORS EXIT CODES"
 

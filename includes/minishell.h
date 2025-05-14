@@ -1,18 +1,18 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <fcntl.h>
 # include <stdio.h>
+# include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
-# include <unistd.h>
 # include <termios.h>
+# include <unistd.h>
 
-extern int						sigarette;
+extern int				sigarette;
 typedef enum e_type_arg
 {
 	IN_REDIR,
@@ -153,6 +153,5 @@ void					handle_main_sigs(void);
 void					reset_signals(void);
 void					ignore_signals(void);
 void					print_export(t_env_list *env_list);
-
 
 #endif
