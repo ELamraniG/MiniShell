@@ -49,8 +49,9 @@ void	handle_main_sigs(void)
 void	reset_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);  
 }
+
 
 void	ignore_signals(void)
 {

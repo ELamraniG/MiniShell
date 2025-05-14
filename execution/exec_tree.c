@@ -357,7 +357,11 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		if (WIFEXITED(exit_code))
 			*status = WEXITSTATUS(exit_code);
 		else if (WIFSIGNALED(exit_code))
+		{
 			*status = 128 + WTERMSIG(exit_code);
+			if (WTERMSIG(exit_code) == SIGQUIT)
+				ft_putstr_fd(2, "Quit (core dumped)\n");
+		}
 		dup3(stdinn, STDIN_FILENO);
 		dup3(stdoutt, STDOUT_FILENO);
 	}
