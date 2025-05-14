@@ -141,8 +141,8 @@ void					process_all_heredocs(t_ast_tree *node);
 char					**join_args_without_spaces(t_ast_tree *node);
 void					expand_variables(t_ast_tree *node, t_env_list *env,
 							int *status);
-int						ft_isalpha(char c);
 int						ft_isalnum(char c);
+int						ft_isalpha(char c);
 void					add_to_list_redir(t_redirect **ll, t_redirect *t);
 t_redirect				*new_node_redir(char *str, int type, int q_type);
 void					handlectrlc(int n);

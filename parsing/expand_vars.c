@@ -16,6 +16,8 @@ static char *get_key(char *str, int *i)
     
     while (str[*i])
     {
+		if(str[*i] == '$')
+			return (ft_substr(str,start + 1, len));
         (*i)++;
         len++;
     }
@@ -121,6 +123,75 @@ static char *join_expanded_parts(t_redirect *redir, t_env_list *env, int *status
     return result;
 }
 
+
+char *get_keyy(char *str,t_env_list *env,int *i)
+{
+	// char *ret;
+	(*i)++;
+	// i skip the $
+	int len = 0;
+	while (str[*i])
+	{
+		if (str[*i] == '?')
+			return ft_strdup("?");
+		if (str[*i] == '$')
+			return ft_substr(str,0,*i);
+		len++;
+		i++;
+	}
+	if (len == 0)
+		return ft_strdup("$");
+	return (ft_strdup(str + 1));
+}
+
+int calculate_splitted_expanded_for_single_word(char *str,t_env_list *env, int status)
+{
+	int res = 0;
+	int i = 0;
+	int prev_pos=0;
+	while(str[i])
+	{
+		if (str[i] == '$')
+		{
+			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
+			prev_pos = i;
+			char *tmp2 = get_keyy(str + i,env,&i);
+			
+		}	
+
+	}
+}
+
+int calculate_splitted_expanded(char **args,t_env_list *env, int status)
+{
+	int i = 0;
+	int res = 0;
+	while (args[i])
+	{
+		res += calculate_splitted_expanded_for_single_word(args[i],env);
+	}
+}
+
+
+
+
+void expand(t_ast_tree *node,t_env_list *env,int status)
+{
+	char **new_args= NULL;
+	int malc = calculate_splitted_expanded(node->args,env, status);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
 {
     int i = 0;
@@ -128,7 +199,6 @@ void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
     if (node->args) {
         while (i < node->arg_counter && node->args[i])
         {
-            if (node->q_type)
                 node->args[i] = var_to_str(node->args[i], env, status, node->q_type[i]);
             i++;
         }
