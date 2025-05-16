@@ -195,7 +195,7 @@ void expanddd(t_ast_tree *node, t_env_list *env, int status)
     char **new_args = NULL;
     int new_arg_count = 0;
     int j, k;
-    if (!node->args)
+    if (!node->args)    
         return;
     while (i < node->arg_counter && node->args[i])
     {

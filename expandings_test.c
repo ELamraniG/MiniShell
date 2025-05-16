@@ -1,28 +1,67 @@
 #include "includes/minishell.h"
 
 
-static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
+// static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
+// {
+// 	(*i)++;
+//     char *tmp = NULL;
+// 	// i skip the $
+// 	int len = 0;
+// 	while (str[*i])
+// 	{
+// 		if (str[*i] == '?')
+//         {
+//             (*i)++;
+// 			return ft_itoa(status);
+//         }
+// 		if (str[*i] == '$')
+// 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
+// 		len++;
+// 		(*i)++;
+// 	}
+// 	if (len == 0)
+// 		return ft_strdup("$");
+// 	return (ft_strdup(str + prev_pos + 1));
+// }
+
+
+static char *get_key(char *str, int *i)
 {
-	(*i)++;
-    char *tmp = NULL;
-	// i skip the $
-	int len = 0;
-	while (str[*i])
-	{
-		if (str[*i] == '?')
+    int start = *i;
+    int len = 0;
+
+    (*i)++;
+    
+    if (str[*i] == '?')
+    {
+        (*i)++;
+        return ft_strdup("?");
+    }
+    
+    if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
+    {
+        (*i)++;
+        len++;
+        
+        while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
         {
             (*i)++;
-			return ft_itoa(status);
+            len++;
         }
-		if (str[*i] == '$')
-			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
-		len++;
-		(*i)++;
-	}
-	if (len == 0)
-		return ft_strdup("$");
-	return (ft_strdup(str + prev_pos + 1));
+    }
+    else if (str[*i] == '$')
+    {
+        return (ft_substr(str, start + 1, len));
+    }
+    else
+    {
+        if (len == 0)
+            return ft_strdup("$");
+    }
+    
+    return ft_substr(str, start + 1, len);
 }
+
 
 static int calculate_splitted_expanded_for_single_word(char *str,t_env_list *env, int status)
 {
@@ -107,3 +146,117 @@ void expanddd(t_ast_tree *node,t_env_list *env,int status)
 }
 
 
+
+
+void ft_realloc(char ***args,char s, int *size,int **is_space)
+{
+    int i = 0;
+    int *new_is_space = malloc(sizeof(int) * (*size));
+    char **new_args = malloc(sizeof(char*) * (*size +1));
+    int *tmpint_free;
+    new_args[*size] = 0;
+    while (i < *size - 1)
+    {
+        new_is_space[i] = is_space[0][i];
+        new_args[i] = args[0][i];
+        i++;
+    }
+    new_args[i] = s;
+    (*size)++;
+    char **tmp_free = *args;
+    *args = new_args;
+    tmpint_free = is_space[0];
+    *is_space = new_is_space;
+    free(tmpint_free);
+    free(tmp_free);
+    return ;
+}
+
+
+static char *get_key(char *str, int *i)
+{
+    int start = *i;
+    int len = 0;
+
+    (*i)++;
+    
+    if (str[*i] == '?')
+    {
+        (*i)++;
+        return ft_strdup("?");
+    }
+    
+    if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
+    {
+        (*i)++;
+        len++;
+        
+        while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+        {
+            (*i)++;
+            len++;
+        }
+    }
+    else if (str[*i] == '$')
+    {
+        return (ft_substr(str, start + 1, len));
+    }
+    else
+    {
+        if (len == 0)
+            return ft_strdup("$");
+    }
+    
+    return ft_substr(str, start + 1, len);
+}
+
+
+static int expanded_for_single_word(char *str,t_env_list *env, int status)
+{
+	int i = 0;
+    int k = 0;
+    int j = 0;
+	int prev_pos=0;
+    char **dble;
+    char *tmp3;
+    char **args = NULL;
+    int size = 0;
+    int *is_space;
+	while(str[i])
+	{
+        j = 0;
+		if (str[i] == '$')
+		{
+            prev_pos = i;
+			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
+            ft_realloc(&args,tmp, &size,&is_space);
+			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
+            t_env_list *t;
+            t = get_env_value(env,tmp2);
+            if (!t)
+			    tmp3 = ft_strdup(""); 
+            else
+                 tmp3 = ft_strdup(t->value); 
+            free(tmp2);
+            dble = ft_split(tmp3,' ');
+            free(tmp3);
+            while (dble[j])
+            {
+                ft_realloc(&args,tmp3, &size,&is_space);
+                free(dble[j]);
+                j++;
+            }	
+            free(dble);
+		}
+        else 
+         i++;
+
+	}
+}
+
+
+void I_HATE_EXPANDING()
+{
+    int i = 0;
+    expanded_for_single_word(&args,node->args[i],t_env_list *env, int status)
+}
