@@ -14,15 +14,26 @@ static char *get_key(char *str, int *i)
         return ft_strdup("?");
     }
     
-    while (str[*i])
+    if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
     {
-		if(str[*i] == '$')
-			return (ft_substr(str,start + 1, len));
         (*i)++;
         len++;
+        
+        while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+        {
+            (*i)++;
+            len++;
+        }
     }
-    if (len == 0)
-        return ft_strdup("$");
+    else if (str[*i] == '$')
+    {
+        return (ft_substr(str, start + 1, len));
+    }
+    else
+    {
+        if (len == 0)
+            return ft_strdup("$");
+    }
     
     return ft_substr(str, start + 1, len);
 }
@@ -123,15 +134,132 @@ static char *join_expanded_parts(t_redirect *redir, t_env_list *env, int *status
     return result;
 }
 
+char **split_expanded_args(char *expanded_str)
+{
+    char **result = NULL;
+    int arg_count = 0;
+    int i = 0, j = 0, start = 0;
+    int in_word = 0;
+    if (!expanded_str || expanded_str[0] == '\0') {
+        result = malloc(sizeof(char *) * 2);
+        result[0] = ft_strdup("");
+        result[1] = NULL;
+        return result;
+    }
+    while (expanded_str[i])
+    {
+        if (!ft_isspace(expanded_str[i]) && !in_word)
+        {
+            in_word = 1;
+            arg_count++;
+        }
+        else if (ft_isspace(expanded_str[i]) && in_word)
+            in_word = 0;
+        i++;
+    }
+    if (arg_count == 0) {
+        result = malloc(sizeof(char *) * 2);
+        result[0] = ft_strdup("");
+        result[1] = NULL;
+        return result;
+    }
+    result = malloc(sizeof(char *) * (arg_count + 1));
+    if (!result)
+        return NULL;
+    i = 0;
+    in_word = 0;
+    j = 0;
+    while (expanded_str[i])
+    {
+        if (!ft_isspace(expanded_str[i]) && !in_word)
+        {
+            in_word = 1;
+            start = i;
+        }
+        else if (ft_isspace(expanded_str[i]) && in_word)
+        {
+            result[j++] = ft_substr(expanded_str, start, i - start);
+            in_word = 0;
+        }
+        i++;
+    }
+    if (in_word)
+        result[j++] = ft_substr(expanded_str, start, i - start);
+    result[j] = NULL;
+    return result;
+}
 
-
-
-
-
-
-
-
-
+void expanddd(t_ast_tree *node, t_env_list *env, int status)
+{
+    int i = 0;
+    char **new_args = NULL;
+    int new_arg_count = 0;
+    int j, k;
+    if (!node->args)
+        return;
+    while (i < node->arg_counter && node->args[i])
+    {
+        node->args[i] = var_to_str(node->args[i], env, &status, node->q_type[i]);
+        i++;
+    }
+    i = 0;
+    while (i < node->arg_counter && node->args[i])
+    {
+        if (node->q_type[i] == NQ && ft_strchr(node->args[i], ' ')) {
+            char **tmp_split = split_expanded_args(node->args[i]);
+            int splitc = 0;
+            while (tmp_split && tmp_split[splitc]) splitc++;
+            new_arg_count += splitc;
+            if (tmp_split) {
+                int z = 0;
+                while (tmp_split[z]) free(tmp_split[z++]);
+                free(tmp_split);
+            }
+        } else {
+            new_arg_count++;
+        }
+        i++;
+    }
+    if (new_arg_count == node->arg_counter)
+        return;  
+    new_args = malloc(sizeof(char *) * (new_arg_count + 1));
+    j = 0;
+    for (i = 0; i < node->arg_counter; i++)
+    {
+        if (node->q_type[i] != NQ || !ft_strchr(node->args[i], ' '))
+        {
+            new_args[j++] = node->args[i];
+        }
+        else
+        {
+            char **split_args = split_expanded_args(node->args[i]);
+            if (split_args)
+            {
+                k = 0;
+                while (split_args[k])
+                {
+                    new_args[j++] = split_args[k++];
+                }
+                free(split_args); 
+                free(node->args[i]);
+            }
+        }
+    }
+    new_args[j] = NULL;
+    free(node->args);
+    node->args = new_args;
+    node->arg_counter = j;
+    free(node->q_type);
+    node->q_type = malloc(sizeof(int) * j);
+    for (i = 0; i < j; i++)
+        node->q_type[i] = NQ;
+    free(node->is_space);
+    node->is_space = malloc(sizeof(int) * j);
+    for (i = 0; i < j; i++)
+        node->is_space[i] = 1;
+    if (j > 0)
+        node->is_space[j-1] = 0;
+}
 
 void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
 {

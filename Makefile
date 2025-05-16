@@ -18,7 +18,7 @@ SRC =	str_utils/ft_split.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
 		parsing/expand_vars.c \
-		xminishell2.c \
+		xminishell.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \
 		built_ins/cd.c \
@@ -31,7 +31,7 @@ SRC =	str_utils/ft_split.c \
 		execution/exec_tree.c \
 		execution/handle_heredoc.c \
 		utils/signals.c \
-		expandings_test.c
+		# expandings_test.c
 
 OBJ = $(SRC:.c=.o)
 

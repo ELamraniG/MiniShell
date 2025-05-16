@@ -154,4 +154,5 @@ void					reset_signals(void);
 void					ignore_signals(void);
 void					print_export(t_env_list *env_list);
 void expanddd(t_ast_tree *node,t_env_list *env,int status);
+char **split_expanded_args(char *expanded_str);
 #endif
