@@ -37,10 +37,10 @@ OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIB_RL) -o $(NAME)
 
 %.o: %.c includes/minishell.h
-	$(CC) $(CFLAGS) -I/goinfre/moel-amr/homebrew/opt/readline/include -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE_RL) -c $< -o $@
 
 clean:
 	rm -rf $(OBJ)
