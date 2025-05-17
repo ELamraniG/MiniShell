@@ -87,15 +87,13 @@ static int has_space_at_the_beginning(char *s)
 	return 0;
 }
 
-static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int status,int old_is_space,int k)
+static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int status,int old_is_space,int k,int *size)
 {
 	int i = 0;
-    int k = 0;
     int j = 0;
-	int prev_pos=0;
+	int prev_pos=-1;
     char **dble;
     char *tmp3;
-    int size = 0;
     int *is_space;
 	while(str[i])
 	{
@@ -104,12 +102,15 @@ static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int 
 		{
             prev_pos = i;
 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
-            ft_realloc(args,tmp, &size,&is_space);
+			if (tmp[0] != 0)
+            	ft_realloc(args,tmp, size,&is_space);
+			else
+				free(tmp);
 			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
             t_env_list *t;
             t = get_env_value(env,tmp2);
             if (!t)
-			    tmp3 = ft_strdup(""); 
+			    tmp3 = ft_strdup("");
             else
                  tmp3 = ft_strdup(t->value); 
             free(tmp2);
@@ -117,28 +118,32 @@ static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int 
             free(tmp3);
             while (dble[j])
             {
-                ft_realloc(args,tmp3, &size,&is_space);
-				is_space[size - 1] = 1;
+                ft_realloc(args,tmp3, size,&is_space);
+				is_space[*size - 1] = 1;
 				if (j == 0)
 				{
-					if(has_space_at_the_beginning(*args[size - 1]) && size > 1)
-						is_space[size - 2] = 1;
+					if(has_space_at_the_beginning(*args[*size - 1]) && *size > 1)
+						is_space[*size - 2] = 1;
 				}
                 free(dble[j]);
                 j++;
 				if (dble[j] == NULL)
 				{
-					if(has_space_at_the_end(*args[size - 1]))
-						is_space[size - 1] = 1;
+					if(has_space_at_the_end(*args[*size - 1]))
+						is_space[*size - 1] = 1;
 					else 
-					is_space[size - 1] = old_is_space;
+					is_space[*size - 1] = old_is_space;
 				}
             }	
             free(dble);
 		}
         else 
          i++;
-
+	}
+	if (prev_pos == -1)
+	{
+        ft_realloc(args,str, size,&is_space);
+		is_space[*size - 1] = old_is_space;
 	}
 }
 
@@ -148,7 +153,7 @@ void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
     int k = 0;
 	char **args = NULL;
 	int size = 0;
-    expanded_for_single_word(&args,node->args[k],env,  status,node->is_space[k],k)
+    expanded_for_single_word(&args,node->args[k],env,  status,node->is_space[k],k,&size)
 }
 
 
