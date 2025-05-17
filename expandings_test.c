@@ -1,153 +1,5 @@
 #include "includes/minishell.h"
 
-
-// static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
-// {
-// 	(*i)++;
-//     char *tmp = NULL;
-// 	// i skip the $
-// 	int len = 0;
-// 	while (str[*i])
-// 	{
-// 		if (str[*i] == '?')
-//         {
-//             (*i)++;
-// 			return ft_itoa(status);
-//         }
-// 		if (str[*i] == '$')
-// 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
-// 		len++;
-// 		(*i)++;
-// 	}
-// 	if (len == 0)
-// 		return ft_strdup("$");
-// 	return (ft_strdup(str + prev_pos + 1));
-// }
-
-
-static char *get_key(char *str, int *i)
-{
-    int start = *i;
-    int len = 0;
-
-    (*i)++;
-    
-    if (str[*i] == '?')
-    {
-        (*i)++;
-        return ft_strdup("?");
-    }
-    
-    if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
-    {
-        (*i)++;
-        len++;
-        
-        while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-        {
-            (*i)++;
-            len++;
-        }
-    }
-    else if (str[*i] == '$')
-    {
-        return (ft_substr(str, start + 1, len));
-    }
-    else
-    {
-        if (len == 0)
-            return ft_strdup("$");
-    }
-    
-    return ft_substr(str, start + 1, len);
-}
-
-
-static int calculate_splitted_expanded_for_single_word(char *str,t_env_list *env, int status)
-{
-	int res = 0;
-	int i = 0;
-    int j = 0;
-	int prev_pos=0;
-    char **dble;
-    char *tmp3;
-	while(str[i])
-	{
-        j = 0;
-		if (str[i] == '$')
-		{
-            prev_pos = i;
-			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
-            free(tmp);
-			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
-            t_env_list *t;
-            t = get_env_value(env,tmp2);
-            if (!t)
-			    tmp3 = ft_strdup(""); 
-            else
-                 tmp3 = ft_strdup(t->value); 
-            free(tmp2);
-            dble = ft_split(tmp3,' ');
-            free(tmp3);
-            while (dble[j])
-            {
-                free(dble[j]);
-                j++;
-                res++;
-            }	
-            free(dble);
-		}
-        else 
-         i++;
-
-	}
-    if (res == 0)
-        return 1;
-    return res;
-}
-
-static int calculate_splitted_expanded(t_ast_tree *node,t_env_list *env, int status)
-{
-	int i = 0;
-	int res = 0;
-	while (node->args[i])
-	{
-        if (node->q_type[i] != SQ)
-		    res += calculate_splitted_expanded_for_single_word(node->args[i],env,status);
-        else 
-            res++;
-        i++;
-	}
-    return res;
-}
-
-void set_the_new_args(t_ast_tree *node,char **new_args,t_env_list *env,int status)
-{
-    int i = 0;
-    int j = 0;
-	while (node->args[i])
-	{
-        if (node->q_type[i] != SQ)
-		    expanded_for_single_arg(node->args[i],args,env,status);
-        else 
-        i++;
-	}
-    return res;
-}
-
-void expanddd(t_ast_tree *node,t_env_list *env,int status)
-{
-	char **new_args= NULL;
-	int malc = calculate_splitted_expanded(node,env, status);
-    printf("malc = %d\n",malc);
-    new_args = malloc(sizeof(char *) * (malc + 1));
-    new_args[malc] = NULL;
-    set_the_new_args(node,new_args,env,status);
-}
-
-
-
-
 void ft_realloc(char ***args,char s, int *size,int **is_space)
 {
     int i = 0;
@@ -211,7 +63,31 @@ static char *get_key(char *str, int *i)
 }
 
 
-static int expanded_for_single_word(char *str,t_env_list *env, int status)
+static int has_space_at_the_end(char *s)
+{
+	if (!s)
+		return 0;
+	int strl = ft_strlen(s);
+	if (strl == 0)
+		return 0;
+	if (s[strl - 1] == ' ')
+		return 1;
+	return 0;
+}
+
+static int has_space_at_the_beginning(char *s)
+{
+	if (!s)
+		return 0;
+	int strl = ft_strlen(s);
+	if (strl == 0)
+		return 0;
+	if (s[0] == ' ')
+		return 1;
+	return 0;
+}
+
+static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int status,int old_is_space,int k)
 {
 	int i = 0;
     int k = 0;
@@ -219,7 +95,6 @@ static int expanded_for_single_word(char *str,t_env_list *env, int status)
 	int prev_pos=0;
     char **dble;
     char *tmp3;
-    char **args = NULL;
     int size = 0;
     int *is_space;
 	while(str[i])
@@ -229,7 +104,7 @@ static int expanded_for_single_word(char *str,t_env_list *env, int status)
 		{
             prev_pos = i;
 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
-            ft_realloc(&args,tmp, &size,&is_space);
+            ft_realloc(args,tmp, &size,&is_space);
 			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
             t_env_list *t;
             t = get_env_value(env,tmp2);
@@ -238,13 +113,26 @@ static int expanded_for_single_word(char *str,t_env_list *env, int status)
             else
                  tmp3 = ft_strdup(t->value); 
             free(tmp2);
-            dble = ft_split(tmp3,' ');
+            dble = ft_splittt(tmp3,' ');
             free(tmp3);
             while (dble[j])
             {
-                ft_realloc(&args,tmp3, &size,&is_space);
+                ft_realloc(args,tmp3, &size,&is_space);
+				is_space[size - 1] = 1;
+				if (j == 0)
+				{
+					if(has_space_at_the_beginning(*args[size - 1]) && size > 1)
+						is_space[size - 2] = 1;
+				}
                 free(dble[j]);
                 j++;
+				if (dble[j] == NULL)
+				{
+					if(has_space_at_the_end(*args[size - 1]))
+						is_space[size - 1] = 1;
+					else 
+					is_space[size - 1] = old_is_space;
+				}
             }	
             free(dble);
 		}
@@ -255,8 +143,197 @@ static int expanded_for_single_word(char *str,t_env_list *env, int status)
 }
 
 
-void I_HATE_EXPANDING()
+void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
 {
-    int i = 0;
-    expanded_for_single_word(&args,node->args[i],t_env_list *env, int status)
+    int k = 0;
+	char **args = NULL;
+	int size = 0;
+    expanded_for_single_word(&args,node->args[k],env,  status,node->is_space[k],k)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
+// {
+// 	(*i)++;
+//     char *tmp = NULL;
+// 	// i skip the $
+// 	int len = 0;
+// 	while (str[*i])
+// 	{
+// 		if (str[*i] == '?')
+//         {
+//             (*i)++;
+// 			return ft_itoa(status);
+//         }
+// 		if (str[*i] == '$')
+// 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
+// 		len++;
+// 		(*i)++;
+// 	}
+// 	if (len == 0)
+// 		return ft_strdup("$");
+// 	return (ft_strdup(str + prev_pos + 1));
+// }
+
+
+// static char *get_key(char *str, int *i)
+// {
+//     int start = *i;
+//     int len = 0;
+
+//     (*i)++;
+    
+//     if (str[*i] == '?')
+//     {
+//         (*i)++;
+//         return ft_strdup("?");
+//     }
+    
+//     if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
+//     {
+//         (*i)++;
+//         len++;
+        
+//         while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+//         {
+//             (*i)++;
+//             len++;
+//         }
+//     }
+//     else if (str[*i] == '$')
+//     {
+//         return (ft_substr(str, start + 1, len));
+//     }
+//     else
+//     {
+//         if (len == 0)
+//             return ft_strdup("$");
+//     }
+    
+//     return ft_substr(str, start + 1, len);
+// }
+
+
+// static int calculate_splitted_expanded_for_single_word(char *str,t_env_list *env, int status)
+// {
+// 	int res = 0;
+// 	int i = 0;
+//     int j = 0;
+// 	int prev_pos=0;
+//     char **dble;
+//     char *tmp3;
+// 	while(str[i])
+// 	{
+//         j = 0;
+// 		if (str[i] == '$')
+// 		{
+//             prev_pos = i;
+// 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
+//             free(tmp);
+// 			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
+//             t_env_list *t;
+//             t = get_env_value(env,tmp2);
+//             if (!t)
+// 			    tmp3 = ft_strdup(""); 
+//             else
+//                  tmp3 = ft_strdup(t->value); 
+//             free(tmp2);
+//             dble = ft_split(tmp3,' ');
+//             free(tmp3);
+//             while (dble[j])
+//             {
+//                 free(dble[j]);
+//                 j++;
+//                 res++;
+//             }	
+//             free(dble);
+// 		}
+//         else 
+//          i++;
+
+// 	}
+//     if (res == 0)
+//         return 1;
+//     return res;
+// }
+
+// static int calculate_splitted_expanded(t_ast_tree *node,t_env_list *env, int status)
+// {
+// 	int i = 0;
+// 	int res = 0;
+// 	while (node->args[i])
+// 	{
+//         if (node->q_type[i] != SQ)
+// 		    res += calculate_splitted_expanded_for_single_word(node->args[i],env,status);
+//         else 
+//             res++;
+//         i++;
+// 	}
+//     return res;
+// }
+
+// void set_the_new_args(t_ast_tree *node,char **new_args,t_env_list *env,int status)
+// {
+//     int i = 0;
+//     int j = 0;
+// 	while (node->args[i])
+// 	{
+//         if (node->q_type[i] != SQ)
+// 		    expanded_for_single_arg(node->args[i],args,env,status);
+//         else 
+//         i++;
+// 	}
+//     return res;
+// }
+
+// void expanddd(t_ast_tree *node,t_env_list *env,int status)
+// {
+// 	char **new_args= NULL;
+// 	int malc = calculate_splitted_expanded(node,env, status);
+//     printf("malc = %d\n",malc);
+//     new_args = malloc(sizeof(char *) * (malc + 1));
+//     new_args[malc] = NULL;
+//     set_the_new_args(node,new_args,env,status);
+// }

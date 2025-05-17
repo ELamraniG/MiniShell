@@ -1,11 +1,12 @@
-LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
-INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
+LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
+INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
 CFLAGS =  -fsanitize=address 
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
+		str_utils/ft_split_for_expand.c \
 		str_utils/put_str.c \
 		str_utils/string_utils.c \
 		str_utils/ft_strjoin.c \

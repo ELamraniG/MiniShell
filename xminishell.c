@@ -116,6 +116,7 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		}
 		remove_quotes(tokens);
+		print_lex(tokens);
 		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
 
@@ -131,6 +132,7 @@ int	main(int ac, char **av, char **env)
 			}
 			continue;
 		}
+		print_tree(astree,0);
 		excute_the_damn_tree(astree, &status, &envv);
 		free_tree(astree);
 
