@@ -1,5 +1,5 @@
-LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
-INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
+LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
+INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
 CFLAGS =  -fsanitize=address 

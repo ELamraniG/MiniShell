@@ -5,7 +5,7 @@ static int	validate_key(char *s)
 	int	i;
 
 	i = 0;
-	if (s[i] >= '0' && s[i] <= '9')
+	if (!ft_isalpha(s[i]) && s[i] != '_')
 		return (0);
 	i++;
 	while (s[i])
@@ -84,7 +84,7 @@ int	exec_export(t_env_list **env, char **args)
 				// handling empty key case (export =value)
 				if (j == 0)
 				{
-					printf("export: `%s': not a valid identifier\n", args[i]);
+					printf("minishell: export: `%s': not a valid identifier\n", args[i]);
 					break;
 				}
 				// handling += case
@@ -93,7 +93,7 @@ int	exec_export(t_env_list **env, char **args)
 					key = ft_substr(args[i], 0, j-1);
 					if (!validate_key(key))
 					{
-						printf("export: `%s': not a valid identifier\n", key);
+						printf("minishell: export: `%s': not a valid identifier\n", key);
 						free(key);
 						break;
 					}
