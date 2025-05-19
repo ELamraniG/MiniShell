@@ -288,8 +288,9 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		stdinn = dup(STDIN_FILENO);
 		stdoutt = dup(STDOUT_FILENO);
 		
+		I_HATE_EXPANDING(astree, *env, *status);
 		astree->args = join_args_without_spaces(astree);
-		 expanddd(astree, *env, *status); 
+		//  expanddd(astree, *env, *status); 
 		
 		if (excute_redirs(astree) == -1)
 		{

@@ -1,0 +1,132 @@
+else if (astree->type == WORD)
+{
+    stdinn = dup(STDIN_FILENO);
+    stdoutt = dup(STDOUT_FILENO);
+    
+    // Add safety checks before and after expansion
+    if (astree && astree->args && astree->args[0]) {
+        expand_improved(astree, *env, *status);
+        
+        // Double-check that args is still valid after expansion
+        if (astree->args && astree->args[0]) {
+            astree->args = join_args_without_spaces(astree);
+        } else {
+            // Handle case where expansion might have left args empty
+            char **new_args = malloc(sizeof(char *) * 2);
+            new_args[0] = ft_strdup("");  // Empty string as fallback
+            new_args[1] = NULL;
+            astree->args = new_args;
+            astree->arg_counter = 1;
+            
+            // We also need to ensure q_type and is_space exist
+            if (!astree->q_type) {
+                astree->q_type = malloc(sizeof(int));
+                astree->q_type[0] = NQ;
+            }
+            if (!astree->is_space) {
+                astree->is_space = malloc(sizeof(int));
+                astree->is_space[0] = 0;
+            }
+        }
+    }
+    
+    if (excute_redirs(astree) == -1)
+    {
+        dup3(stdinn, STDIN_FILENO);
+        dup3(stdoutt, STDOUT_FILENO);
+        *status = 1;
+        return;
+    }
+    
+    // Check if command is empty after expansion
+    if (!astree->args || !astree->args[0] || !astree->args[0][0]) {
+        dup3(stdinn, STDIN_FILENO);
+        dup3(stdoutt, STDOUT_FILENO);
+        *status = 127;
+        ft_putstr_fd(2, ": command not found\n");
+        return;
+    }
+    
+    // Execute built-in commands directly
+    if (is_built_in(astree->args[0]))
+    {
+        *status = execute_built_in(astree->args, env);
+        dup3(stdinn, STDIN_FILENO);
+        dup3(stdoutt, STDOUT_FILENO);
+        return;
+    }
+    
+    // Fork for external commands
+    pid1 = fork();
+    if (pid1 == -1)
+    {
+        close(stdinn);
+        close(stdoutt);
+        *status = 1;
+        perror(NULL);
+        return;
+    }
+    
+    if (pid1 == 0)
+    {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+
+        // Find command in PATH
+        pid2 = handle_path(astree->args, *env);
+        if (pid2 == -1)
+        {
+            ft_putstr_fd(2, astree->args[0]);
+            ft_putstr_fd(2, ": command not found\n");
+            exit(127);
+        }
+        else if (pid2 == -2)
+        {
+            ft_putstr_fd(2, astree->args[0]);
+            ft_putstr_fd(2, ": Permission denied\n");
+            exit(126);
+        }
+        
+        // Check if command is a directory
+        if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
+        {
+            ft_putstr_fd(2, astree->args[0]);
+            ft_putstr_fd(2, ": is a directory\n");
+            exit(126);
+        }
+        
+        // Execute command
+        char **env_char = turn_env_to_chars(*env);
+        execve(astree->args[0], astree->args, env_char);
+        perror(astree->args[0]);
+        
+        // Clean up if exec fails
+        if (env_char)
+        {
+            pid2 = 0;
+            while (env_char[pid2])
+                free(env_char[pid2++]);
+            free(env_char);
+        }
+        exit(127);
+    }
+    
+    // Wait for child process
+    ignore_signals();
+    waitpid(pid1, &exit_code, 0);
+    handle_main_sigs();
+    
+    // Process exit status
+    if (WIFEXITED(exit_code))
+        *status = WEXITSTATUS(exit_code);
+    else if (WIFSIGNALED(exit_code))
+    {
+        *status = 128 + WTERMSIG(exit_code);
+        if (WTERMSIG(exit_code) == SIGQUIT)
+            ft_putstr_fd(2, "Quit (core dumped)\n");
+    }
+    
+    // Restore file descriptors
+    dup3(stdinn, STDIN_FILENO);
+    dup3(stdoutt, STDOUT_FILENO);
+}

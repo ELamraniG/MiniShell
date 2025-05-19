@@ -132,7 +132,7 @@ int	main(int ac, char **av, char **env)
 			continue;
 		}
 		excute_the_damn_tree(astree, &status, &envv);
-		free_tree(astree);
+		// free_tree(astree);
 
 		free(input);
 		if (!isatty(STDIN_FILENO))

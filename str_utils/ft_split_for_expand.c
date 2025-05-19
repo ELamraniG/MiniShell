@@ -1,4 +1,3 @@
-
 #include "../includes/minishell.h"
 
 static void	ft_free(char **s, int i)
@@ -39,10 +38,14 @@ static int	do_someth1(const char *s, char **s2, char c,int wc)
 	i = 0;
 	j = 0;
 	k   = 0;
-	while (s[i] && (s[i++] == c))
-		k++;
-	while (s[i] && (!(s[i++] == c) || j == wc - 1))
+	while (s[i] && (s[i] == c))
 	{
+		k++;
+		i++;
+	}
+	while (s[i] && (!(s[i] == c) || j == wc - 1))
+	{
+		i++;
 		k++;
 	}
 	
@@ -124,7 +127,7 @@ static void	do_someth2(const char *s, char **s2, char c,int wc)
 	}
 }
 
-char	**ft_splitt(char const *s, char c)
+char	**ft_split_for_expand(char const *s, char c)
 {
 	char	**s2;
 	int		wc;
@@ -144,3 +147,19 @@ char	**ft_splitt(char const *s, char c)
 	return (s2);
 }
 
+
+
+// int main()
+// {
+// 	char **result = ft_split_for_expand("Hello", ' ');
+// 	int i = 0;
+
+// 	while (result && result[i])
+// 	{
+// 		printf("Word %d: |%s|\n", i, result[i]);
+
+// 		i++;
+// 	}
+// 	ft_free(result, i - 1);
+// 	return 0;
+// }

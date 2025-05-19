@@ -31,6 +31,7 @@ SRC =	str_utils/ft_split.c \
 		execution/excuting_redirs.c \
 		execution/exec_tree.c \
 		execution/handle_heredoc.c \
+		expandings_test.c \
 		utils/signals.c \
 		# expandings_test.c
 

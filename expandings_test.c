@@ -1,19 +1,20 @@
 #include "includes/minishell.h"
 
-void ft_realloc(char ***args,char s, int *size,int **is_space)
+void ft_realloc(char ***args,char *s, int *size,int **is_space)
 {
     int i = 0;
-    int *new_is_space = malloc(sizeof(int) * (*size));
-    char **new_args = malloc(sizeof(char*) * (*size +1));
+    int *new_is_space = malloc(sizeof(int) * (*size + 1));
+    char **new_args = malloc(sizeof(char*) * (*size +2));
     int *tmpint_free;
     new_args[*size] = 0;
-    while (i < *size - 1)
+    while (i < *size)
     {
         new_is_space[i] = is_space[0][i];
         new_args[i] = args[0][i];
         i++;
     }
     new_args[i] = s;
+    new_args[*size + 1] = 0;
     (*size)++;
     char **tmp_free = *args;
     *args = new_args;
@@ -24,42 +25,30 @@ void ft_realloc(char ***args,char s, int *size,int **is_space)
     return ;
 }
 
-
-static char *get_key(char *str, int *i)
+static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
 {
-    int start = *i;
-    int len = 0;
-
-    (*i)++;
-    
-    if (str[*i] == '?')
-    {
-        (*i)++;
-        return ft_strdup("?");
-    }
-    
-    if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
-    {
-        (*i)++;
-        len++;
-        
-        while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+	(*i)++;
+    char *tmp = NULL;
+	// i skip the $
+	int len = 0;
+	while (str[*i])
+	{
+		if (str[*i] == '?')
         {
             (*i)++;
-            len++;
+			return ft_itoa(status);
         }
-    }
-    else if (str[*i] == '$')
-    {
-        return (ft_substr(str, start + 1, len));
-    }
-    else
-    {
-        if (len == 0)
-            return ft_strdup("$");
-    }
-    
-    return ft_substr(str, start + 1, len);
+		if (str[*i] == '$')
+        {
+			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
+            
+        }
+		len++;
+		(*i)++;
+	}
+	if (len == 0)
+		return ft_strdup("$");
+	return (ft_strdup(str + prev_pos + 1));
 }
 
 
@@ -87,25 +76,38 @@ static int has_space_at_the_beginning(char *s)
 	return 0;
 }
 
-static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int status,int old_is_space,int k,int *size)
+static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int status,int old_is_space,int k,int *size,int q_type,int **is_space)
 {
 	int i = 0;
     int j = 0;
-	int prev_pos=-1;
+    if (q_type == SQ)
+    {
+        ft_realloc(args,ft_strdup(str), size,is_space);
+        is_space[0][*size - 1] = old_is_space;
+        return ;
+    }
+    int flag = 0;
+	int prev_pos=0;
     char **dble;
     char *tmp3;
-    int *is_space;
+
 	while(str[i])
 	{
         j = 0;
 		if (str[i] == '$')
 		{
-            prev_pos = i;
+            flag = 1;
 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
+
 			if (tmp[0] != 0)
-            	ft_realloc(args,tmp, size,&is_space);
+            {
+            	ft_realloc(args,tmp, size,is_space);
+                is_space[0][*size - 1] = old_is_space;
+            }
 			else
-				free(tmp);
+            {
+                free(tmp);
+            }
 			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
             t_env_list *t;
             t = get_env_value(env,tmp2);
@@ -114,38 +116,39 @@ static int expanded_for_single_word(char ***args,char *str,t_env_list *env, int 
             else
                  tmp3 = ft_strdup(t->value); 
             free(tmp2);
-            dble = ft_splittt(tmp3,' ');
+            dble = ft_split_for_expand(tmp3,' ');
             free(tmp3);
             while (dble[j])
             {
-                ft_realloc(args,tmp3, size,&is_space);
-				is_space[*size - 1] = 1;
+                ft_realloc(args,dble[j], size,is_space);
+				is_space[0][*size - 1] = 1;
 				if (j == 0)
 				{
-					if(has_space_at_the_beginning(*args[*size - 1]) && *size > 1)
-						is_space[*size - 2] = 1;
+					if(has_space_at_the_beginning(args[0][*size - 1]) && *size > 1)
+						is_space[0][*size - 2] = 1;
 				}
-                free(dble[j]);
                 j++;
 				if (dble[j] == NULL)
 				{
-					if(has_space_at_the_end(*args[*size - 1]))
-						is_space[*size - 1] = 1;
+					if(has_space_at_the_end(args[0][*size - 1]))
+						is_space[0][*size - 1] = 1;
 					else 
-					is_space[*size - 1] = old_is_space;
+						is_space[0][*size - 1] = old_is_space;
 				}
             }	
+            prev_pos = i;
             free(dble);
 		}
         else 
-         i++;
+            i++;
 	}
-	if (prev_pos == -1)
+	if (flag == 0)
 	{
-        ft_realloc(args,str, size,&is_space);
-		is_space[*size - 1] = old_is_space;
+        ft_realloc(args,str, size,is_space);
+		is_space[0][*size - 1] = old_is_space;
 	}
 }
+
 
 
 void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
@@ -153,7 +156,33 @@ void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
     int k = 0;
 	char **args = NULL;
 	int size = 0;
-    expanded_for_single_word(&args,node->args[k],env,  status,node->is_space[k],k,&size)
+    int *is_space = NULL;
+    
+    // Print previous arguments
+    printf("Previous args:\n");
+    while (node->args[k])
+    {
+        printf("[%d]: '%s'\n", k, node->args[k]);
+        k++;
+    }
+    
+    k = 0; // Reset counter
+    while (node->args[k])
+    {
+        expanded_for_single_word(&args,node->args[k],env,  status,node->is_space[k],k,&size,node->q_type[k],&is_space);
+        k++;
+    }
+    
+    // Print current (expanded) arguments
+    printf("Current (expanded) args:\n");
+    for (int i = 0; i < size; i++)
+    {
+        printf("[%d]: '%s'\n", i, args[i]);
+    }
+    
+    node->args = args;
+    node->arg_counter = size; 
+    node->is_space = is_space;
 }
 
 
@@ -170,175 +199,3 @@ void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
-// {
-// 	(*i)++;
-//     char *tmp = NULL;
-// 	// i skip the $
-// 	int len = 0;
-// 	while (str[*i])
-// 	{
-// 		if (str[*i] == '?')
-//         {
-//             (*i)++;
-// 			return ft_itoa(status);
-//         }
-// 		if (str[*i] == '$')
-// 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
-// 		len++;
-// 		(*i)++;
-// 	}
-// 	if (len == 0)
-// 		return ft_strdup("$");
-// 	return (ft_strdup(str + prev_pos + 1));
-// }
-
-
-// static char *get_key(char *str, int *i)
-// {
-//     int start = *i;
-//     int len = 0;
-
-//     (*i)++;
-    
-//     if (str[*i] == '?')
-//     {
-//         (*i)++;
-//         return ft_strdup("?");
-//     }
-    
-//     if (str[*i] && (ft_isalpha(str[*i]) || str[*i] == '_'))
-//     {
-//         (*i)++;
-//         len++;
-        
-//         while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-//         {
-//             (*i)++;
-//             len++;
-//         }
-//     }
-//     else if (str[*i] == '$')
-//     {
-//         return (ft_substr(str, start + 1, len));
-//     }
-//     else
-//     {
-//         if (len == 0)
-//             return ft_strdup("$");
-//     }
-    
-//     return ft_substr(str, start + 1, len);
-// }
-
-
-// static int calculate_splitted_expanded_for_single_word(char *str,t_env_list *env, int status)
-// {
-// 	int res = 0;
-// 	int i = 0;
-//     int j = 0;
-// 	int prev_pos=0;
-//     char **dble;
-//     char *tmp3;
-// 	while(str[i])
-// 	{
-//         j = 0;
-// 		if (str[i] == '$')
-// 		{
-//             prev_pos = i;
-// 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
-//             free(tmp);
-// 			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
-//             t_env_list *t;
-//             t = get_env_value(env,tmp2);
-//             if (!t)
-// 			    tmp3 = ft_strdup(""); 
-//             else
-//                  tmp3 = ft_strdup(t->value); 
-//             free(tmp2);
-//             dble = ft_split(tmp3,' ');
-//             free(tmp3);
-//             while (dble[j])
-//             {
-//                 free(dble[j]);
-//                 j++;
-//                 res++;
-//             }	
-//             free(dble);
-// 		}
-//         else 
-//          i++;
-
-// 	}
-//     if (res == 0)
-//         return 1;
-//     return res;
-// }
-
-// static int calculate_splitted_expanded(t_ast_tree *node,t_env_list *env, int status)
-// {
-// 	int i = 0;
-// 	int res = 0;
-// 	while (node->args[i])
-// 	{
-//         if (node->q_type[i] != SQ)
-// 		    res += calculate_splitted_expanded_for_single_word(node->args[i],env,status);
-//         else 
-//             res++;
-//         i++;
-// 	}
-//     return res;
-// }
-
-// void set_the_new_args(t_ast_tree *node,char **new_args,t_env_list *env,int status)
-// {
-//     int i = 0;
-//     int j = 0;
-// 	while (node->args[i])
-// 	{
-//         if (node->q_type[i] != SQ)
-// 		    expanded_for_single_arg(node->args[i],args,env,status);
-//         else 
-//         i++;
-// 	}
-//     return res;
-// }
-
-// void expanddd(t_ast_tree *node,t_env_list *env,int status)
-// {
-// 	char **new_args= NULL;
-// 	int malc = calculate_splitted_expanded(node,env, status);
-//     printf("malc = %d\n",malc);
-//     new_args = malloc(sizeof(char *) * (malc + 1));
-//     new_args[malc] = NULL;
-//     set_the_new_args(node,new_args,env,status);
-// }
