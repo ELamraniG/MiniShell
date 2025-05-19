@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 17:40:36 by moel-amr          #+#    #+#             */
-/*   Updated: 2024/10/30 17:36:48 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:52:07 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,7 @@ static char	*ft_simplify(int n)
 	if (n == 0)
 	{
 		s = malloc (sizeof(char) * 2);
-		if (!s)
-			return (NULL);
-		ft_strlcpy(s, "0", 2);
+		s = ft_strdup("0");
 	}
 	else if (n == -2147483648)
 	{

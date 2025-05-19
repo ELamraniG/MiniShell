@@ -33,6 +33,7 @@ SRC =	str_utils/ft_split.c \
 		execution/handle_heredoc.c \
 		expandings_test.c \
 		utils/signals.c \
+		str_utils/ft_strtrim.c \
 		# expandings_test.c
 
 OBJ = $(SRC:.c=.o)

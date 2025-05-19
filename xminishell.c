@@ -69,7 +69,7 @@ int	main(int ac, char **av, char **env)
 	char *input;
 	int here_doc = 0;
 	t_lex_list *tokens;
-	int status;
+	int status = 0;
 	t_ast_tree *astree;
 	t_lex_list *lopo;
 	
@@ -132,7 +132,7 @@ int	main(int ac, char **av, char **env)
 			continue;
 		}
 		excute_the_damn_tree(astree, &status, &envv);
-		// free_tree(astree);
+		free_tree(astree);
 
 		free(input);
 		if (!isatty(STDIN_FILENO))

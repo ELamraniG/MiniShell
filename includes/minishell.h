@@ -157,4 +157,5 @@ void expanddd(t_ast_tree *node,t_env_list *env,int status);
 char **split_expanded_args(char *expanded_str);
 char	**ft_split_for_expand(char const *s, char c);
 void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status);
+char	*ft_strtrim(char const *s1, char const *set);
 #endif
