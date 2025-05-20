@@ -278,8 +278,8 @@ void expand_variables(t_ast_tree *node, t_env_list *env, int *status)
     {
         if (redir->type != HEREDOC)
         {
-            char *LAST_DAMN_FILE_NAME = join_expanded_parts(redir, env, status);
-            redir->LAST_DAMN_FILE_NAME = LAST_DAMN_FILE_NAME;
+            char *final_file_name = join_expanded_parts(redir, env, status);
+            redir->final_file_name = final_file_name;
         }
         redir = redir->next;
     }

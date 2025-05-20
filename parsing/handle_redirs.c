@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:16:40 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/13 14:56:01 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/20 13:25:40 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ static void	add_to_list_redirss(t_redirect **ll, int type, t_lex_list **token)
 	new_node->type = type;
 	new_node->next = NULL;
 	new_node->heredoc = 0;
-	new_node->LAST_DAMN_FILE_NAME = NULL;
+	new_node->final_file_name = NULL;
 	collect_redirect_parts(token, new_node);
 	if (*ll == NULL)
 		*ll = new_node;

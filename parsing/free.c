@@ -35,7 +35,7 @@ void	free_reds(t_redirect *red)
 			
 			free(red->is_space);
 			
-			free(red->LAST_DAMN_FILE_NAME);
+			free(red->final_file_name);
 		
 		red = red->next;
 		free(tmp);

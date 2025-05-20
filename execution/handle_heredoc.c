@@ -3,7 +3,8 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                             +#+  +:+       +#+        */
+/*   By:                                             +#+  +:+      
+	+#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 10:00:00                     #+#    #+#             */
 /*   Updated: 2025/05/14 10:00:00                     ###   ########.fr       */
@@ -17,7 +18,7 @@ static char	*join_all_file_names(t_redirect *redir)
 	char	*s;
 	char	*tmp_free;
 	int		i;
-	
+
 	s = ft_strdup(redir->file_name[0]);
 	i = 1;
 	while (i < redir->file_str_count)
@@ -37,19 +38,16 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2])
 
 	signal(SIGINT, heredoc_child_signal);
 	close(pipe_fd[0]);
-		redir->LAST_DAMN_FILE_NAME = join_all_file_names(redir);
-	delimiter = redir->LAST_DAMN_FILE_NAME;
-
+	redir->final_file_name = join_all_file_names(redir);
+	delimiter = redir->final_file_name;
 	while (1337)
 	{
 		line = readline("> ");
 		if (!line || !ft_strcmp(line, delimiter))
 		{
 			free(line);
-			break;
+			break ;
 		}
-		
-		
 		ft_putstr_fd(pipe_fd[1], line);
 		ft_putstr_fd(pipe_fd[1], "\n");
 		free(line);
@@ -68,7 +66,6 @@ static int	create_the_dawg(t_redirect *redir)
 	tcgetattr(STDIN_FILENO, &original_term);
 	if (pipe(pipe_fd) == -1)
 		return (-1);
-		
 	pid = fork();
 	if (pid == -1)
 	{
@@ -83,12 +80,10 @@ static int	create_the_dawg(t_redirect *redir)
 	waitpid(pid, &status, 0);
 	tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
 	handle_main_sigs();
-	
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
 		close(pipe_fd[0]);
 		sigarette = 130;
-	
 		return (-1);
 	}
 	else if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
@@ -98,22 +93,19 @@ static int	create_the_dawg(t_redirect *redir)
 		return (-1);
 	}
 	redir->heredoc = pipe_fd[0];
-	
 	return (0);
 }
 
 int	handle_heredoc(t_ast_tree *node, int n)
 {
 	t_redirect	*redir;
-	
+
 	if (!node)
 		return (0);
-		
 	if (node->left && handle_heredoc(node->left, n) == -1)
 		return (-1);
 	if (node->right && handle_heredoc(node->right, n) == -1)
 		return (-1);
-		
 	redir = node->redirect;
 	while (redir)
 	{
@@ -124,6 +116,5 @@ int	handle_heredoc(t_ast_tree *node, int n)
 		}
 		redir = redir->next;
 	}
-	
 	return (0);
 }

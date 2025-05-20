@@ -2,12 +2,6 @@
 
 void ft_realloc(char ***args,char *s, int *size,int **is_space)
 {
-	int o = 0;
-				while (o < *size)
-				{
-					printf("is space %d = %d\n",o , is_space[0][o]);
-					o++;
-				}
     int i = 0;
     int *new_is_space = malloc(sizeof(int) * (*size + 1));
     char **new_args = malloc(sizeof(char*) * (*size +2));
@@ -34,7 +28,6 @@ void ft_realloc(char ***args,char *s, int *size,int **is_space)
 
 static void trim_the_args(char ***args,int size)
 {
-	printf("%d\n",size);
 	char *tmp_free = args[0][size - 1];
 	args[0][size - 1] = ft_strtrim(args[0][size - 1]," ");
 	free(tmp_free);
@@ -117,7 +110,6 @@ static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int
 						
             flag = 1;
 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
-			printf("tmp = %s\n\n",tmp);
 			prev_pos = i;
 						
 			if (tmp[0] != 0)
@@ -143,9 +135,10 @@ static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int
 			{
 			    tmp3 = ft_strdup("");
 				ft_realloc(args,tmp3, size,is_space);
+				free(tmp2);
 				is_space[0][*size - 1] = 0;
 				prev_pos = i;
-				 continue;
+				continue;
 			}
             else
 			
@@ -202,47 +195,21 @@ void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
 	int size = 0;
     int *is_space = NULL;
     
-
-    printf("previou:\n");
-    while (node->args[k])
-    {
-        printf("[%d]: '%s'\n", k, node->args[k]);
-        k++;
-    }
-    
     k = 0;
     while (node->args[k])
     {
         expanded_for_single_word(&args,node->args[k],env,  status,node->is_space[k],k,&size,node->q_type[k],&is_space);
         k++;
     }
-    
- 
-    printf("current:\n");
-    for (int i = 0; i < size; i++)
-    {
-        printf("[%d]: '%s'\n", i, args[i]);
-    }
-    
+    k = 0;
+	while (node->args[k])
+		free(node->args[k++]);
+	free(node->args[k]);
+	free(node->args);
     node->args = args;
-    node->arg_counter = size; 
+    node->arg_counter = size;
+	free(node->is_space);
     node->is_space = is_space;
-	int *tmp_int_free = node->q_type;
-	node->q_type = malloc(sizeof(int) * size - 1);
-	free(tmp_int_free);
+	free(node->q_type);
+	node->q_type = malloc(sizeof(int) * size);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

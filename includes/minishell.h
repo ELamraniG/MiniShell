@@ -48,7 +48,7 @@ typedef struct s_redirect
 	int					*q_types;
 	int					*is_space;
 	int					file_str_count;
-	char				*LAST_DAMN_FILE_NAME;
+	char				*final_file_name;
 	int					type;
 	struct s_redirect	*next;
 	int					heredoc;
@@ -157,5 +157,6 @@ void expanddd(t_ast_tree *node,t_env_list *env,int status);
 char **split_expanded_args(char *expanded_str);
 char	**ft_split_for_expand(char const *s, char c);
 void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status);
+void expand_file_name(t_ast_tree *node,t_env_list *env, int status);
 char	*ft_strtrim(char const *s1, char const *set);
 #endif

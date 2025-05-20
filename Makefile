@@ -3,7 +3,7 @@ LIB_RL = -lreadline
 INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
-CFLAGS =  -fsanitize=address 
+CFLAGS =  -fsanitize=address -g #later on add -Wall ....
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
@@ -32,7 +32,8 @@ SRC =	str_utils/ft_split.c \
 		execution/excuting_redirs.c \
 		execution/exec_tree.c \
 		execution/handle_heredoc.c \
-		expandings_test.c \
+		args_expand.c \
+		file_expand.c \
 		utils/signals.c \
 		str_utils/ft_strtrim.c \
 		# expandings_test.c
