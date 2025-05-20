@@ -41,15 +41,15 @@ static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
     char *tmp = NULL;
 	// i skip the $
 	int len = 0;
+	if (str[*i] == '?')
+    {
+			(*i)++;
+			return ft_strdup("?");
+    }
 	if (!ft_isalpha(str[*i]))
 		return ft_strdup("$");
 	while (str[*i])
 	{
-		if (str[*i] == '?')
-        {
-			(*i)++;
-			return ft_strdup("?");
-        }
 		if (str[*i] == '$' || !ft_isalnum(str[*i]))
 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
 		len++;
@@ -212,11 +212,6 @@ static void I_HATE_EXPANDING_FILE(t_redirect *redir,t_env_list *env, int status)
     redir->is_space = is_space;
 	free(redir->q_types);
 	redir->q_types = malloc(sizeof(int) * size);
-	k = 0;
-	// while (k < redir->file_str_count)
-	// {
-	// 	printf("|%s|\n",redir->file_name[k++]);
-	// }
 }
 void expand_file_name(t_ast_tree *node,t_env_list *env, int status)
 {
@@ -225,11 +220,6 @@ void expand_file_name(t_ast_tree *node,t_env_list *env, int status)
 	{
 		int i = 0;
 		I_HATE_EXPANDING_FILE(redir,env,status);
-		while(i < redir->file_str_count)
-		{
-			printf("args[%d] =  %s is_space = |%d| \n",i,redir->file_name[i],redir->is_space[i]);
-			i++;
-		}
 		redir = redir->next;
 	}
 }

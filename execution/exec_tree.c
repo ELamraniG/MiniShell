@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-char **join_args_without_spaces(t_ast_tree *node)
+char **join_args_without_spaces(t_ast_tree *astree)
 {
     char **args2;
     char *tmp;
@@ -8,26 +8,26 @@ char **join_args_without_spaces(t_ast_tree *node)
     
     count = 1;
     i = 0;
-    while (i < node->arg_counter - 1) {
-        if (node->is_space[i])
+    while (i < astree->arg_counter - 1) {
+        if (astree->is_space[i])
             count++;
         i++;
     }
-    if (count == node->arg_counter)
-        return node->args;
+    if (count == astree->arg_counter)
+        return astree->args;
     args2 = malloc(sizeof(char*) * (count + 1));
     
     j = 0;
-    args2[0] = ft_strdup(node->args[0]);
+    args2[0] = ft_strdup(astree->args[0]);
     i = 1;
-    while (i < node->arg_counter) {
-        if (node->is_space[i-1]) {
+    while (i < astree->arg_counter) {
+        if (astree->is_space[i-1]) {
             j++;
-            args2[j] = ft_strdup(node->args[i]);
+            args2[j] = ft_strdup(astree->args[i]);
         }
         else {
             tmp = args2[j];
-            args2[j] = ft_strjoin(tmp, node->args[i]);
+            args2[j] = ft_strjoin(tmp, astree->args[i]);
             free(tmp);
         }
         i++;
@@ -35,13 +35,40 @@ char **join_args_without_spaces(t_ast_tree *node)
     args2[count] = NULL;
     
     i = 0;
-    while (i < node->arg_counter) {
-        free(node->args[i]);
+    while (i < astree->arg_counter) {
+        free(astree->args[i]);
         i++;
     }
-    free(node->args);
-    node->arg_counter = count;
+    free(astree->args);
+    astree->arg_counter = count;
     return args2;
+}
+
+
+static char *join_files_without_spaces(t_redirect *redir)
+{
+    char *args2 = ft_strdup("");
+    char *tmp_free;
+    int i = 0;
+	while(i < redir->file_str_count)
+	{
+		
+		tmp_free = args2;
+		args2 = ft_strjoin(args2,redir->file_name[i]);
+		free(tmp_free);
+		i++;
+	}	
+    return args2;
+}
+static void join_all_redir_files_without_spaces(t_ast_tree *astree)
+{
+	t_redirect *tmp;
+	tmp = astree->redirect;
+	while (tmp)
+	{
+		tmp->final_file_name = join_files_without_spaces(tmp);
+		tmp = tmp->next;
+	}
 }
 
 
@@ -287,6 +314,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		I_HATE_EXPANDING(astree, *env, *status);
 		expand_file_name(astree,*env, *status);
 		astree->args = join_args_without_spaces(astree);
+		join_all_redir_files_without_spaces(astree);
 		if (excute_redirs(astree) == -1)
 		{
 			dup3(stdinn, STDIN_FILENO);
@@ -294,7 +322,6 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			*status = 1;
 			return;
 		}
-		
 		if (is_built_in(astree->args[0]))
 		{
 			*status = execute_built_in(astree->args, env);
@@ -328,7 +355,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			else if (pid2 == -2)
 			{
 				ft_putstr_fd(2, astree->args[0]);
-				ft_putstr_fd(2, ": Permission denied\n");
+				ft_putstr_fd(2, ": Permission denied\n"); // check this later
 				exit(126);
 			}
 			if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))

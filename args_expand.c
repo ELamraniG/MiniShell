@@ -40,15 +40,16 @@ static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
     char *tmp = NULL;
 	// i skip the $
 	int len = 0;
-	if (!ft_isalpha(str[*i]))
-		return ft_strdup("$");
-	while (str[*i])
-	{
-		if (str[*i] == '?')
+	if (str[*i] == '?')
         {
 			(*i)++;
 			return ft_strdup("?");
         }
+	if (!ft_isalpha(str[*i]))
+		return ft_strdup("$");
+	while (str[*i])
+	{
+		
 		if (str[*i] == '$' || !ft_isalnum(str[*i]))
 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
 		len++;

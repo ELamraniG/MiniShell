@@ -108,7 +108,6 @@ int	main(int ac, char **av, char **env)
 		}
 
 		set_the_arg_type(tokens);
-		print_lex(tokens);
 		lopo = tokens;
 		if (!handle_syntax_errors(tokens, &status))
 		{
@@ -134,7 +133,6 @@ int	main(int ac, char **av, char **env)
 		}
 		excute_the_damn_tree(astree, &status, &envv);
 		free_tree(astree);
-
 		free(input);
 		if (!isatty(STDIN_FILENO))
 		{

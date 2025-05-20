@@ -1,0 +1,9 @@
+$  ls > $gegeg
+bash: $gegeg: ambiguous redirect // sounds impossible skip it
+
+
+
+dont forget to get back rl stuff
+next
+expand in heredoc
+wildcards
