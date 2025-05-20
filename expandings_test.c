@@ -2,6 +2,12 @@
 
 void ft_realloc(char ***args,char *s, int *size,int **is_space)
 {
+	int o = 0;
+				while (o < *size)
+				{
+					printf("is space %d = %d\n",o , is_space[0][o]);
+					o++;
+				}
     int i = 0;
     int *new_is_space = malloc(sizeof(int) * (*size + 1));
     char **new_args = malloc(sizeof(char*) * (*size +2));
@@ -41,6 +47,8 @@ static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
     char *tmp = NULL;
 	// i skip the $
 	int len = 0;
+	if (!ft_isalpha(str[*i]))
+		return ft_strdup("$");
 	while (str[*i])
 	{
 		if (str[*i] == '?')
@@ -48,10 +56,8 @@ static char *get_keyy(char *str,t_env_list *env,int prev_pos,int *i,int status)
 			(*i)++;
 			return ft_strdup("?");
         }
-		if (str[*i] == '$')
-        {
+		if (str[*i] == '$' || !ft_isalnum(str[*i]))
 			return ft_substr(str,prev_pos + 1,*i - prev_pos -  1);
-        }
 		len++;
 		(*i)++;
 	}
@@ -87,6 +93,7 @@ static int has_space_at_the_beginning(char *s)
 
 static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int status,int old_is_space,int k,int *size,int q_type,int **is_space)
 {
+	
 	int i = 0;
     int j = 0;
     if (q_type == SQ)
@@ -103,19 +110,26 @@ static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int
 	while(str[i])
 	{
         j = 0;
-		if (str[i] == '$')
+		if (str[i] == '\'')
+			i++;
+		else if (str[i] == '$')
 		{
+						
             flag = 1;
 			char *tmp = ft_substr(str,prev_pos,i - prev_pos);
+			printf("tmp = %s\n\n",tmp);
 			prev_pos = i;
+						
 			if (tmp[0] != 0)
 			{
 				ft_realloc(args,tmp, size,is_space);
-                is_space[0][*size - 1] = old_is_space;
+                is_space[0][*size - 1] = 0;
 			}
 			else 
 				free(tmp);
 			char *tmp2 = get_keyy(str,env,prev_pos,&i,status);
+			if(str[i])
+				flag = 0;
 			if (!ft_strcmp(tmp2,"?"))
 			{
 				tmp3=ft_itoa(status);
@@ -128,8 +142,9 @@ static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int
             if (!t)
 			{
 			    tmp3 = ft_strdup("");
-				 ft_realloc(args,tmp3, size,is_space);
-				 prev_pos = i;
+				ft_realloc(args,tmp3, size,is_space);
+				is_space[0][*size - 1] = 0;
+				prev_pos = i;
 				 continue;
 			}
             else
@@ -151,14 +166,18 @@ static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int
                 j++;
 				if (dble[j] == NULL)
 				{
-					if(has_space_at_the_end(args[0][*size - 1]))
+					if (has_space_at_the_end(args[0][*size - 1]))
 						is_space[0][*size - 1] = 1;
-					else 
-						is_space[0][*size - 1] = old_is_space;
+					else
+						is_space[0][*size - 1] = 0;
+						
 				}
+					
 				trim_the_args(args,*size);
             }	
             free(dble);
+
+
 			prev_pos = i;
 		}
         else 
@@ -171,6 +190,7 @@ static void expanded_for_single_word(char ***args,char *str,t_env_list *env, int
         ft_realloc(args,tmp, size,is_space);
 		is_space[0][*size - 1] = old_is_space;
 	}
+	is_space[0][*size - 1] = old_is_space;
 }
 
 
@@ -183,7 +203,7 @@ void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
     int *is_space = NULL;
     
 
-    printf("Previous args:\n");
+    printf("previou:\n");
     while (node->args[k])
     {
         printf("[%d]: '%s'\n", k, node->args[k]);
@@ -198,7 +218,7 @@ void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status)
     }
     
  
-    printf("Current (expanded) args:\n");
+    printf("current:\n");
     for (int i = 0; i < size; i++)
     {
         printf("[%d]: '%s'\n", i, args[i]);

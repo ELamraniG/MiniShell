@@ -1,4 +1,5 @@
-LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
+LIB_RL = -lreadline
+# LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
 INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 

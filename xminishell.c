@@ -52,7 +52,7 @@ void	print_tree(t_ast_tree *tree, int deep)
 void	free_read_line(void)
 {
 	clear_history();
-	rl_clear_history();
+	// rl_clear_history();
 }
 
 void	handlectrlc(int n)
@@ -60,7 +60,7 @@ void	handlectrlc(int n)
 	sigarette = 130;
 	printf("\n");
 	rl_on_new_line();
-	rl_replace_line("", 0);
+	// rl_replace_line("", 0);
 	rl_redisplay();
 }
 
@@ -108,6 +108,7 @@ int	main(int ac, char **av, char **env)
 		}
 
 		set_the_arg_type(tokens);
+		print_lex(tokens);
 		lopo = tokens;
 		if (!handle_syntax_errors(tokens, &status))
 		{

@@ -1,1 +1,3 @@
 // expand vars inside heredoc
+
+//jihad fixi export dyalk
