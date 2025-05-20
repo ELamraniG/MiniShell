@@ -7,3 +7,26 @@ dont forget to get back rl stuff
 next
 expand in heredoc
 wildcards
+
+
+
+
+
+leaks : 
+EL | Amrani --> : ./minishell 
+minishell$ ls
+Makefile                cd                      file_expand.o           notes                   str_utils
+args_expand.c           dir.c                   good_test.sh            parsing                 utils
+args_expand.o           execution               includes                pipeline_error_test.sh  xminishell.c
+built_ins               file_expand.c           minishell               pwd                     xminishell.o
+minishell$ echo
+
+minishell$ echo $LOGNAME$?$?$?abab $hgehr$LOGNAME$?$?
+moel-amr000abab moel-amr00
+minishell$ lef
+lef: command not found
+minishell$ eg
+eg: command not found
+minishell$ ls > $LOGNAME$LOGNAME $LOGNAME$?$?$? > abcd
+ls: moel-amr127127127: No such file or directory
+minishell$ ^D%                 
