@@ -52,7 +52,6 @@ static char *join_files_without_spaces(t_redirect *redir)
     int i = 0;
 	while(i < redir->file_str_count)
 	{
-		
 		tmp_free = args2;
 		args2 = ft_strjoin(args2,redir->file_name[i]);
 		free(tmp_free);
@@ -92,7 +91,7 @@ int handle_path(char **args, t_env_list *env)
 	env = get_env_value(env,"PATH");
 
 	if (!env || !env->value || !env->value[0])
-		return -1;
+		return -3;
 	char *path = env->value;
 	if(path == NULL || !*path)
 		return -1;
@@ -312,7 +311,13 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		stdoutt = dup(STDOUT_FILENO);
 		
 		I_HATE_EXPANDING(astree, *env, *status);
-		expand_file_name(astree,*env, *status);
+		if (expand_file_name(astree,*env, *status) == -1)
+		{
+			*status = 1;
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
+			return;
+		}
 		astree->args = join_args_without_spaces(astree);
 		join_all_redir_files_without_spaces(astree);
 		if (excute_redirs(astree) == -1)
@@ -357,6 +362,13 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 				ft_putstr_fd(2, astree->args[0]);
 				ft_putstr_fd(2, ": Permission denied\n"); // check this later
 				exit(126);
+			}
+			else if (pid2 == -3)
+			{
+				ft_putstr_fd(2, "minishell: ");
+				ft_putstr_fd(2, astree->args[0]);
+				ft_putstr_fd(2, ": No such file or directory\n");
+				exit(127);
 			}
 			if (stat(astree->args[0], &l) == 0 && S_ISDIR(l.st_mode))
 			{

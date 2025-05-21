@@ -1,0 +1,20 @@
+//signal in heredoc no logner working
+
+
+dont forget to get back rl stuff
+next
+expand in heredoc
+wildcards
+
+
+
+
+
+
+leaks : in expand 
+
+
+
+
+
+//jihad

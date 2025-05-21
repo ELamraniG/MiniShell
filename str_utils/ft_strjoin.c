@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 16:18:28 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/06 15:34:41 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:43:35 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static char	*ft_alo(char *str, size_t slen)
 	return (str);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
 

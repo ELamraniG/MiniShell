@@ -84,7 +84,7 @@ typedef struct s_lex_list
 }						t_lex_list;
 
 void					dup3(int new, int original);
-char					*ft_strjoin(char const *s1, char const *s2);
+char					*ft_strjoin(char *s1, char *s2);
 char					*ft_itoa(int n);
 void					free_lex_list(t_lex_list *token);
 void					ft_putstr_fd(int fd, char *str);
@@ -157,6 +157,6 @@ void expanddd(t_ast_tree *node,t_env_list *env,int status);
 char **split_expanded_args(char *expanded_str);
 char	**ft_split_for_expand(char const *s, char c);
 void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status);
-void expand_file_name(t_ast_tree *node,t_env_list *env, int status);
+int	expand_file_name(t_ast_tree *node, t_env_list *env, int status);
 char	*ft_strtrim(char const *s1, char const *set);
 #endif
