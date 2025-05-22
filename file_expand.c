@@ -18,7 +18,7 @@ static void	ft_realloc(char ***args, char *s, int *size, int **is_space)
 		new_args[i] = args[0][i];
 		i++;
 	}
-	new_args[i] = ft_strdup(s);
+	new_args[i] = (s);
 	new_args[*size + 1] = 0;
 	(*size)++;
 	tmp_free = *args;

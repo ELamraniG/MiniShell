@@ -116,15 +116,13 @@ int	main(int ac, char **av, char **env)
 
 		if (handle_heredoc(astree, 0, envv) == -1)
 		{
-			free_tree(astree);
-			free(input);
 			if (sigarette == 130)
 			{
 				status = 130;
 				sigarette = 0;
-				free_tree(astree);
-				free(input);
 			}
+			free(input);
+			free_tree(astree);
 			continue;
 		}
 		excute_the_damn_tree(astree, &status, &envv);

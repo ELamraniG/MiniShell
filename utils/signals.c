@@ -42,8 +42,6 @@ void	heredoc_child_signal(int sig)
 	ft_putstr_fd(1, "\n");
 	
 	rl_clear_history();
-	rl_free_line_state();
-	rl_cleanup_after_signal();
 	
 	exit(1);
 }
