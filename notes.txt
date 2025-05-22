@@ -5,6 +5,7 @@ dont forget to get back rl stuff
 next
 expand in heredoc
 wildcards
+// i need to add qtype back to expanding because its needed by wildcares, splited args inside env are always = NQ
 
 
 

@@ -1,5 +1,5 @@
-LIB_RL = -lreadline
-# LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
+# LIB_RL = -lreadline
+LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
 INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
@@ -36,6 +36,7 @@ SRC =	str_utils/ft_split.c \
 		here_doc_expand.c \
 		utils/signals.c \
 		str_utils/ft_strtrim.c \
+		handle_wild_cards.c \
 		# expandings_test.c
 
 OBJ = $(SRC:.c=.o)

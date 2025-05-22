@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include <stdio.h>
+# include <dirent.h>
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -152,11 +153,15 @@ void					handle_main_sigs(void);
 void					reset_signals(void);
 void					ignore_signals(void);
 void					print_export(t_env_list *env_list);
-void expanddd(t_ast_tree *node,t_env_list *env,int status);
-char **split_expanded_args(char *expanded_str);
-char	**ft_split_for_expand(char const *s, char c);
-void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status);
-int	expand_file_name(t_ast_tree *node, t_env_list *env, int status);
-char	*ft_strtrim(char const *s1, char const *set);
-char *expand_heredoc_line(char *line, t_env_list *env, int status);
+void					expanddd(t_ast_tree *node, t_env_list *env, int status);
+char					**split_expanded_args(char *expanded_str);
+char					**ft_split_for_expand(char const *s, char c);
+void					I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env,
+							int status);
+int						expand_file_name(t_ast_tree *node, t_env_list *env,
+							int status);
+char					*ft_strtrim(char const *s1, char const *set);
+char					*expand_heredoc_line(char *line, t_env_list *env,
+							int status);
+void					handle_wild_card(t_ast_tree *node);
 #endif
