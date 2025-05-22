@@ -19,7 +19,6 @@ SRC =	str_utils/ft_split.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
-		parsing/expand_vars.c \
 		xminishell.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \
@@ -34,6 +33,7 @@ SRC =	str_utils/ft_split.c \
 		execution/handle_heredoc.c \
 		args_expand.c \
 		file_expand.c \
+		here_doc_expand.c \
 		utils/signals.c \
 		str_utils/ft_strtrim.c \
 		# expandings_test.c

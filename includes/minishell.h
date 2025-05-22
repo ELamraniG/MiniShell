@@ -12,7 +12,6 @@
 # include <termios.h>
 # include <unistd.h>
 
-extern int				sigarette;
 typedef enum e_type_arg
 {
 	IN_REDIR,
@@ -136,8 +135,8 @@ int						exec_export(t_env_list **env, char **args);
 int						exec_unset(t_env_list **env, char **args);
 int						exit_shell(char **args);
 int						print_env(t_env_list *env_list);
-int						handle_heredoc(t_ast_tree *node, int n);
-void					process_all_heredocs(t_ast_tree *node);
+int						handle_heredoc(t_ast_tree *node, int n,
+							t_env_list *env);
 char					**join_args_without_spaces(t_ast_tree *node);
 void					expand_variables(t_ast_tree *node, t_env_list *env,
 							int *status);
@@ -159,4 +158,5 @@ char	**ft_split_for_expand(char const *s, char c);
 void I_HATE_EXPANDING(t_ast_tree *node,t_env_list *env, int status);
 int	expand_file_name(t_ast_tree *node, t_env_list *env, int status);
 char	*ft_strtrim(char const *s1, char const *set);
+char *expand_heredoc_line(char *line, t_env_list *env, int status);
 #endif

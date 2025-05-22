@@ -13,6 +13,7 @@
 
 #include "../includes/minishell.h"
 
+extern int sigarette;
 static char	*join_all_file_names(t_redirect *redir)
 {
 	char	*s;
@@ -31,32 +32,44 @@ static char	*join_all_file_names(t_redirect *redir)
 	return (s);
 }
 
-static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2])
+static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 {
-	char	*line;
+	char	*tmp;
+	char	*s;
 	char	*delimiter;
 
 	signal(SIGINT, heredoc_child_signal);
 	close(pipe_fd[0]);
 	redir->final_file_name = join_all_file_names(redir);
 	delimiter = redir->final_file_name;
+	
 	while (1337)
 	{
-		line = readline("> ");
-		if (!line || !ft_strcmp(line, delimiter))
+		tmp = readline("> ");
+		if (!tmp)
 		{
-			free(line);
+			//edit this later
+			ft_putstr_fd(2, "bash : warning: here-document delimited by end-of-file (wanted `\n");
+			free(tmp);
 			break ;
 		}
-		ft_putstr_fd(pipe_fd[1], line);
+		if(!ft_strcmp(tmp, delimiter))
+		{
+			free(tmp);
+			break ;
+		}
+		s = expand_heredoc_line(tmp, env, sigarette);
+		ft_putstr_fd(pipe_fd[1], s);
 		ft_putstr_fd(pipe_fd[1], "\n");
-		free(line);
+		free(s);
+		free(tmp);
 	}
+	
 	close(pipe_fd[1]);
 	exit(0);
 }
 
-static int	create_the_dawg(t_redirect *redir)
+static int	create_the_dawg(t_redirect *redir, t_env_list *env)
 {
 	int				pipe_fd[2];
 	struct termios	original_term;
@@ -74,7 +87,7 @@ static int	create_the_dawg(t_redirect *redir)
 		return (-1);
 	}
 	if (pid == 0)
-		process_heredoc_content(redir, pipe_fd);
+		process_heredoc_content(redir, pipe_fd, env);
 	close(pipe_fd[1]);
 	ignore_signals();
 	waitpid(pid, &status, 0);
@@ -96,22 +109,22 @@ static int	create_the_dawg(t_redirect *redir)
 	return (0);
 }
 
-int	handle_heredoc(t_ast_tree *node, int n)
+int	handle_heredoc(t_ast_tree *node, int n, t_env_list *env)
 {
 	t_redirect	*redir;
 
 	if (!node)
 		return (0);
-	if (node->left && handle_heredoc(node->left, n) == -1)
+	if (node->left && handle_heredoc(node->left, n, env) == -1)
 		return (-1);
-	if (node->right && handle_heredoc(node->right, n) == -1)
+	if (node->right && handle_heredoc(node->right, n, env) == -1)
 		return (-1);
 	redir = node->redirect;
 	while (redir)
 	{
 		if (redir->type == HEREDOC)
 		{
-			if (create_the_dawg(redir) == -1)
+			if (create_the_dawg(redir,env) == -1)
 				return (-1);
 		}
 		redir = redir->next;

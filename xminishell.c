@@ -1,7 +1,8 @@
 #include "includes/minishell.h"
 
-// Global variable definition
 int sigarette = 0;
+
+
 
 /*
 > bash: unexpected EOF while looking for matching `"'
@@ -49,18 +50,12 @@ void	print_tree(t_ast_tree *tree, int deep)
 	print_tree(tree->right, deep + 1);
 }
 
-void	free_read_line(void)
-{
-	clear_history();
-	// rl_clear_history();
-}
-
 void	handlectrlc(int n)
 {
 	sigarette = 130;
 	printf("\n");
 	rl_on_new_line();
-	// rl_replace_line("", 0);
+	rl_replace_line("", 0);
 	rl_redisplay();
 }
 
@@ -94,7 +89,7 @@ int	main(int ac, char **av, char **env)
 		i++;
 		if (!input)
 		{
-			free_read_line();
+			free(input);
 			break ;
 		}
 		if (input[0])
@@ -119,7 +114,7 @@ int	main(int ac, char **av, char **env)
 		astree = create_ast_tree(tokens);
 		free_lex_list(tokens);
 
-		if (handle_heredoc(astree, 0) == -1)
+		if (handle_heredoc(astree, 0, envv) == -1)
 		{
 			free_tree(astree);
 			free(input);
@@ -127,21 +122,23 @@ int	main(int ac, char **av, char **env)
 			{
 				status = 130;
 				sigarette = 0;
-				
+				free_tree(astree);
+				free(input);
 			}
 			continue;
 		}
 		excute_the_damn_tree(astree, &status, &envv);
 		free_tree(astree);
 		free(input);
+		//is this a must ? check before pushing
 		if (!isatty(STDIN_FILENO))
 		{
-			free_read_line();
+			rl_clear_history();
 			free_env_list(envv);
 			return (status);
 		}
 	}
-	free_read_line();
+	rl_clear_history();
 	free_env_list(envv);
 	return (0);
 }
