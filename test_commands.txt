@@ -1,3 +1,0 @@
-ls -la
-echo 'This is a test'
-exit
