@@ -53,10 +53,7 @@ static char	*ft_simplify(int n)
 
 	s = NULL;
 	if (n == 0)
-	{
-		s = malloc (sizeof(char) * 2);
 		s = ft_strdup("0");
-	}
 	else if (n == -2147483648)
 	{
 		s = malloc (sizeof(char) * 12);

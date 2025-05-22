@@ -3,7 +3,7 @@ LIB_RL = -lreadline
 INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
-CFLAGS =  #-fsanitize=address -g #later on add -Wall ....
+CFLAGS =  -fsanitize=address -g #later on add -Wall ....
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
