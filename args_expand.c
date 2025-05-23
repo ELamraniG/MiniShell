@@ -142,6 +142,7 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 			{
 				ft_realloc(args, tmp, size, is_space,q_type);
 				is_space[0][*size - 1] = 0;
+				q_type[0][*size - 1] = old_q_type;
 			}
 			else
 				free(tmp);
@@ -207,7 +208,6 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 		q_type[0][*size - 1] = old_q_type;
 	}
 	is_space[0][*size - 1] = old_is_space;
-	q_type[0][*size - 1] = old_q_type;
 }
 
 void	I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env, int status)
