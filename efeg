@@ -4,7 +4,9 @@ a.out
 args_expand.c
 args_expand.o
 built_ins
+e
 ef
+efe
 efeg
 execution
 file_expand.c

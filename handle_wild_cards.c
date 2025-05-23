@@ -1,6 +1,6 @@
 #include "includes/minishell.h"
 
-static int wach_exists(const char *str, const char *pat) {
+static int wach_exists(const char *pat, const char *str) {
     int sLen = strlen(str);
     int pLen = strlen(pat);
     int s = 0, p = 0;
@@ -34,7 +34,6 @@ static int wach_exists(const char *str, const char *pat) {
     while (p < pLen && pat[p] == '*') {
         p++;
     }
-	printf("%d %d\n\n",p,pLen);
     return p == pLen;
 }
 
@@ -76,13 +75,13 @@ int it_has_etoil(char *str)
 	return (0);
 }
 
-static void handle_single_wild_card(char ***args,char *current_arg,int old_is_space,int k,int *size,int **is_space)
+static void handle_single_wild_card(char ***args,char *current_arg,int old_is_space,int k,int *size,int **is_space,int q_type)
 {
 		DIR *r;
 		struct dirent *reads;
 	int found = 0;
 	
-	if (it_has_etoil(current_arg))
+	if (it_has_etoil(current_arg) && q_type == NQ)
 	{
 		r = opendir(".");
 		reads = readdir(r);
@@ -122,15 +121,14 @@ void handle_wild_card(t_ast_tree *node)
     k = 0;
     while (node->args[k])
     {
-        handle_single_wild_card(&args,node->args[k],node->is_space[k],k,&size,&is_space);
+        handle_single_wild_card(&args,node->args[k],node->is_space[k],k,&size,&is_space,node->q_type[k]);
         k++;
     }
     k = 0;
 	while (node->args[k])
 		free(node->args[k++]);
     k = 0;
-	while (args[k])
-		printf("%s\n",args[k++]);
+
 	// free(node->args[k]);
 	free(node->args);
     node->args = args;

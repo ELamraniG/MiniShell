@@ -1,19 +1,22 @@
 #include "includes/minishell.h"
 
-void	ft_realloc(char ***args, char *s, int *size, int **is_space)
+void	ft_realloc(char ***args, char *s, int *size, int **is_space,int **q_type)
 {
 	int		i;
 	int		*new_is_space;
 	char	**new_args;
 	int		*tmpint_free;
 	char	**tmp_free;
+	int 	*new_q_type;
 
 	i = 0;
 	new_is_space = malloc(sizeof(int) * (*size + 1));
+	new_q_type = malloc(sizeof(int) * (*size + 1));
 	new_args = malloc(sizeof(char *) * (*size + 2));
 	new_args[*size] = 0;
 	while (i < *size)
 	{
+		new_q_type[i] = q_type[0][i];
 		new_is_space[i] = is_space[0][i];
 		new_args[i] = args[0][i];
 		i++;
@@ -25,6 +28,9 @@ void	ft_realloc(char ***args, char *s, int *size, int **is_space)
 	*args = new_args;
 	tmpint_free = is_space[0];
 	*is_space = new_is_space;
+	free(tmpint_free); 
+	tmpint_free = q_type[0];
+	*q_type = new_q_type;
 	free(tmpint_free);
 	free(tmp_free);
 	return ;
@@ -98,8 +104,8 @@ static int	has_space_at_the_beginning(char *s)
 }
 
 static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
-		int status, int old_is_space, int k, int *size, int q_type,
-		int **is_space)
+		int status, int old_is_space, int k, int *size, int **q_type,
+		int **is_space, int old_q_type)
 {
 	int		i;
 	int		j;
@@ -113,10 +119,11 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 
 	i = 0;
 	j = 0;
-	if (q_type == SQ)
+	if (old_q_type == SQ)
 	{
-		ft_realloc(args, ft_strdup(str), size, is_space);
+		ft_realloc(args, ft_strdup(str), size, is_space,q_type);
 		is_space[0][*size - 1] = old_is_space;
+		q_type[0][*size - 1] = old_q_type;
 		return ;
 	}
 	flag = 0;
@@ -133,7 +140,7 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 			prev_pos = i;
 			if (tmp[0] != 0)
 			{
-				ft_realloc(args, tmp, size, is_space);
+				ft_realloc(args, tmp, size, is_space,q_type);
 				is_space[0][*size - 1] = 0;
 			}
 			else
@@ -152,9 +159,10 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 				if (!t)
 				{
 					tmp3 = ft_strdup("");
-					ft_realloc(args, tmp3, size, is_space);
+					ft_realloc(args, tmp3, size, is_space,q_type);
 					free(tmp2);
 					is_space[0][*size - 1] = 0;
+					q_type[0][*size - 1] = DQ;
 					prev_pos = i;
 					continue ;
 				}
@@ -166,8 +174,9 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 			free(tmp3);
 			while (dble[j])
 			{
-				ft_realloc(args, dble[j], size, is_space);
+				ft_realloc(args, dble[j], size, is_space,q_type);
 				is_space[0][*size - 1] = 1;
+				q_type[0][*size - 1] = NQ;
 				if (j == 0)
 				{
 					if (has_space_at_the_beginning(args[0][*size - 1])
@@ -193,16 +202,19 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 	if (flag == 0)
 	{
 		tmp = ft_substr(str, prev_pos, ft_strlen(str) - prev_pos);
-		ft_realloc(args, tmp, size, is_space);
+		ft_realloc(args, tmp, size, is_space,q_type);
 		is_space[0][*size - 1] = old_is_space;
+		q_type[0][*size - 1] = old_q_type;
 	}
 	is_space[0][*size - 1] = old_is_space;
+	q_type[0][*size - 1] = old_q_type;
 }
 
 void	I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env, int status)
 {
 	int		k;
 	char	**args;
+	int *q_type = NULL;
 	int		size;
 	int		*is_space;
 
@@ -214,7 +226,7 @@ void	I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env, int status)
 	while (node->args[k])
 	{
 		expanded_for_single_word(&args, node->args[k], env, status,
-			node->is_space[k], k, &size, node->q_type[k], &is_space);
+			node->is_space[k], k, &size,&q_type, &is_space,node->q_type[k]);
 		k++;
 	}
 	k = 0;
@@ -227,5 +239,5 @@ void	I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env, int status)
 	free(node->is_space);
 	node->is_space = is_space;
 	free(node->q_type);
-	node->q_type = malloc(sizeof(int) * size);
+	node->q_type = q_type;//edit this
 }
