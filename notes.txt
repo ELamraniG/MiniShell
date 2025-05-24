@@ -19,3 +19,8 @@ leaks : in expand // fixed ig
 //syntax error, redirection after pipe is not syntax error
 // in wildcards skip . and .. echo *, only show them if . is the first letter echo .*
 // handle ton of pipes
+
+//add the default vars into env when env -i
+
+
+//at the end add wall extra and remove sanitizer

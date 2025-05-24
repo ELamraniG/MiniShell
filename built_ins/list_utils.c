@@ -10,8 +10,8 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 	if (!tmp) // if first node is empty
 	{
 		tmp = new_env_node();
-		tmp->key = key;
-		tmp->value = value;
+		tmp->key = ft_strdup(key);
+		tmp->value = ft_strdup(value);
 		tmp->flag = flag;
 		*d = tmp;
 		return	;
