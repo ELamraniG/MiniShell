@@ -34,7 +34,7 @@ SRC =	str_utils/ft_split.c \
 		args_expand.c \
 		file_expand.c \
 		here_doc_expand.c \
-		utils/signals.c \
+		execution/signals.c \
 		str_utils/ft_strtrim.c \
 		handle_wild_cards.c \
 		# expandings_test.c

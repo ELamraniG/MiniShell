@@ -18,12 +18,12 @@ static int	is_redirection(t_type_arg type)
 		|| type == HEREDOC);
 }
 
-static int	is_logical_operator(t_type_arg type)
+static int	is_and_or(t_type_arg type)
 {
 	return (type == AND || type == OR);
 }
 
-static int	check_valid_parentheses(t_lex_list *token)
+static int	check_paren(t_lex_list *token)
 {
 	int	p_ct;
 
@@ -43,7 +43,7 @@ static int	check_valid_parentheses(t_lex_list *token)
 	return (p_ct == 0);
 }
 
-static void	syntax_error(t_lex_list *token, int *status)
+static void	print_syntax(t_lex_list *token, int *status)
 {
 	ft_putstr_fd(STDERR_FILENO,
 		"minishell: syntax error near unexpected token `");
@@ -65,7 +65,7 @@ static void	syntax_error(t_lex_list *token, int *status)
 	*status = 2;
 }
 
-static int	validate_redirection(t_lex_list *token, int *status)
+static int	is_redir_good(t_lex_list *token, int *status)
 {
 		t_lex_list *error_token;
 
@@ -75,7 +75,7 @@ static int	validate_redirection(t_lex_list *token, int *status)
 			error_token = token->next;
 		else
 			error_token = NULL;
-		syntax_error(error_token, status);
+		print_syntax(error_token, status);
 		return (0);
 	}
 	return (1);
@@ -84,11 +84,55 @@ static int	validate_redirection(t_lex_list *token, int *status)
 static int	wach_valid_tokens(t_lex_list *current, int *status)
 {
 	if ((current->a_type == PIPE && current->next
-			&& (is_logical_operator(current->next->a_type)))
-		|| (is_logical_operator(current->a_type) && current->next
+			&& (is_and_or(current->next->a_type)))
+		|| (is_and_or(current->a_type) && current->next
 			&& (current->next->a_type == PIPE)))
 	{
-		syntax_error(current->next, status);
+		print_syntax(current->next, status);
+		return (0);
+	}
+	return (1);
+}
+
+static int	check_empty_parentheses(t_lex_list *token, int *status)
+{
+	if (token->a_type == OP_PAREN && token->next 
+		&& token->next->a_type == CL_PAREN)
+	{
+		print_syntax(token->next, status);
+		return (0);
+	}
+	return (1);
+}
+
+static int	word_paren(t_lex_list *token, int *status)
+{
+	if (token->a_type == WORD && token->next 
+		&& token->next->a_type == OP_PAREN)
+	{
+		print_syntax(token->next, status);
+		return (0);
+	}
+	return (1);
+}
+
+static int	check_operator_before_close_paren(t_lex_list *token, int *status)
+{
+	if ((token->a_type == PIPE || is_and_or(token->a_type))
+		&& token->next && token->next->a_type == CL_PAREN)
+	{
+		print_syntax(token, status);
+		return (0);
+	}
+	return (1);
+}
+
+static int	check_pipe_after_open_paren(t_lex_list *token, int *status)
+{
+	if (token->a_type == OP_PAREN && token->next 
+		&& token->next->a_type == PIPE)
+	{
+		print_syntax(token->next, status);
 		return (0);
 	}
 	return (1);
@@ -96,83 +140,103 @@ static int	wach_valid_tokens(t_lex_list *current, int *status)
 
 static int	validate_parentheses(t_lex_list *token, int *status)
 {
-	t_lex_list	*current;
-	int			n;
-
-	if (token->a_type == OP_PAREN && token->next
-		&& token->next->a_type == CL_PAREN)
-	{
-		syntax_error(token->next, status);
+	if (!check_empty_parentheses(token, status))
 		return (0);
-	}
-	if (token->a_type == WORD && token->next && token->next->a_type == OP_PAREN)
-	{
-		syntax_error(token->next, status);
+	if (!word_paren(token, status))
 		return (0);
-	}
-	if (token->a_type == OP_PAREN)
-	{
-		current = token->next;
-		n = 1;
-		while (current && n > 0)
-		{
-			if (current->a_type == OP_PAREN)
-				n++;
-			else if (current->a_type == CL_PAREN)
-			{
-				n--;
-			}
-			current = current->next;
-		}
-		current = token->next;
-		n = 1;
-		while (current && n > 0)
-		{
-			if (current->a_type == OP_PAREN)
-				n++;
-			else if (current->a_type == CL_PAREN)
-				n--;
-			if (n > 0 && current->next && !wach_valid_tokens(current,
-					status))
-				return (0);
-			if (n == 1 && current->a_type == PIPE && current->next
-				&& current->next->a_type == CL_PAREN)
-			{
-				syntax_error(current, status);
-				return (0);
-			}
-			if (n == 1 && token->next == current && current->a_type == PIPE)
-			{
-				syntax_error(current, status);
-				return (0);
-			}
-			if (n == 1 && is_logical_operator(current->a_type)
-				&& current->next && current->next->a_type == CL_PAREN)
-			{
-				syntax_error(current, status);
-				return (0);
-			}
-			current = current->next;
-		}
-	}
+	if (!check_operator_before_close_paren(token, status))
+		return (0);
+	if (!check_pipe_after_open_paren(token, status))
+		return (0);
 	return (1);
 }
 
-static int	check_initial_redirection(t_lex_list *token, int *status)
+static int	check_redirs(t_lex_list *token, int *status)
 {
 	if (is_redirection(token->a_type))
 	{
 		if (!token->next)
 		{
-			syntax_error(NULL, status);
+			print_syntax(NULL, status);
 			return (0);
 		}
 		else if (token->next->a_type != WORD)
 		{
-			syntax_error(token->next, status);
+			print_syntax(token->next, status);
 			return (0);
 		}
 	}
+	return (1);
+}
+
+static int	chec_pipe(t_lex_list *current, int *status)
+{
+	if (!current->next)
+	{
+		print_syntax(NULL, status);
+		return (0);
+	}
+	if (current->next->a_type == PIPE)
+	{
+		print_syntax(current->next, status);
+		return (0);
+	}
+	if (current->next && is_redirection(current->next->a_type))
+	{
+		print_syntax(current->next, status);
+		return (0);
+	}
+	return (1);
+}
+
+static int	check_and_or(t_lex_list *current, int *status)
+{
+	if (!current->next)
+	{
+		print_syntax(NULL, status);
+		return (0);
+	}
+	if (current->next->a_type == PIPE || current->next->a_type == AND
+		|| current->next->a_type == OR)
+	{
+		print_syntax(current->next, status);
+		return (0);
+	}
+	return (1);
+}
+
+static int	check_token(t_lex_list *current, int *status)
+{
+	if (is_redirection(current->a_type) && !is_redir_good(current,
+			status))
+		return (0);
+	if (!validate_parentheses(current, status))
+		return (0);
+	if (current->a_type == PIPE && !chec_pipe(current, status))
+		return (0);
+	if (is_and_or(current->a_type)
+		&& !check_and_or(current, status))
+		return (0);
+	if (current->next && !wach_valid_tokens(current, status))
+		return (0);
+	return (1);
+}
+
+static int	check_syntax(t_lex_list *token, int *status)
+{
+	if (!check_paren(token))
+	{
+		print_syntax(NULL, status);
+		return (0);
+	}
+	if (token->a_type == PIPE || token->a_type == AND || token->a_type == OR)
+	{
+		print_syntax(token, status);
+		return (0);
+	}
+	if (is_redirection(token->a_type) && !check_redirs(token,
+			status))
+		return (0);
 	return (1);
 }
 
@@ -182,60 +246,12 @@ int	handle_syntax_errors(t_lex_list *token, int *status)
 
 	if (!token)
 		return (1);
-	if (!check_valid_parentheses(token))
-	{
-		syntax_error(NULL, status);
-		return (0);
-	}
-	if (token->a_type == PIPE || token->a_type == AND || token->a_type == OR)
-	{
-		syntax_error(token, status);
-		return (0);
-	}
-	if (is_redirection(token->a_type) && !check_initial_redirection(token,
-			status))
+	if (!check_syntax(token, status))
 		return (0);
 	current = token;
 	while (current)
 	{
-		if (is_redirection(current->a_type) && !validate_redirection(current,
-				status))
-			return (0);
-		if (!validate_parentheses(current, status))
-			return (0);
-		if (current->a_type == PIPE)
-		{
-			if (!current->next)
-			{
-				syntax_error(NULL, status);
-				return (0);
-			}
-			if (current->next->a_type == PIPE)
-			{
-				syntax_error(current->next, status);
-				return (0);
-			}
-			if (current->next && is_redirection(current->next->a_type))
-			{
-				syntax_error(current->next, status);
-				return (0);
-			}
-		}
-		if (is_logical_operator(current->a_type))
-		{
-			if (!current->next)
-			{
-				syntax_error(NULL, status);
-				return (0);
-			}
-			if (current->next->a_type == PIPE || current->next->a_type == AND
-				|| current->next->a_type == OR)
-			{
-				syntax_error(current->next, status);
-				return (0);
-			}
-		}
-		if (current->next && !wach_valid_tokens(current, status))
+		if (!check_token(current, status))
 			return (0);
 		current = current->next;
 	}

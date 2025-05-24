@@ -47,17 +47,6 @@ void	add_to_list(t_lex_list **ll, char *str, t_q_flags quote, int is_space)
 	(tmp)->next = t;
 }
 
-// t_redirect	*new_node_redir(char *str, int type, int q_type)
-// {
-// 	t_redirect	*p;
-
-// 	p = malloc(sizeof(t_redirect));
-// 	p->heredoc = -1;
-// 	p->type = type;
-// 	p->next = NULL;
-// 	return (p);
-// }
-
 void	add_to_list_redir(t_redirect **ll, t_redirect *t)
 {
 	t_redirect	*tmp;

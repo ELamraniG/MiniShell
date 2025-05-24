@@ -1,0 +1,165 @@
+MINISHELL REDIRECTION HANDLING SUMMARY
+=====================================
+
+This document summarizes all the redirection parsing and handling implemented in handle_redirs.c
+
+=== REDIRECTION TYPES SUPPORTED ===
+1. IN_REDIR (<)    - Input redirection
+2. OUT_REDIR (>)   - Output redirection  
+3. APPEND (>>)     - Append output redirection
+4. HEREDOC (<<)    - Here document
+
+=== MAIN FUNCTIONALITY ===
+
+The handle_redirs.c file is responsible for:
+- Parsing redirection operators and their associated filenames
+- Handling multiple redirections in a single command
+- Managing spaces between redirection operators and filenames
+- Collecting redirection information into structured data
+
+=== KEY FUNCTIONS BREAKDOWN ===
+
+1. is_special_for_redirs(int a)
+   - Determines if token type should be processed for redirections
+   - Returns 1 for: WORD tokens and redirection operators (< 4)
+   - Used to identify relevant tokens during parsing
+
+2. wach_skip(t_lex_list *token)
+   - Checks if current token should be skipped/combined with next
+   - Returns 1 if: no space between current and next WORD token
+   - Handles cases like: cmd>file (no space between > and file)
+
+3. calculate_words(t_lex_list *token)
+   - Counts total number of WORD tokens in command sequence
+   - Skips over redirection operators and their filenames
+   - Used to allocate proper array size for command arguments
+
+4. count_files(t_lex_list *token)
+   - Counts filename tokens associated with a redirection
+   - Handles multiple consecutive filename parts
+   - Example: cmd > file1file2 (if no spaces between parts)
+
+5. redir_files(t_lex_list **token, t_redirect *redir)
+   - Collects all filename parts for a single redirection
+   - Stores: filename strings, quote types, space information
+   - Advances token pointer past collected parts
+
+6. add_to_list_redirss(t_redirect **ll, int type, t_lex_list **token)
+   - Creates new redirection node and adds to linked list
+   - Initializes redirection structure with type and collected parts
+   - Maintains order of redirections as they appear
+
+7. handle_words(t_ast_tree *node, t_lex_list **token)
+   - Main parsing function for command with redirections
+   - Separates command arguments from redirection operators
+   - Builds both args array and redirections linked list
+
+=== DATA STRUCTURES ===
+
+t_redirect structure contains:
+- file_name: Array of filename strings
+- q_types: Array of quote types for each filename part
+- is_space: Array indicating spaces between filename parts
+- file_str_count: Number of filename parts
+- final_file_name: Concatenated final filename (set later)
+- type: Redirection type (IN_REDIR, OUT_REDIR, etc.)
+- next: Pointer to next redirection in list
+- heredoc: Flag for heredoc handling
+
+=== PARSING LOGIC FLOW ===
+
+1. Calculate total number of WORD tokens for command arguments
+2. Allocate arrays for args, quote types, and space information
+3. Iterate through token list:
+   - If WORD token: add to args array
+   - If redirection operator: 
+     a. Save operator type
+     b. Move to next token (filename)
+     c. Collect all filename parts using redir_files()
+     d. Create redirection node
+     e. Add to redirections list
+4. Store all collected data in AST node
+
+=== REDIRECTION HANDLING EXAMPLES ===
+
+✓ VALID REDIRECTIONS:
+- cmd > file
+- cmd >file (no space)
+- cmd < input > output
+- cmd >> logfile
+- cmd << EOF
+- cmd > file1 < file2 >> file3
+
+✓ COMPLEX CASES HANDLED:
+- cmd>file (no spaces)
+- cmd > file1file2 (concatenated filenames)
+- cmd < "quoted file"
+- cmd > $VAR (variable expansion handled elsewhere)
+
+=== MEMORY MANAGEMENT ===
+
+Dynamic allocation for:
+- args array: (malc + 1) pointers
+- q_type array: malc integers  
+- is_space array: malc integers
+- file_name arrays: file_str_count strings per redirection
+- q_types arrays: file_str_count integers per redirection
+- is_space arrays: file_str_count integers per redirection
+
+Each redirection node allocated separately and linked together.
+
+=== INTEGRATION WITH AST ===
+
+Results stored in t_ast_tree node:
+- args: Command and arguments array
+- q_type: Quote information for arguments
+- is_space: Space information for arguments  
+- redirect: Linked list of all redirections
+- arg_counter: Total number of arguments
+
+=== SPECIAL FEATURES ===
+
+1. SPACE HANDLING:
+   - Tracks spaces between tokens for proper reconstruction
+   - Handles both spaced and non-spaced redirections
+   - Example: "cmd>file" vs "cmd > file"
+
+2. QUOTE PRESERVATION:
+   - Maintains quote type information
+   - Enables proper quote removal later in pipeline
+   - Supports single quotes, double quotes, no quotes
+
+3. FILENAME CONCATENATION:
+   - Collects multiple filename parts if no spaces
+   - Example: cmd>$USER.log becomes cmd>john.log
+   - Parts stored separately, concatenated during execution
+
+4. MULTIPLE REDIRECTIONS:
+   - Supports unlimited redirections per command
+   - Maintains order for proper execution
+   - Example: cmd < in > out >> log
+
+=== ERROR HANDLING ===
+
+Error cases handled elsewhere:
+- Syntax validation in handle_syntax.c
+- File access errors during execution
+- Variable expansion errors during expansion
+
+This module focuses purely on parsing structure, not validation.
+
+=== PROCESSING ORDER ===
+
+1. Lexical analysis (produces token list)
+2. Syntax validation (handle_syntax.c)
+3. Redirection parsing (handle_redirs.c) ← THIS MODULE
+4. Quote removal
+5. Variable expansion
+6. Execution with actual redirection
+
+=== NOTES ===
+- Functions designed for norminette compliance
+- Memory allocated but freed elsewhere in pipeline
+- Preserves all information needed for later processing
+- Works with existing AST and execution systems
+- Handles edge cases like concatenated filenames and mixed quotes

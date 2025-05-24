@@ -56,7 +56,7 @@ static int	calculate_words(t_lex_list *token)
 	return (n);
 }
 
-static int	get_file_count(t_lex_list *token)
+static int	count_files(t_lex_list *token)
 {
 	int			count;
 	t_lex_list	*current;
@@ -71,25 +71,25 @@ static int	get_file_count(t_lex_list *token)
 	return (count);
 }
 
-static void	collect_redirect_parts(t_lex_list **token, t_redirect *redir)
+static void	redir_files(t_lex_list **token, t_redirect *redir)
 {
 	int			i;
 	t_lex_list	*current;
-	int			file_count;
+	int			count;
 
 	i = 0;
-	file_count = get_file_count(*token);
-	redir->file_str_count = file_count;
-	redir->file_name = malloc(sizeof(char *) * file_count);
-	redir->q_types = malloc(sizeof(int) * file_count);
-	redir->is_space = malloc(sizeof(int) * file_count);
+	count = count_files(*token);
+	redir->file_str_count = count;
+	redir->file_name = malloc(sizeof(char *) * count);
+	redir->q_types = malloc(sizeof(int) * count);
+	redir->is_space = malloc(sizeof(int) * count);
 	redir->file_name[i] = ft_strdup((*token)->s);
 	redir->q_types[i] = (*token)->q_type;
 	redir->is_space[i] = (*token)->is_space;
 	i++;
 	current = *token;
 	*token = (*token)->next;
-	while (i < file_count)
+	while (i < count)
 	{
 		redir->file_name[i] = ft_strdup((*token)->s);
 		redir->q_types[i] = (*token)->q_type;
@@ -110,7 +110,7 @@ static void	add_to_list_redirss(t_redirect **ll, int type, t_lex_list **token)
 	new_node->next = NULL;
 	new_node->heredoc = 0;
 	new_node->final_file_name = NULL;
-	collect_redirect_parts(token, new_node);
+	redir_files(token, new_node);
 	if (*ll == NULL)
 		*ll = new_node;
 	else

@@ -9,8 +9,8 @@ int	ft_isspace(int c)
 
 void	put_syntax_error(int *status)
 {
-	write(2, "bash: syntax unclosed quote\n",
-		ft_strlen("bash: syntax unclosed quote\n"));
+	write(2, "minishell: syntax unclosed quote\n",
+		ft_strlen("minishell: syntax unclosed quote\n"));
 	*status = 2;
 }
 
