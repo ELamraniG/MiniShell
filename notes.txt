@@ -1,22 +1,5 @@
 next
-wildcards sort - for file names
-
-
-
-
-
-
-leaks : in expand // fixed ig
-
-
-
-
-
-
-// export segv when we send empty env and we try to export few stuff 
-
-
-//syntax error, redirection after pipe is not syntax error
+// syntax error, redirection after pipe is not syntax error
 // in wildcards skip . and .. echo *, only show them if . is the first letter echo .*
 // handle ton of pipes
 
