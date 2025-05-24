@@ -1,4 +1,0 @@
-minishell$ echo '' ""
-'' ""
-status = 0
-minishell$ 
