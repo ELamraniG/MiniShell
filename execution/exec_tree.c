@@ -400,7 +400,8 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			*status = 128 + WTERMSIG(exit_code);
 			if (WTERMSIG(exit_code) == SIGQUIT)
 				ft_putstr_fd(2, "Quit: 3\n");
-			ft_putstr_fd(2, "\n");
+			if(WTERMSIG(exit_code) == SIGINT)
+				ft_putstr_fd(2, "\n");
 		}
 		dup3(stdinn, STDIN_FILENO);
 		dup3(stdoutt, STDOUT_FILENO);
