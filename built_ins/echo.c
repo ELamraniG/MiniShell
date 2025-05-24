@@ -25,16 +25,13 @@ int	echo(char **args)
 
 	if (!args)
 		return (1);
-	
 	n_flag = 0;
 	i = 1;
-
 	while (args[i] && kayna_n(args[i]))
 	{
 		n_flag = 1;
 		i++;
 	}
-
 	while (args[i])
 	{
 		printf("%s", args[i]);
@@ -42,9 +39,7 @@ int	echo(char **args)
 		if (args[i])
 			printf(" ");
 	}
-
 	if (!n_flag)
 		printf("\n");
-	
 	return (0);
 }
