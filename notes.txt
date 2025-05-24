@@ -1,21 +1,21 @@
-//signal in heredoc no logner working
-
-
-dont forget to get back rl stuff
 next
-expand in heredoc
-wildcards
-// i need to add qtype back to expanding because its needed by wildcares, splited args inside env are always = NQ
+wildcards sort - for file names
 
 
 
 
 
 
-leaks : in expand 
+leaks : in expand // fixed ig
 
 
 
 
 
-//jihad
+
+// export segv when we send empty env and we try to export few stuff 
+
+
+//syntax error, redirection after pipe is not syntax error
+// in wildcards skip . and .. echo *, only show them if . is the first letter echo .*
+// handle ton of pipes

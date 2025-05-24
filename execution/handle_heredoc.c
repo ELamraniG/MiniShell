@@ -36,24 +36,17 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_lis
 {
 	char	*tmp;
 	char	*s;
-	char	*delimiter;
+	char	*lim;
 
 	signal(SIGINT, heredoc_child_signal);
 	close(pipe_fd[0]);
 	redir->final_file_name = join_all_file_names(redir);
-	delimiter = redir->final_file_name;
+	lim = redir->final_file_name;
 	
 	while (1337)
 	{
 		tmp = readline("> ");
-		if (!tmp)
-		{
-			//edit this later
-			ft_putstr_fd(2, "bash : warning: here-document delimited by end-of-file (wanted `\n");
-			free(tmp);
-			break ;
-		}
-		if(!ft_strcmp(tmp, delimiter))
+		if (!tmp || !ft_strcmp(tmp, lim))
 		{
 			free(tmp);
 			break ;
@@ -64,7 +57,6 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_lis
 		free(s);
 		free(tmp);
 	}
-	
 	close(pipe_fd[1]);
 	exit(0);
 }

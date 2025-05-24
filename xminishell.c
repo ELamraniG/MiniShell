@@ -4,10 +4,7 @@ int sigarette = 0;
 
 
 
-/*
-> bash: unexpected EOF while looking for matching `"'
-bash: syntax error: unexpected end of file
-*/
+
 
 void	print_lex(t_lex_list *temp)
 {
@@ -22,29 +19,10 @@ void	print_tree(t_ast_tree *tree, int deep)
 {
 	int			i;
 	t_redirect	*t;
-
-	if (!tree)
-		return ;
-	for (int i = 0; i < deep; i++)
-		printf(" ");
-	if (tree->args)
-	{
-		i = 0;
-		while (tree->args[i])
-		{
-			printf(" |%s quote = %d is_space = %d|  ", tree->args[i],
-				tree->q_type[i], tree->is_space[i]);
-			i++;
-		}
-		printf("\n");
-	}
-	else
-		printf("%d\n", tree->type);
-	t = tree->redirect;
-	// while (t)
-	// {
-	// 	printf("|%s| |%d| ", t->file_name, t->type);
-	// 	t = t->next;
+/*
+> bash: unexpected EOF while looking for matching `"'
+bash: syntax error: unexpected end of file
+*/
 	// }
 	print_tree(tree->left, deep + 1);
 	print_tree(tree->right, deep + 1);
@@ -118,7 +96,7 @@ int	main(int ac, char **av, char **env)
 		{
 			if (sigarette == 130)
 			{
-				status = 130;
+				status = 1;
 				sigarette = 0;
 			}
 			free(input);
@@ -129,12 +107,12 @@ int	main(int ac, char **av, char **env)
 		free_tree(astree);
 		free(input);
 		//is this a must ? check before pushing
-		if (!isatty(STDIN_FILENO))
-		{
-			rl_clear_history();
-			free_env_list(envv);
-			return (status);
-		}
+		// if (!isatty(STDIN_FILENO))
+		// {
+		// 	rl_clear_history();
+		// 	free_env_list(envv);
+		// 	return (status);
+		// }
 	}
 	rl_clear_history();
 	free_env_list(envv);

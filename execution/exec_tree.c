@@ -226,7 +226,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		{
 			*status = 1;
 			perror(NULL);
-			return ;
+			exit(1) ;
 		}
 		pid1 = fork();
 		if (pid1 == -1)
@@ -235,7 +235,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			close(pipes[1]);
 			*status = 1;
 			perror(NULL);
-			return ;
+			exit(1) ;
 		}
 		if (pid1 == 0)
 		{
@@ -252,7 +252,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			*status = 1;
 			perror(NULL);
 			waitpid(pid1, NULL, 0);
-			return ;
+			exit(1) ;
 		}
 		if (pid2 == 0)
 		{
@@ -342,7 +342,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			close(stdoutt);
 			*status = 1;
 			perror(NULL);
-			return ;
+			exit(1);
 		}
 		if (pid1 == 0)
 		{
@@ -399,7 +399,8 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		{
 			*status = 128 + WTERMSIG(exit_code);
 			if (WTERMSIG(exit_code) == SIGQUIT)
-				ft_putstr_fd(2, "Quit (core dumped)\n");
+				ft_putstr_fd(2, "Quit: 3\n");
+			ft_putstr_fd(2, "\n");
 		}
 		dup3(stdinn, STDIN_FILENO);
 		dup3(stdoutt, STDOUT_FILENO);

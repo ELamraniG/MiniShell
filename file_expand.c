@@ -1,19 +1,22 @@
 #include "includes/minishell.h"
 
-static void	ft_realloc(char ***args, char *s, int *size, int **is_space)
+static void	ft_realloc(char ***args, char *s, int *size, int **is_space,int **q_type)
 {
 	int		i;
 	int		*new_is_space;
 	char	**new_args;
 	int		*tmpint_free;
 	char	**tmp_free;
+	int 	*new_q_type;
 
 	i = 0;
 	new_is_space = malloc(sizeof(int) * (*size + 1));
+	new_q_type = malloc(sizeof(int) * (*size + 1));
 	new_args = malloc(sizeof(char *) * (*size + 2));
 	new_args[*size] = 0;
 	while (i < *size)
 	{
+		new_q_type[i] = q_type[0][i];
 		new_is_space[i] = is_space[0][i];
 		new_args[i] = args[0][i];
 		i++;
@@ -25,6 +28,9 @@ static void	ft_realloc(char ***args, char *s, int *size, int **is_space)
 	*args = new_args;
 	tmpint_free = is_space[0];
 	*is_space = new_is_space;
+	free(tmpint_free);
+	tmpint_free = q_type[0];
+	*q_type = new_q_type;
 	free(tmpint_free);
 	free(tmp_free);
 	return ;
@@ -98,8 +104,8 @@ static int	has_space_at_the_beginning(char *s)
 }
 
 static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
-		int status, int old_is_space, int k, int *size, int q_type,
-		int **is_space)
+		int status, int old_is_space, int k, int *size, int old_q_type,
+		int **is_space,int **q_type)
 {
 	int			i;
 	int			j;
@@ -113,10 +119,11 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 
 	i = 0;
 	j = 0;
-	if (q_type == SQ)
+	if (old_q_type == SQ)
 	{
-		ft_realloc(args, ft_strdup(str), size, is_space);
+		ft_realloc(args, ft_strdup(str), size, is_space,q_type);
 		is_space[0][*size - 1] = old_is_space;
+		q_type[0][*size - 1] = old_q_type;
 		return ;
 	}
 	flag = 0;
@@ -133,8 +140,9 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 			prev_pos = i;
 			if (tmp[0] != 0)
 			{
-				ft_realloc(args, tmp, size, is_space);
+				ft_realloc(args, tmp, size, is_space,q_type);
 				is_space[0][*size - 1] = 0;
+				q_type[0][*size - 1] = old_q_type;
 			}
 			else
 				free(tmp);
@@ -152,9 +160,10 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 				if (!t)
 				{
 					tmp3 = ft_strdup("");
-					ft_realloc(args, tmp3, size, is_space);
+					ft_realloc(args, tmp3, size, is_space,q_type);
 					free(tmp2);
 					is_space[0][*size - 1] = 0;
+					q_type[0][*size - 1] = DQ;
 					prev_pos = i;
 					continue ;
 				}
@@ -166,8 +175,9 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 			free(tmp3);
 			while (dble[j])
 			{
-				ft_realloc(args, dble[j], size, is_space);
+				ft_realloc(args, dble[j], size, is_space,q_type);
 				is_space[0][*size - 1] = 1;
+				q_type[0][*size - 1] = NQ;
 				if (j == 0)
 				{
 					if (has_space_at_the_beginning(args[0][*size - 1])
@@ -193,8 +203,8 @@ static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
 	if (flag == 0)
 	{
 		tmp = ft_substr(str, prev_pos, ft_strlen(str) - prev_pos);
-		ft_realloc(args, tmp, size, is_space);
-		is_space[0][*size - 1] = old_is_space;
+		ft_realloc(args, tmp, size, is_space,q_type);
+		q_type[0][*size - 1] = old_q_type;
 	}
 	is_space[0][*size - 1] = old_is_space;
 }
@@ -223,6 +233,7 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 	int		*is_space;
 	int		i;
 	int		abg;
+	int *q_type= NULL;
 
 	k = 0;
 	file_name = NULL;
@@ -234,7 +245,7 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 	while (k < redir->file_str_count)
 	{
 		expanded_for_single_word(&file_name, redir->file_name[k], env, status,
-			redir->is_space[k], k, &size, redir->q_types[k], &is_space);
+			redir->is_space[k], k, &size, redir->q_types[k], &is_space,&q_type);
 		k++;
 	}
 	while (i < redir->file_str_count)
@@ -250,14 +261,14 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 			abg = 0;
 		i++;
 	}
-	if (abg == -1 || size > 1)
-	{
-		abg = -1;
-		char *tmp = join_all_names(redir->file_name,redir->file_str_count);
-		ft_putstr_fd(2, tmp);
-		free(tmp);
-		ft_putstr_fd(2, ": ambiguous redirect\n");
-	}
+	// if (abg == -1 || size > 1)
+	// {
+	// 	abg = -1;
+	// 	char *tmp = join_all_names(redir->file_name,redir->file_str_count);
+	// 	ft_putstr_fd(2, tmp);
+	// 	free(tmp);
+	// 	ft_putstr_fd(2, ": ambiguous redirect\n");
+	// }
 	k = 0;
 	while (k < redir->file_str_count)
 		free(redir->file_name[k++]);
@@ -267,7 +278,7 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 	free(redir->is_space);
 	redir->is_space = is_space;
 	free(redir->q_types);
-	redir->q_types = malloc(sizeof(int) * size);
+	redir->q_types = q_type;
 	return abg;
 }
 int	expand_file_name(t_ast_tree *node, t_env_list *env, int status)
