@@ -24,3 +24,5 @@ leaks : in expand // fixed ig
 
 
 //at the end add wall extra and remove sanitizer
+// make < 4 do like WORD in exectree
+// expanding file in export x=" "

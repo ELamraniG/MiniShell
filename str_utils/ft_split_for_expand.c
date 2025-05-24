@@ -149,17 +149,3 @@ char	**ft_split_for_expand(char const *s, char c)
 
 
 
-// int main()
-// {
-// 	char **result = ft_split_for_expand("Hello", ' ');
-// 	int i = 0;
-
-// 	while (result && result[i])
-// 	{
-// 		printf("Word %d: |%s|\n", i, result[i]);
-
-// 		i++;
-// 	}
-// 	ft_free(result, i - 1);
-// 	return 0;
-// }

@@ -58,6 +58,9 @@ int	main(int ac, char **av, char **env)
 
 	while (1)
 	{	
+		if (!isatty(STDIN_FILENO))
+		input = readline("");
+		else
 		input = readline("minishell$ ");
 		if (sigarette != 0)
 		{
@@ -107,12 +110,12 @@ int	main(int ac, char **av, char **env)
 		free_tree(astree);
 		free(input);
 		//is this a must ? check before pushing
-		// if (!isatty(STDIN_FILENO))
-		// {
-		// 	rl_clear_history();
-		// 	free_env_list(envv);
-		// 	return (status);
-		// }
+		if (!isatty(STDIN_FILENO))
+		{
+			rl_clear_history();
+			free_env_list(envv);
+			return (status);
+		}
 	}
 	rl_clear_history();
 	free_env_list(envv);
