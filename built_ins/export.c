@@ -90,14 +90,14 @@ int	exec_export(t_env_list **env, char **args)
 				// handling += case
 				if (j > 0 && args[i][j - 1] == '+')
 				{
-					key = ft_substr(args[i], 0, j-1);
+					key = ft_substr(args[i], 0, j - 1);
 					if (!validate_key(key))
 					{
 						printf("minishell: export: `%s': not a valid identifier\n", key);
 						free(key);
 						break;
 					}
-					value = ft_substr(args[i], j+1, ft_strlen(args[i])-j);
+					value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
 					exists = get_env_value(*env, key);
 					if (exists)
 					{
@@ -121,7 +121,7 @@ int	exec_export(t_env_list **env, char **args)
 						free(key);
 						break;
 					}
-					value = ft_substr(args[i], j+1, ft_strlen(args[i])-j);
+					value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
 					insert_node_last(env, key, value, 1);
 					free(key);
 					free(value);

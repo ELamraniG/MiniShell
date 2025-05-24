@@ -16,16 +16,16 @@ t_env_list	*new_env_node()
 
 void	set_up_env(char **env, t_env_list **env_list)
 {
-	int	i;
+	int			i;
+	char		*equals_pos;
 	t_env_list	*new_node;
 	t_env_list	*last;
-	char *equals_pos;
 
 	i = 0;
 	last = NULL;
 	if (!env || !*env || !env_list)
 		return ;
-	*env_list = NULL; // Initialize the list pointer
+	*env_list = NULL;
 	while (env[i])
 	{
 		equals_pos = ft_strchr(env[i], '=');
@@ -66,6 +66,7 @@ int	print_env(t_env_list *env_list)
 	}
 	return (0); 
 }
+
 void free_env_list(t_env_list *env_list)
 {
 	t_env_list *tmp;
