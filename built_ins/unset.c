@@ -33,7 +33,8 @@ int	exec_unset(t_env_list **env, char **args)
 			printf("minishell: unset: `%s': not a valid identifier\n", args[i]);
 			flag = 1;
 		}
-		delete_node(env, args[i]);
+		else
+			delete_node(env, args[i]);
 		i++;
 	}
 	if (flag)

@@ -34,7 +34,6 @@ This document summarizes all the syntax validation rules and error handling impl
    - Pipes cannot be at the beginning: | cmd → error
    - Pipes cannot be at the end: cmd | → error
    - Consecutive pipes not allowed: cmd || cmd → error
-   - Pipe followed by redirection: | > file → error
 
 4. LOGICAL OPERATORS VALIDATION (AND/OR)
    - Cannot be at beginning: && cmd → error
@@ -58,6 +57,10 @@ This document summarizes all the syntax validation rules and error handling impl
 - cmd << delimiter
 - (cmd | cmd) && cmd
 - cmd | (cmd && cmd)
+- cmd | > file
+- cmd | >> file
+- cmd | < file
+- cmd | << delimiter
 
 ✗ INVALID SYNTAX:
 - | cmd (pipe at start)
@@ -99,7 +102,7 @@ Validation Functions:
 - check_paren() - validates parentheses balance
 - validate_parentheses() - comprehensive parentheses rules
 - check_redirs() - validates redirection syntax
-- chec_pipe() - validates pipe syntax
+- chec_pipe() - validates pipe syntax (allows redirection after pipe)
 - check_and_or() - validates logical operator syntax
 - wach_valid_tokens() - validates mixed operator sequences
 

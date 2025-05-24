@@ -2,6 +2,37 @@
 
 int sigarette = 0;
 
+void	print_lex(t_lex_list *temp)
+{
+	while (temp)
+	{
+		printf("Token: |%s|, Type: %d\n", temp->s, temp->a_type);
+		temp = temp->next;
+	}
+}
+
+void	print_tree(t_ast_tree *tree, int deep)
+{
+	int			i;
+	t_redirect	*t;
+/*
+> bash: unexpected EOF while looking for matching `"'
+bash: syntax error: unexpected end of file
+*/
+	// }
+	print_tree(tree->left, deep + 1);
+	print_tree(tree->right, deep + 1);
+}
+
+void	handlectrlc(int n)
+{
+	sigarette = 130;
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char *input;
@@ -24,9 +55,25 @@ int	main(int ac, char **av, char **env)
 	while (1)
 	{	
 		if (!isatty(STDIN_FILENO))
-		input = readline("");
+		{
+			char *line = NULL;
+			size_t len = 0;
+			ssize_t read_len = getline(&line, &len, stdin);
+			if (read_len == -1)
+			{
+				free(line);
+				input = NULL;
+			}
+			else
+			{
+				if (line[read_len - 1] == '\n')
+					line[read_len - 1] = '\0';
+				input = strdup(line);
+				free(line);
+			}
+		}
 		else
-		input = readline("minishell$ ");
+			input = readline("minishell$ ");
 		if (sigarette != 0)
 		{
 			status = sigarette;
@@ -74,6 +121,7 @@ int	main(int ac, char **av, char **env)
 		excute_the_damn_tree(astree, &status, &envv);
 		free_tree(astree);
 		free(input);
+		//is this a must ? check before pushing
 		if (!isatty(STDIN_FILENO))
 		{
 			rl_clear_history();
@@ -83,5 +131,5 @@ int	main(int ac, char **av, char **env)
 	}
 	rl_clear_history();
 	free_env_list(envv);
-	return (status);
+	return (0);
 }

@@ -6,3 +6,9 @@ next
 
 //at the end add wall extra and remove sanitizer
 // make < 4 do like WORD in exectree
+
+problem with exit
+problem with cd
+
+wildcards for files
+change back fork to return when failure

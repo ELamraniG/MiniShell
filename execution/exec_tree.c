@@ -204,9 +204,6 @@ char **turn_env_to_chars(t_env_list *env)
     return s;
 }
 
-
-
-void	print_tree(t_ast_tree *tree, int deep);
 void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 {
 	int			pipes[2];
@@ -287,15 +284,22 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
     else if (astree->type < 4)
     {
         stdinn = dup(STDIN_FILENO);
-        stdoutt = dup(STDOUT_FILENO);
-        
-        if (excute_redirs(astree) == -1) 
-        {
-            dup3(stdinn, STDIN_FILENO);
-            dup3(stdoutt, STDOUT_FILENO);
-            *status = 1;
-            return;
-        }
+		stdoutt = dup(STDOUT_FILENO);
+		if (expand_file_name(astree,*env, *status) == -1)
+		{
+			*status = 1;
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
+			return;
+		}
+		join_all_redir_files_without_spaces(astree);
+		if (excute_redirs(astree) == -1)
+		{
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
+			*status = 1;
+			return;
+		}
         if (astree->left)
             excute_the_damn_tree(astree->left, status, env);
         else if (astree->right)

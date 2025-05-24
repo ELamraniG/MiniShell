@@ -181,11 +181,6 @@ static int	chec_pipe(t_lex_list *current, int *status)
 		print_syntax(current->next, status);
 		return (0);
 	}
-	if (current->next && is_redirection(current->next->a_type))
-	{
-		print_syntax(current->next, status);
-		return (0);
-	}
 	return (1);
 }
 
