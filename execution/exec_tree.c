@@ -226,7 +226,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		{
 			*status = 1;
 			perror(NULL);
-			exit(1) ;
+			exit(106) ;
 		}
 		pid1 = fork();
 		if (pid1 == -1)
@@ -235,7 +235,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			close(pipes[1]);
 			*status = 1;
 			perror(NULL);
-			exit(1) ;
+			exit(106) ;
 		}
 		if (pid1 == 0)
 		{
@@ -252,7 +252,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			*status = 1;
 			perror(NULL);
 			waitpid(pid1, NULL, 0);
-			exit(1) ;
+			exit(106) ;
 		}
 		if (pid2 == 0)
 		{
@@ -342,7 +342,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			close(stdoutt);
 			*status = 1;
 			perror(NULL);
-			exit(1);
+			exit(106);
 		}
 		if (pid1 == 0)
 		{
