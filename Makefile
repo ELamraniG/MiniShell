@@ -29,7 +29,7 @@ SRC =	str_utils/ft_split.c \
 		built_ins/export.c \
 		built_ins/unset.c \
 		built_ins/exit.c \
-		execution/exec_tree.c \
+		execution/norminette_exec_tree.c \
 		execution/excuting_redirs.c \
 		execution/handle_heredoc.c \
 		args_expand.c \
@@ -40,6 +40,10 @@ SRC =	str_utils/ft_split.c \
 		handle_wild_cards.c \
 		str_utils/ft_atoi.c \
 		file_wild_card.c \
+		execution/built_in_calling.c \
+		execution/gluing_stuff.c \
+		execution/handle_pipes.c \
+		execution/norminette_word.c \
 
 OBJ = $(SRC:.c=.o)
 
