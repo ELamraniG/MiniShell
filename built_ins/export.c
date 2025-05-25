@@ -1,5 +1,13 @@
 #include "../includes/minishell.h"
 
+typedef enum e_export_status
+{
+    OK,
+    CONTINUE,
+    BREAK
+} t_export_status;
+
+
 static int	validate_key(char *s)
 {
 	int	i;
@@ -60,13 +68,115 @@ int	find_key(t_env_list *d, char *key)
 	return (0);
 }
 
+t_export_status	handle_normal(char *args, t_env_list **env, int j)
+{
+	char	*key;
+	char	*value;
+	key = ft_substr(args, 0, j);
+	if (!validate_key(key))
+	{
+		printf("export: `%s': not a valid identifier\n", key);
+		free(key);
+		return (BREAK);
+	}
+	value = ft_substr(args, j + 1, ft_strlen(args) - j);
+	insert_node_last(env, key, value, 1);
+	free(key);
+	free(value);
+	return (OK);
+}
+
+t_export_status	handle_join(char *args, t_env_list **env, int j)
+{
+	char		*key;
+	char		*value;
+	char		*new_val;
+	t_env_list	*exists;
+
+	key = ft_substr(args, 0, j - 1);
+	if (!validate_key(key))
+	{
+		printf("minishell: export: `%s': not a valid identifier\n", key);
+		free(key);
+		return (BREAK);
+	}
+	value = ft_substr(args, j + 1, ft_strlen(args) - j);
+	exists = get_env_value(*env, key);
+	if (exists)
+	{
+		new_val = ft_strjoin(exists->value, value);
+		free (exists->value);
+		exists->value = new_val;
+		exists->flag = 1;
+	}
+	else
+		insert_node_last(env, key, value, 1);
+	return (free(key), free(value), OK);
+}
+
+t_export_status	handle_key_alone(char *args, t_env_list **env)
+{
+	char		*key;
+	t_env_list	*exists;
+
+	key = ft_strdup(args);
+	if (!validate_key(key))
+	{
+		printf("export: `%s': not a valid identifier\n", key);
+		free(key);
+		return (CONTINUE) ;
+	}
+	exists = get_env_value(*env, key);
+	if (!exists)
+		insert_node_last(env, key, "", 0);
+	free(key);
+	return (OK);
+}
+
+void	print_msg(char *args)
+{
+	ft_putstr_fd(2, "minishell: export: ");
+	ft_putstr_fd(2, args);
+	ft_putstr_fd(2, "not a valid identifier\n");
+}
+
+t_export_status	handle_export(char **args, t_env_list **env, int i, int *j)
+{
+
+	while (args[i][++(*j)])
+	{
+		if (args[i][*j] == '=')
+		{
+		// handling empty key case (export =value)
+			if (*j == 0)
+			{
+				print_msg(args[i]);
+				break ;
+			}
+		// handling += case
+			if (j > 0 && args[i][(*j) - 1] == '+')
+			{
+				if (handle_join(args[i], env, *j) == BREAK)
+					break ;
+			}
+			// normal = case
+			else
+			{ // handle_normal()
+			printf("test\n");
+				if (handle_normal(args[i], env, *j) == BREAK)
+					break ;
+			printf("test1\n");
+			}
+			break ;
+		}
+	}
+	return (OK);
+}
+
 int	exec_export(t_env_list **env, char **args)
 {
 	int			i;
 	int			j;
-	char		*key;
-	char		*value;
-	t_env_list	*exists;
 
 	i = 0;
 	if (!args[1]) 	
@@ -74,136 +184,14 @@ int	exec_export(t_env_list **env, char **args)
 	while (args[++i])
 	{
 		j = -1;
-		while (args[i][++j])
-		{
-			if (args[i][j] == '=')
-			{
-				// handling empty key case (export =value)
-				if (j == 0)
-				{
-					printf("minishell: export: `%s': not a valid identifier\n", args[i]);
-					break ;
-				}
-				// handling += case
-				if (j > 0 && args[i][j - 1] == '+')
-				{
-					key = ft_substr(args[i], 0, j - 1);
-					if (!validate_key(key))
-					{
-						printf("minishell: export: `%s': not a valid identifier\n", key);
-						free(key);
-						break ;
-					}
-					value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
-					exists = get_env_value(*env, key);
-					if (exists)
-					{
-						char *new_val = ft_strjoin(exists->value, value);
-						free (exists->value);
-						exists->value = new_val;
-						exists->flag = 1;
-					}
-					else
-						insert_node_last(env, key, value, 1);
-					free(key);
-					free(value);
-				}
-				// normal = case
-				else
-				{
-					key = ft_substr(args[i], 0, j);
-					if (!validate_key(key))
-					{
-						printf("export: `%s': not a valid identifier\n", key);
-						free(key);
-						break ;
-					}
-					value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
-					insert_node_last(env, key, value, 1);
-					free(key);
-					free(value);
-				}
-				break ;
-			}
-		}
+		handle_export(args, env, i,&j);
 		// No = found, just key
+		printf("wejkfd\n");
 		if (!args[i][j] && j > 0)
-		{
-			key = ft_strdup(args[i]);
-			if (!validate_key(key))
-			{
-				printf("export: `%s': not a valid identifier\n", key);
-				free(key);
-				continue ;
-			}
-			exists = get_env_value(*env, key);
-			if (!exists)
-				insert_node_last(env, key, "", 0);
-			free(key);
-		}
+			handle_key_alone(args[i], env);
+		printf("1234\n");
 	}
 	return (0);
 }
 
-// void	process_export_arg(char **env, char **args)
-// {
-// 	int			i;
-// 	int			j;
-// 	char		*key;
-// 	char		*value;
-// 	t_env_list	*exists;
 
-// 	j = -1;
-// 	while (args[i][++j])
-// 	{
-// 		if (args[i][j] == '=')
-// 		{
-// 			// handling empty key case (export =value)
-// 			if (j == 0)
-// 			{
-// 				printf("minishell: export: `%s': not a valid identifier\n", args[i]);
-// 				break ;
-// 			}
-// 			// handling += case
-// 			if (j > 0 && args[i][j - 1] == '+')
-// 			{
-// 				key = ft_substr(args[i], 0, j - 1);
-// 				if (!validate_key(key))
-// 				{
-// 					printf("minishell: export: `%s': not a valid identifier\n", key);
-// 					free(key);
-// 					break ;
-// 				}
-// 				value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
-// 				exists = get_env_value(*env, key);
-// 				if (exists)
-// 				{
-// 					char *new_val = ft_strjoin(exists->value, value);
-// 					free (exists->value);
-// 					exists->value = new_val;
-// 					exists->flag = 1;
-// 				}
-// 				else
-// 					insert_node_last(env, key, value, 1);
-// 				free(key);
-// 				free(value);
-// 			}
-// 			// normal = case
-// 			else
-// 			{
-// 				key = ft_substr(args[i], 0, j);
-// 				if (!validate_key(key))
-// 				{
-// 					printf("export: `%s': not a valid identifier\n", key);
-// 					free(key);
-// 					break ;
-// 				}
-// 				value = ft_substr(args[i], j + 1, ft_strlen(args[i]) - j);
-// 				insert_node_last(env, key, value, 1);
-// 				free(key);
-// 				free(value);
-// 			}
-// 			break ;
-// 		}
-// 	}
-// }
