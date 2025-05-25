@@ -149,14 +149,14 @@ int is_built_in(char *cmd)
 	return 0;
 }
 
-int execute_built_in(char **args, t_env_list **env)
+int execute_built_in(char **args, t_env_list **env,int *status)
 {
 	if (ft_strcmp(args[0], "cd") == 0)
 		return change_dir(args, *env); 
 	else if (ft_strcmp(args[0], "echo") == 0)
 		return echo(args);
 	else if (ft_strcmp(args[0], "exit") == 0)
-		return exit_shell(args); 
+		return exit_shell(args,*status); 
 	else if (ft_strcmp(args[0], "env") == 0)
 		return print_env(*env); 
 	else if (ft_strcmp(args[0], "pwd") == 0)
@@ -334,7 +334,7 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 		}
 		if (is_built_in(astree->args[0]))
 		{
-			*status = execute_built_in(astree->args, env);
+			*status = execute_built_in(astree->args, env, status);
 			dup3(stdinn, STDIN_FILENO);
 			dup3(stdoutt, STDOUT_FILENO);
 			return;
