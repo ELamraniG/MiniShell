@@ -134,7 +134,7 @@ void					dup3(int new, int original);
 char					**turn_env_to_chars(t_env_list *env);
 int						exec_export(t_env_list **env, char **args);
 int						exec_unset(t_env_list **env, char **args);
-int	exit_shell(char **args, int status)
+int	exit_shell(char **args, int status);
 int						print_env(t_env_list *env_list);
 int						handle_heredoc(t_ast_tree *node, int n,
 							t_env_list *env);

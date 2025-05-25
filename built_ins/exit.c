@@ -32,7 +32,7 @@ int	exit_shell(char **args, int status)
 			return (1);
 		}
 		ft_putstr_fd(1, "exit\n");
-		exit(args[1]);
+		exit(ft_atoi(args[1]));
 	}
 	ft_putstr_fd(1, "exit\n");
 	exit(status); 

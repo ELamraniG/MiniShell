@@ -37,6 +37,7 @@ SRC =	str_utils/ft_split.c \
 		execution/signals.c \
 		str_utils/ft_strtrim.c \
 		handle_wild_cards.c \
+		str_utils\ft_itoa \
 		# expandings_test.c
 
 OBJ = $(SRC:.c=.o)
