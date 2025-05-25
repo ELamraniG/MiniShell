@@ -31,7 +31,10 @@ SRC =	str_utils/ft_split.c \
 		execution/norminette_exec_tree.c \
 		execution/excuting_redirs.c \
 		execution/handle_heredoc.c \
+		execution/built_in_calling.c \
 		execution/handle_pipes.c \
+		execution/norminette_word.c \
+		execution/gluing_stuff.c \
 		args_expand.c \
 		file_expand.c \
 		here_doc_expand.c \
