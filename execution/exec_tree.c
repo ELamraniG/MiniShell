@@ -322,9 +322,16 @@ void excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 			dup3(stdoutt, STDOUT_FILENO);
 			return;
 		}
+		handle_wild_card(astree);
+		if (handle_file_wildcard(astree) == -1)
+		{
+			*status = 1;
+			dup3(stdinn, STDIN_FILENO);
+			dup3(stdoutt, STDOUT_FILENO);
+			return;
+		}
 		astree->args = join_args_without_spaces(astree);
 		join_all_redir_files_without_spaces(astree);
-		handle_wild_card(astree);
 		if (excute_redirs(astree) == -1)
 		{
 			dup3(stdinn, STDIN_FILENO);

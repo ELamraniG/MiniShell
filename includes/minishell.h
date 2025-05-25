@@ -83,7 +83,6 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
-void					dup3(int new, int original);
 char					*ft_strjoin(char *s1, char *s2);
 char					*ft_itoa(int n);
 void					free_lex_list(t_lex_list *token);
@@ -98,7 +97,7 @@ void					add_to_list(t_lex_list **ll, char *str, t_q_flags quote,
 							int is_space);
 int						ft_strcmp(const char *s1, const char *s2);
 size_t					ft_strlen(const char *s);
-int	ft_atoi(const char *s);
+int						ft_atoi(const char *s);
 size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 t_lex_list				*new_node(char *str, t_q_flags quote, int is_space);
@@ -135,17 +134,15 @@ void					dup3(int new, int original);
 char					**turn_env_to_chars(t_env_list *env);
 int						exec_export(t_env_list **env, char **args);
 int						exec_unset(t_env_list **env, char **args);
-int	exit_shell(char **args, int status);
+int						exit_shell(char **args, int status);
+int						handle_file_wildcard(t_ast_tree *node);
 int						print_env(t_env_list *env_list);
 int						handle_heredoc(t_ast_tree *node, int n,
 							t_env_list *env);
 char					**join_args_without_spaces(t_ast_tree *node);
-void					expand_variables(t_ast_tree *node, t_env_list *env,
-							int *status);
 int						ft_isalnum(char c);
 int						ft_isalpha(char c);
 void					add_to_list_redir(t_redirect **ll, t_redirect *t);
-t_redirect				*new_node_redir(char *str, int type, int q_type);
 void					handlectrlc(int n);
 void					ft_handle_sigint(int sig);
 void					handle_sig_exec_ve(int sig);
@@ -154,8 +151,6 @@ void					handle_main_sigs(void);
 void					reset_signals(void);
 void					ignore_signals(void);
 void					print_export(t_env_list *env_list);
-void					expanddd(t_ast_tree *node, t_env_list *env, int status);
-char					**split_expanded_args(char *expanded_str);
 char					**ft_split_for_expand(char const *s, char c);
 void					I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env,
 							int status);
@@ -165,4 +160,6 @@ char					*ft_strtrim(char const *s1, char const *set);
 char					*expand_heredoc_line(char *line, t_env_list *env,
 							int status);
 void					handle_wild_card(t_ast_tree *node);
+void					handle_pipe(t_ast_tree *astree, int *pipes, int *status,
+							t_env_list **env);
 #endif

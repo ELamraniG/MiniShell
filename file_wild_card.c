@@ -77,7 +77,7 @@ static void	ft_realloc(char ***args, char *s, int *size, int **is_space)
 	return ;
 }
 
-int	it_has_etoil(char *str)
+static int	it_has_etoil(char *str)
 {
 	int	i;
 
@@ -146,10 +146,8 @@ static void	handle_single_wild_card(char ***args, char *current_arg,
 		closedir(r);
 		if (reads_counter == 0)
 		{
-			{
 				ft_realloc(args, current_arg, size, is_space);
 				is_space[0][*size - 1] = 1;
-			}
 		}
 		else
 		{
@@ -187,7 +185,7 @@ static void	handle_single_wild_card(char ***args, char *current_arg,
 	}
 }
 
-void	handle_wild_card(t_ast_tree *node)
+void	handle_file_cards(t_redirect *redir)
 {
 	int		k;
 	char	**args;
@@ -199,22 +197,46 @@ void	handle_wild_card(t_ast_tree *node)
 	size = 0;
 	is_space = NULL;
 	k = 0;
-	while (node->args[k])
+	while (redir->file_name[k])
 	{
-		handle_single_wild_card(&args, node->args[k], node->is_space[k], k,
-			&size, &is_space, node->q_type[k]);
+		handle_single_wild_card(&args, redir->file_name[k], redir->is_space[k], k,
+			&size, &is_space, redir->q_types[k]);
 		k++;
 	}
 	k = 0;
-	while (node->args[k])
-		free(node->args[k++]);
+	while (redir->file_name[k])
+		free(redir->file_name[k++]);
 	k = 0;
-	// free(node->args[k]);
-	free(node->args);
-	node->args = args;
-	node->arg_counter = size;
-	free(node->is_space);
-	node->is_space = is_space;
-	free(node->q_type);
-	node->q_type = malloc(sizeof(int) * size);
+	free(redir->file_name);
+	redir->file_name = args;
+	redir->file_str_count = size;
+	free(redir->is_space);
+	redir->is_space = is_space;
+	free(redir->q_types);
+	redir->q_types = malloc(sizeof(int) * size);
+}
+
+int handle_file_wildcard(t_ast_tree *node)
+{
+	t_redirect *redir = node->redirect;
+	while (redir)
+	{
+		handle_file_cards(redir);
+		int i = 0;
+		while(i < redir->file_str_count)
+		{
+			printf("%s\n",redir->file_name[i]
+			);
+			i++;
+		}
+		if (redir->file_str_count > 1)
+		{
+			ft_putstr_fd(2,"minishell: ");
+			ft_putstr_fd(2,redir->file_name[0]);
+			ft_putstr_fd(2,": ambiguous redirect\n");
+			return -1;
+		}
+		redir = redir->next;
+	}
+	return 1;
 }

@@ -3,7 +3,7 @@ LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
 INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
-CFLAGS =  -fsanitize=address -g #later on add -Wall ....
+CFLAGS =  #-fsanitize=address -g #later on add -Wall ....
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
@@ -19,7 +19,7 @@ SRC =	str_utils/ft_split.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
-		xminishell.c \
+		xminishell_tester.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \
 		built_ins/cd.c \
@@ -28,9 +28,10 @@ SRC =	str_utils/ft_split.c \
 		built_ins/export.c \
 		built_ins/unset.c \
 		built_ins/exit.c \
+		execution/norminette_exec_tree.c \
 		execution/excuting_redirs.c \
-		execution/exec_tree.c \
 		execution/handle_heredoc.c \
+		execution/handle_pipes.c \
 		args_expand.c \
 		file_expand.c \
 		here_doc_expand.c \
@@ -38,6 +39,7 @@ SRC =	str_utils/ft_split.c \
 		str_utils/ft_strtrim.c \
 		handle_wild_cards.c \
 		str_utils/ft_atoi.c \
+		file_wild_card.c \
 		# expandings_test.c
 
 OBJ = $(SRC:.c=.o)

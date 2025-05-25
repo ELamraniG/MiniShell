@@ -29,7 +29,7 @@ void	handlectrlc(int n)
 	sigarette = 130;
 	printf("\n");
 	rl_on_new_line();
-	rl_replace_line("", 0);
+	// rl_replace_line("", 0);
 	rl_redisplay();
 }
 
@@ -124,12 +124,12 @@ int	main(int ac, char **av, char **env)
 		//is this a must ? check before pushing
 		if (!isatty(STDIN_FILENO))
 		{
-			rl_clear_history();
+			// rl_clear_history();
 			free_env_list(envv);
 			return (status);
 		}
 	}
-	rl_clear_history();
+	// rl_clear_history();
 	free_env_list(envv);
-	return (0);
+	return (status);
 }

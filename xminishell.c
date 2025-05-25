@@ -2,6 +2,7 @@
 
 int sigarette = 0;
 
+
 int	main(int ac, char **av, char **env)
 {
 	char *input;
@@ -76,12 +77,12 @@ int	main(int ac, char **av, char **env)
 		free(input);
 		if (!isatty(STDIN_FILENO))
 		{
-			rl_clear_history();
+			// rl_clear_history();
 			free_env_list(envv);
 			return (status);
 		}
 	}
-	rl_clear_history();
+	// rl_clear_history();
 	free_env_list(envv);
 	return (status);
 }
