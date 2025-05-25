@@ -12,7 +12,7 @@ int	change_dir(char **args, t_env_list *env)
 	pwd = get_env_value(env, "PWD");
 	old_pwd = get_env_value(env, "OLDPWD");
 	old = getcwd(NULL, 0);
-	if (!args ||  !args[0] || ft_strcmp(args[0], "cd") != 0)
+	if (!args || !args[0] || ft_strcmp(args[0], "cd") != 0)
 		return 1;
 	val = chdir(args[1]);
 	if (!args[1] && home == NULL) // for if we unset HOME
@@ -24,5 +24,5 @@ int	change_dir(char **args, t_env_list *env)
 	free(old_pwd->value);
 	old_pwd->value = old;
 	insert_node_last(&env, pwd->key, getcwd(NULL, 0), 0);
-	return 0;
+	return (0);
 }

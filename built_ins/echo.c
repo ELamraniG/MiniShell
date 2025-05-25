@@ -2,7 +2,7 @@
 
 static int	kayna_n(char *s)
 {
-	int i;
+	int	i;
 
 	if (!s || s[0] != '-')
 		return (0);

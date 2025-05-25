@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-t_env_list	*new_env_node()
+t_env_list	*new_env_node(void)
 {
 	t_env_list	*env_node;
 
@@ -11,14 +11,14 @@ t_env_list	*new_env_node()
 	env_node->value = NULL;
 	env_node->next = NULL;
 	env_node->flag = 0;
-	return(env_node);
+	return (env_node);
 }
 
 void	set_up_env(char **env, t_env_list **env_list)
 {
 	int			i;
-	char		*equals_pos;
-	t_env_list	*new_node;
+	char		*eq_p;
+	t_env_list	*new;
 	t_env_list	*last;
 
 	i = 0;
@@ -28,27 +28,27 @@ void	set_up_env(char **env, t_env_list **env_list)
 	*env_list = NULL;
 	while (env[i])
 	{
-		equals_pos = ft_strchr(env[i], '=');
-		if (equals_pos)
+		eq_p = ft_strchr(env[i], '=');
+		if (eq_p)
 		{
-			new_node = new_env_node();
-			if (!new_node)
+			new = new_env_node();
+			if (!new)
 				return ;
-			new_node->key = ft_substr(env[i], 0, equals_pos - env[i]);
-			new_node->value = ft_substr(env[i], (equals_pos - env[i]) + 1, ft_strlen(env[i]) - (equals_pos - env[i]) - 1);
-			if (!new_node->key || !new_node->value)
+			new->key = ft_substr(env[i], 0, eq_p - env[i]);
+			new->value = ft_substr(env[i], (eq_p - env[i]) + 1, ft_strlen(env[i]) - (eq_p - env[i]) - 1);
+			if (!new->key || !new->value)
 			{
-				free(new_node->key);
-				free(new_node->value);
-				free(new_node);
+				free(new->key);
+				free(new->value);
+				free(new);
 				return ;
 			}
-			new_node->flag = 1;
+			new->flag = 1;
 			if (!(*env_list))
-				*env_list = new_node;
+				*env_list = new;
 			else
-				last->next = new_node;
-			last = new_node;
+				last->next = new;
+			last = new;
 		}
 		i++;
 	}
@@ -67,9 +67,9 @@ int	print_env(t_env_list *env_list)
 	return (0); 
 }
 
-void free_env_list(t_env_list *env_list)
+void	free_env_list(t_env_list *env_list)
 {
-	t_env_list *tmp;
+	t_env_list	*tmp;
 
 	while (env_list)
 	{

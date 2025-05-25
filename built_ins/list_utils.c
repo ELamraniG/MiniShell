@@ -14,7 +14,7 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 		tmp->value = ft_strdup(value);
 		tmp->flag = flag;
 		*d = tmp;
-		return	;
+		return ;
 	}
 	while (tmp) // checking if we already have the key, so we only change the value instead of creating a new node
 	{
@@ -64,14 +64,14 @@ void	delete_node(t_env_list **head, char *key)
 		prev = current;
 		current = current->next;
 	}
-		if (current == (*head))
-		{
-			(*head) = (*head)->next;
-			free(current->key);
-			free(current->value);
-			free(current);
-			return ;
-		}
+	if (current == (*head))
+	{
+		(*head) = (*head)->next;
+		free(current->key);
+		free(current->value);
+		free(current);
+		return ;
+	}
 	if (!current)
 		return ;
 	if (prev == NULL)
@@ -83,7 +83,7 @@ void	delete_node(t_env_list **head, char *key)
 	free(current);
 }
 
-t_env_list *get_env_value(t_env_list *env_list, char *key)
+t_env_list	*get_env_value(t_env_list *env_list, char *key)
 {
 	t_env_list	*tmp;
 
