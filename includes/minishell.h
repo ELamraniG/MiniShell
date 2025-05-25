@@ -98,6 +98,7 @@ void					add_to_list(t_lex_list **ll, char *str, t_q_flags quote,
 							int is_space);
 int						ft_strcmp(const char *s1, const char *s2);
 size_t					ft_strlen(const char *s);
+int	ft_atoi(const char *s);
 size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 t_lex_list				*new_node(char *str, t_q_flags quote, int is_space);

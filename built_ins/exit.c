@@ -19,16 +19,16 @@ int	exit_shell(char **args, int status)
 {
 	if (args[1])
 	{
-		if (args[2])
-		{
-			ft_putstr_fd(2, "minishell: exit: too many arguments\n");
-			return (1);
-		}
 		if (!is_allnum(args[1]))
 		{
 			ft_putstr_fd(2, "bash: exit: ");
 			ft_putstr_fd(2, args[1]);
 			ft_putstr_fd(2, ": numeric argument required\n");
+			return (255);
+		}
+		if (args[2])
+		{
+			ft_putstr_fd(2, "minishell: exit: too many arguments\n");
 			return (1);
 		}
 		ft_putstr_fd(1, "exit\n");
