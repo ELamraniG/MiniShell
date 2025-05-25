@@ -158,5 +158,8 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 	else if (astree->type < 4)
 		handle_empty_command_with_redir(astree, status, env);
 	else if (astree->type == WORD)
+	{
 		norminette_handle_word(astree,env,status);
+		
+	}
 }

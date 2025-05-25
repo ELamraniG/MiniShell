@@ -5,6 +5,7 @@ NAME = minishell
 CC = cc 
 CFLAGS =  #-fsanitize=address -g #later on add -Wall ....
 
+
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
 		str_utils/ft_split_for_expand.c \
@@ -28,13 +29,9 @@ SRC =	str_utils/ft_split.c \
 		built_ins/export.c \
 		built_ins/unset.c \
 		built_ins/exit.c \
-		execution/norminette_exec_tree.c \
+		execution/exec_tree.c \
 		execution/excuting_redirs.c \
 		execution/handle_heredoc.c \
-		execution/built_in_calling.c \
-		execution/handle_pipes.c \
-		execution/norminette_word.c \
-		execution/gluing_stuff.c \
 		args_expand.c \
 		file_expand.c \
 		here_doc_expand.c \
@@ -43,7 +40,6 @@ SRC =	str_utils/ft_split.c \
 		handle_wild_cards.c \
 		str_utils/ft_atoi.c \
 		file_wild_card.c \
-		# expandings_test.c
 
 OBJ = $(SRC:.c=.o)
 

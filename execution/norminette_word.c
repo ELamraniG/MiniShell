@@ -23,6 +23,24 @@ static int word_norm(t_ast_tree *astree,t_env_list **env, int *status, t_stdindo
 		return (0);
 }
 
+static int word_norm2(t_ast_tree *astree,t_stdindo stddd,int *status,t_env_list **env)
+{
+		if (excute_redirs(astree) == -1)
+		{
+			dup3(stddd.stdinn, STDIN_FILENO);
+			dup3(stddd.stdoutt, STDOUT_FILENO);
+			*status = 1;
+			return -1;
+		}
+		if (is_built_in(astree->args[0]))
+		{
+			*status = execute_built_in(astree->args, env, status);
+			dup3(stddd.stdinn, STDIN_FILENO);
+			dup3(stddd.stdoutt, STDOUT_FILENO);
+			return -1;
+		}
+		return (0);
+}
 void norminette_handle_word(t_ast_tree *astree,t_env_list **env,int *status)
 {
 	t_stdindo stddd;
@@ -33,22 +51,8 @@ void norminette_handle_word(t_ast_tree *astree,t_env_list **env,int *status)
 
 		stddd.stdinn = dup(STDIN_FILENO);
 		stddd.stdoutt = dup(STDOUT_FILENO);
-		if (word_norm(astree,env,status,stddd) == -1)
+		if (word_norm(astree,env,status,stddd) == -1 || word_norm2(astree,stddd,status,env) == -1)
 			return ;
-		if (excute_redirs(astree) == -1)
-		{
-			dup3(stddd.stdinn, STDIN_FILENO);
-			dup3(stddd.stdoutt, STDOUT_FILENO);
-			*status = 1;
-			return ;
-		}
-		if (is_built_in(astree->args[0]))
-		{
-			*status = execute_built_in(astree->args, env, status);
-			dup3(stddd.stdinn, STDIN_FILENO);
-			dup3(stddd.stdoutt, STDOUT_FILENO);
-			return ;
-		}
 		pid1 = fork();
 		if (pid1 == -1)
 		{

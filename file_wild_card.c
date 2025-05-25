@@ -224,11 +224,7 @@ int handle_file_wildcard(t_ast_tree *node)
 		handle_file_cards(redir);
 		int i = 0;
 		while(i < redir->file_str_count)
-		{
-			printf("%s\n",redir->file_name[i]
-			);
 			i++;
-		}
 		if (redir->file_str_count > 1)
 		{
 			ft_putstr_fd(2,"minishell: ");

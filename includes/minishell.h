@@ -168,9 +168,11 @@ char					*expand_heredoc_line(char *line, t_env_list *env,
 void					handle_wild_card(t_ast_tree *node);
 void					handle_pipe(t_ast_tree *astree, int *pipes, int *status,
 							t_env_list **env);
-							void norminette_handle_word(t_ast_tree *astree,t_env_list **env,int *status);
-							char	**join_args_without_spaces(t_ast_tree *astree);
-							int	is_built_in(char *cmd);
-							void	join_all_redir_files_without_spaces(t_ast_tree *astree);
-							int	execute_built_in(char **args, t_env_list **env, int *status);
+void					norminette_handle_word(t_ast_tree *astree,
+							t_env_list **env, int *status);
+char					**join_args_without_spaces(t_ast_tree *astree);
+int						is_built_in(char *cmd);
+void					join_all_redir_files_without_spaces(t_ast_tree *astree);
+int						execute_built_in(char **args, t_env_list **env,
+							int *status);
 #endif
