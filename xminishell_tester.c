@@ -1,7 +1,20 @@
 #include "includes/minishell.h"
 
 int sigarette = 0;
+static void clean_all_herdocs(t_ast_tree *astree)
+{
+	if (astree == NULL)
+		return;
+	t_redirect *redir = astree->redirect;
+	while (redir)
+	{
+		close(redir->heredoc);
+		redir = redir->next;
+	}
+	clean_all_herdocs(astree->left);
+	clean_all_herdocs(astree->right);
 
+}
 void	print_lex(t_lex_list *temp)
 {
 	while (temp)
@@ -119,6 +132,7 @@ int	main(int ac, char **av, char **env)
 			continue;
 		}
 		excute_the_damn_tree(astree, &status, &envv);
+		clean_all_herdocs(astree);
 		free_tree(astree);
 		free(input);
 		//is this a must ? check before pushing

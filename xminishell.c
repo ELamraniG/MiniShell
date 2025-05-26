@@ -3,6 +3,21 @@
 int sigarette = 0;
 
 
+static void clean_all_herdocs(t_ast_tree *astree)
+{
+	if (astree == NULL)
+		return;
+	t_redirect *redir = astree->redirect;
+	while (redir)
+	{
+		close(redir->heredoc);
+		redir = redir->next;
+	}
+	clean_all_herdocs(astree->left);
+	clean_all_herdocs(astree->right);
+
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char *input;
@@ -73,6 +88,7 @@ int	main(int ac, char **av, char **env)
 			continue;
 		}
 		excute_the_damn_tree(astree, &status, &envv);
+		clean_all_herdocs(astree);
 		free_tree(astree);
 		free(input);
 		if (!isatty(STDIN_FILENO))

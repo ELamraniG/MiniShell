@@ -108,7 +108,7 @@ static void	add_to_list_redirss(t_redirect **ll, int type, t_lex_list **token)
 	new_node = malloc(sizeof(t_redirect));
 	new_node->type = type;
 	new_node->next = NULL;
-	new_node->heredoc = 0;
+	new_node->heredoc = -1;
 	new_node->final_file_name = NULL;
 	redir_files(token, new_node);
 	if (*ll == NULL)
