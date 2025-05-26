@@ -175,4 +175,11 @@ int						is_built_in(char *cmd);
 void					join_all_redir_files_without_spaces(t_ast_tree *astree);
 int						execute_built_in(char **args, t_env_list **env,
 							int *status);
+
+int						validate_key(char *s);
+void					print_msg(char *args);
+void					print_export(t_env_list *env_list);
+char					*get_value_env(t_env_list**d, char *key);
+int						find_key(t_env_list *d, char *key);
+
 #endif

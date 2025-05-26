@@ -1,6 +1,6 @@
 # LIB_RL = -lreadline
-LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
-INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
+LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
+INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
 CFLAGS =  #-fsanitize=address -g #later on add -Wall ....
@@ -26,6 +26,7 @@ SRC =	str_utils/ft_split.c \
 		built_ins/cd.c \
 		built_ins/pwd.c \
 		built_ins/echo.c \
+		built_ins/helper_exp.c \
 		built_ins/export.c \
 		built_ins/unset.c \
 		built_ins/exit.c \
