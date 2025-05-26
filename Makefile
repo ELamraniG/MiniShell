@@ -3,8 +3,7 @@ LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
 INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
-CFLAGS =  #-fsanitize=address -g #later on add -Wall ....
-
+CFLAGS =  #-fsanitize=address -g #later on add -Wall ....  		# args_expand.c \
 
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
@@ -34,7 +33,7 @@ SRC =	str_utils/ft_split.c \
 		execution/excuting_redirs.c \
 		execution/handle_heredoc.c \
 		execution/norminette_word_msgs.c \
-		args_expand.c \
+		args_expand_norminated.c \
 		file_expand.c \
 		here_doc_expand.c \
 		execution/signals.c \

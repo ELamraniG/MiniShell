@@ -239,5 +239,5 @@ void	I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env, int status)
 	free(node->is_space);
 	node->is_space = is_space;
 	free(node->q_type);
-	node->q_type = q_type;//edit this
+	node->q_type = q_type;
 }

@@ -13,6 +13,16 @@
 # include <termios.h>
 # include <unistd.h>
 
+
+typedef struct s_exp_norm
+{
+	char **args;
+	int *is_space;
+	int *q_type;
+	int k;
+	int size;
+}t_expd_norm;
+
 typedef enum e_type_arg
 {
 	IN_REDIR,
