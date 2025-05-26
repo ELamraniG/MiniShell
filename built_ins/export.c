@@ -8,7 +8,9 @@ int	handle_normal(char *args, t_env_list **env, int j)
 	key = ft_substr(args, 0, j);
 	if (!validate_key(key))
 	{
-		printf("export: `%s': not a valid identifier\n", key);
+		ft_putstr_fd(2,"minishell: export: `");
+		ft_putstr_fd(2,key);
+		ft_putstr_fd(2,"': not a valid identifier\n");
 		free(key);
 		return (1);
 	}
@@ -29,7 +31,9 @@ int	handle_join(char *args, t_env_list **env, int j)
 	key = ft_substr(args, 0, j - 1);
 	if (!validate_key(key))
 	{
-		printf("minishell: export: `%s': not a valid identifier\n", key);
+		ft_putstr_fd(2,"minishell: export: `");
+		ft_putstr_fd(2,key);
+		ft_putstr_fd(2,"': not a valid identifier\n");
 		free(key);
 		return (1);
 	}
@@ -55,7 +59,9 @@ int	handle_key_alone(char *args, t_env_list **env)
 	key = ft_strdup(args);
 	if (!validate_key(key))
 	{
-		printf("export: `%s': not a valid identifier\n", key);
+		ft_putstr_fd(2,"minishell: export: `");
+		ft_putstr_fd(2,key);
+		ft_putstr_fd(2,"': not a valid identifier\n");
 		free(key);
 		return (1);
 	}

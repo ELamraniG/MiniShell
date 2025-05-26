@@ -2,9 +2,9 @@
 
 void	print_msg(char *args)
 {
-	ft_putstr_fd(2, "minishell: export: ");
-	ft_putstr_fd(2, args);
-	ft_putstr_fd(2, "not a valid identifier\n");
+	ft_putstr_fd(2,"minishell: export: `");
+		ft_putstr_fd(2,args);
+		ft_putstr_fd(2,"': not a valid identifier\n");
 }
 
 void	print_export(t_env_list *env_list)

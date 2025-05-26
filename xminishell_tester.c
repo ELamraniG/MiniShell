@@ -81,7 +81,7 @@ int	main(int ac, char **av, char **env)
 			{
 				if (line[read_len - 1] == '\n')
 					line[read_len - 1] = '\0';
-				input = strdup(line);
+				input = ft_strdup(line);
 				free(line);
 			}
 		}
