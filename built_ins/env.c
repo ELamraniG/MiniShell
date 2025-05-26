@@ -14,44 +14,60 @@ t_env_list	*new_env_node(void)
 	return (env_node);
 }
 
-void	set_up_env(char **env, t_env_list **env_list)
+t_env_list	*create_env(char *ev, char *pos)
 {
-	int			i;
+	t_env_list	*new;
+
+	new = new_env_node();
+	if (!new)
+		return (NULL);
+	new->key = ft_substr(ev, 0, pos - ev);
+	new->value = ft_substr(ev, (pos - ev) + 1, ft_strlen(ev) - (pos - ev) - 1);
+	if (!new->key || !new->value)
+	{
+		free(new->key);
+		free(new->value);
+		free(new);
+		return (NULL);
+	}
+	new->flag = 1;
+	new->next = NULL;
+	return (new);
+}
+
+void	process_env_loop(char **env, t_env_list **env_list)
+{
 	char		*eq_p;
+	int			i;
 	t_env_list	*new;
 	t_env_list	*last;
 
-	i = 0;
+	i = -1;
 	last = NULL;
-	if (!env || !*env || !env_list)
-		return ;
-	*env_list = NULL;
-	while (env[i])
+	while (env[++i])
 	{
 		eq_p = ft_strchr(env[i], '=');
 		if (eq_p)
 		{
-			new = new_env_node();
-			if (!new)
-				return ;
-			new->key = ft_substr(env[i], 0, eq_p - env[i]);
-			new->value = ft_substr(env[i], (eq_p - env[i]) + 1, ft_strlen(env[i]) - (eq_p - env[i]) - 1);
-			if (!new->key || !new->value)
+			new = create_env(env[i], eq_p);
+			if (new)
 			{
-				free(new->key);
-				free(new->value);
-				free(new);
-				return ;
+				if (!(*env_list))
+					*env_list = new;
+				else
+					last->next = new;
+				last = new;
 			}
-			new->flag = 1;
-			if (!(*env_list))
-				*env_list = new;
-			else
-				last->next = new;
-			last = new;
 		}
-		i++;
 	}
+}
+
+void	set_up_env(char **env, t_env_list **env_list)
+{
+	if (!env || !*env || !env_list)
+		return ;
+	*env_list = NULL;
+	process_env_loop(env, env_list);
 }
 
 int	print_env(t_env_list *env_list)
@@ -65,18 +81,4 @@ int	print_env(t_env_list *env_list)
 		env_list = env_list->next;
 	}
 	return (0); 
-}
-
-void	free_env_list(t_env_list *env_list)
-{
-	t_env_list	*tmp;
-
-	while (env_list)
-	{
-		tmp = env_list;
-		env_list = env_list->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-	}
 }

@@ -23,7 +23,7 @@ void	print_export(t_env_list *env_list)
 	}
 }
 
-static int	validate_key(char *s)
+int	validate_key(char *s)
 {
 	int	i;
 
