@@ -130,7 +130,7 @@ int						handle_syntax_errors(t_lex_list *token, int *status);
 t_env_list				*new_env_node(void);
 void					set_up_env(char **env, t_env_list **env_list);
 void					delete_node(t_env_list **env_list, char *key);
-void					insert_node_last(t_env_list **d, char *key, char *value,
+void					insert_node(t_env_list **d, char *key, char *value,
 							int flag);
 int						exec_pwd(int n);
 int						change_dir(char **args, t_env_list *env);
@@ -197,5 +197,6 @@ void	print_msg2(char *s);
 void	print_msg3(char *s);
 
 void	print_msg4(char *s);
-
+void	free_node(t_env_list *current);
+t_env_list	*find_key_node(t_env_list *current, char *key, t_env_list **prev);
 #endif

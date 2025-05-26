@@ -6,29 +6,51 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:48 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 17:46:49 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:33:44 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
+void	insert_node_first(t_env_list **d, char *key, char *value, int flag)
+{
+	t_env_list	*tmp;
+
+	tmp = (*d);
+	tmp = new_env_node();
+	tmp->key = ft_strdup(key);
+	tmp->value = ft_strdup(value);
+	tmp->flag = flag;
+	*d = tmp;
+	return ;
+}
+
+void	add_last(t_env_list **d, char *key, char *value, int flag)
+{
+	t_env_list	*tmp;
+
+	tmp = (*d);
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new_env_node();
+	tmp->next->key = ft_strdup(key);
+	tmp->next->value = ft_strdup(value);
+	tmp->next->flag = flag;
+}
+
+void	insert_node(t_env_list **d, char *key, char *value, int flag)
 {
 	t_env_list	*tmp;
 
 	if (!d || !key)
 		return ;
 	tmp = (*d);
-	if (!tmp) // if first node is empty
+	if (!tmp)
 	{
-		tmp = new_env_node();
-		tmp->key = ft_strdup(key);
-		tmp->value = ft_strdup(value);
-		tmp->flag = flag;
-		*d = tmp;
+		insert_node_first(d, key, value, flag);
 		return ;
 	}
-	while (tmp) // checking if we already have the key, so we only change the value instead of creating a new node
+	while (tmp)
 	{
 		if (!ft_strcmp(tmp->key, key))
 		{
@@ -38,26 +60,7 @@ void	insert_node_last(t_env_list **d, char *key, char *value, int flag)
 		}
 		tmp = tmp->next;
 	}
-	tmp = (*d);
-	while (tmp->next) // iterating to the end to add the node at the end
-		tmp = tmp->next;
-	tmp->next = new_env_node();
-	tmp->next->key = ft_strdup(key);
-	tmp->next->value = ft_strdup(value);
-	tmp->next->flag = flag;
-}
-
-int	list_size(t_env_list *list)
-{
-	int	count;
-
-	count = 0;
-	while (list)
-	{
-		list = list->next;
-		count++;
-	}
-	return (count);
+	add_last(d, key, value, flag);
 }
 
 void	delete_node(t_env_list **head, char *key)
@@ -67,21 +70,11 @@ void	delete_node(t_env_list **head, char *key)
 
 	if (!key || !*head)
 		return ;
-	current = *head;
-	prev = NULL;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-			break ;
-		prev = current;
-		current = current->next;
-	}
+	current = find_key_node(*head, key, &prev);
 	if (current == (*head))
 	{
 		(*head) = (*head)->next;
-		free(current->key);
-		free(current->value);
-		free(current);
+		free_node(current);
 		return ;
 	}
 	if (!current)
@@ -90,9 +83,7 @@ void	delete_node(t_env_list **head, char *key)
 		*head = current->next;
 	else
 		prev->next = current->next;
-	free(current->key);
-	free(current->value);
-	free(current);
+	free_node(current);
 }
 
 t_env_list	*get_env_value(t_env_list *env_list, char *key)

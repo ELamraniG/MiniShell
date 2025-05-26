@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:35 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 17:46:36 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:26:56 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	change_dir(char **args, t_env_list *env)
 	old_pwd = get_env_value(env, "OLDPWD");
 	old = getcwd(NULL, 0);
 	if (!args || !args[0] || ft_strcmp(args[0], "cd") != 0)
-		return 1;
+		return (1);
 	val = chdir(args[1]);
 	if (!args[1] && home == NULL)
 		return (ft_putstr_fd(2, "minishell: cd: HOME not set\n"), 1);
@@ -35,6 +35,6 @@ int	change_dir(char **args, t_env_list *env)
 		return (perror(args[1]), 1);
 	free(old_pwd->value);
 	old_pwd->value = old;
-	insert_node_last(&env, pwd->key, getcwd(NULL, 0), 0);
+	insert_node(&env, pwd->key, getcwd(NULL, 0), 0);
 	return (0);
 }

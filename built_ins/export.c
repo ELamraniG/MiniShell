@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:43 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 17:54:52 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:27:06 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	handle_normal(char *args, t_env_list **env, int j)
 		return (1);
 	}
 	value = ft_substr(args, j + 1, ft_strlen(args) - j);
-	insert_node_last(env, key, value, 1);
+	insert_node(env, key, value, 1);
 	free(key);
 	free(value);
 	return (0);
@@ -55,7 +55,7 @@ int	handle_join(char *args, t_env_list **env, int j)
 		exists->flag = 1;
 	}
 	else
-		insert_node_last(env, key, value, 1);
+		insert_node(env, key, value, 1);
 	return (free(key), free(value), 0);
 }
 
@@ -73,7 +73,7 @@ int	handle_key_alone(char *args, t_env_list **env)
 	}
 	exists = get_env_value(*env, key);
 	if (!exists)
-		insert_node_last(env, key, "", 0);
+		insert_node(env, key, "", 0);
 	free(key);
 	return (0);
 }

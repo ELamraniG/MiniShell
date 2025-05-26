@@ -20,6 +20,7 @@ SRC =	str_utils/ft_split.c \
 		parsing/quotes.c \
 		parsing/handle_syntax.c \
 		xminishell_tester.c \
+		built_ins/helper_env.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \
 		built_ins/cd.c \
