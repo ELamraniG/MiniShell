@@ -138,6 +138,17 @@ static int	check_pipe_after_open_paren(t_lex_list *token, int *status)
 	return (1);
 }
 
+static int	check_parenth_problm(t_lex_list *token, int *status)
+{
+	if (token->a_type == CL_PAREN && token->next 
+		&& token->next->a_type == OP_PAREN)
+	{
+		print_syntax(token->next, status);
+		return (0);
+	}
+	return (1);
+}
+
 static int	validate_parentheses(t_lex_list *token, int *status)
 {
 	if (!check_empty_parentheses(token, status))
@@ -147,6 +158,8 @@ static int	validate_parentheses(t_lex_list *token, int *status)
 	if (!check_operator_before_close_paren(token, status))
 		return (0);
 	if (!check_pipe_after_open_paren(token, status))
+		return (0);
+	if (!check_parenth_problm(token, status))
 		return (0);
 	return (1);
 }
