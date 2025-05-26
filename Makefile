@@ -33,6 +33,7 @@ SRC =	str_utils/ft_split.c \
 		execution/norminette_exec_tree.c \
 		execution/excuting_redirs.c \
 		execution/handle_heredoc.c \
+		execution/norminette_word_msgs.c \
 		args_expand.c \
 		file_expand.c \
 		here_doc_expand.c \

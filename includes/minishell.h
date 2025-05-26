@@ -181,5 +181,11 @@ void					print_msg(char *args);
 void					print_export(t_env_list *env_list);
 char					*get_value_env(t_env_list**d, char *key);
 int						find_key(t_env_list *d, char *key);
+void	print_msg1(char *s);
+
+void	print_msg2(char *s);
+void	print_msg3(char *s);
+
+void	print_msg4(char *s);
 
 #endif
