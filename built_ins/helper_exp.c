@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helper_exp.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:46:45 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/26 17:49:32 by jhamdaou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	print_msg(char *args)
 {
-	ft_putstr_fd(2,"minishell: export: `");
-		ft_putstr_fd(2,args);
-		ft_putstr_fd(2,"': not a valid identifier\n");
+	ft_putstr_fd(2, "minishell: export: `");
+	ft_putstr_fd(2, args);
+	ft_putstr_fd(2, "': not a valid identifier\n");
 }
 
 void	print_export(t_env_list *env_list)

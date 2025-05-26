@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:46:35 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/26 17:46:36 by jhamdaou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	change_dir(char **args, t_env_list *env)
@@ -15,11 +27,11 @@ int	change_dir(char **args, t_env_list *env)
 	if (!args || !args[0] || ft_strcmp(args[0], "cd") != 0)
 		return 1;
 	val = chdir(args[1]);
-	if (!args[1] && home == NULL) // for if we unset HOME
+	if (!args[1] && home == NULL)
 		return (ft_putstr_fd(2, "minishell: cd: HOME not set\n"), 1);
-	else if (!args[1]) // redirecting to home
+	else if (!args[1])
 		chdir(home->value);
-	if (val == -1 && args[1]) // if invalid direction
+	if (val == -1 && args[1])
 		return (perror(args[1]), 1);
 	free(old_pwd->value);
 	old_pwd->value = old;

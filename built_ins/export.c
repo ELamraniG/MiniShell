@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:46:43 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/26 17:54:52 by jhamdaou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	handle_normal(char *args, t_env_list **env, int j)
@@ -8,10 +20,8 @@ int	handle_normal(char *args, t_env_list **env, int j)
 	key = ft_substr(args, 0, j);
 	if (!validate_key(key))
 	{
-		ft_putstr_fd(2,"minishell: export: `");
-		ft_putstr_fd(2,key);
-		ft_putstr_fd(2,"': not a valid identifier\n");
-		free(key);
+		print_msg(key);
+		free (key);
 		return (1);
 	}
 	value = ft_substr(args, j + 1, ft_strlen(args) - j);
@@ -31,9 +41,7 @@ int	handle_join(char *args, t_env_list **env, int j)
 	key = ft_substr(args, 0, j - 1);
 	if (!validate_key(key))
 	{
-		ft_putstr_fd(2,"minishell: export: `");
-		ft_putstr_fd(2,key);
-		ft_putstr_fd(2,"': not a valid identifier\n");
+		print_msg(args);
 		free(key);
 		return (1);
 	}
@@ -59,9 +67,7 @@ int	handle_key_alone(char *args, t_env_list **env)
 	key = ft_strdup(args);
 	if (!validate_key(key))
 	{
-		ft_putstr_fd(2,"minishell: export: `");
-		ft_putstr_fd(2,key);
-		ft_putstr_fd(2,"': not a valid identifier\n");
+		print_msg(key);
 		free(key);
 		return (1);
 	}
@@ -101,8 +107,8 @@ int	handle_export(char **args, t_env_list **env, int i, int *j)
 
 int	exec_export(t_env_list **env, char **args)
 {
-	int			i;
-	int			j;
+	int	i;
+	int	j;
 
 	i = 0;
 	if (!args[1])

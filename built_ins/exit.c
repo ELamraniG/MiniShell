@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:46:41 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/26 17:47:27 by jhamdaou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-static int is_allnum(char *s)
+static int	is_allnum(char *s)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i])
@@ -12,7 +24,6 @@ static int is_allnum(char *s)
 		i++;
 	}
 	return (1);
-
 }
 
 int	exit_shell(char **args, int status)
