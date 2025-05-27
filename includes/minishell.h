@@ -86,6 +86,17 @@ typedef struct s_env_list
 	int					flag;
 	struct s_env_list	*next;
 }						t_env_list;
+typedef struct s_expd2 {
+	int		i;
+	int		j;
+	int		flag;
+	int		prev_pos;
+	char	**dble;
+	char	*tmp;
+	char	*tmp2;
+	char	*tmp3;
+	t_env_list *t;
+} t_expd2;
 
 typedef struct s_redirect
 {

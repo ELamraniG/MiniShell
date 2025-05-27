@@ -1,78 +1,84 @@
 #include "includes/minishell.h"
 
-static void	ft_realloc(char ***args, char *s, int *size, int **is_space,int **q_type)
+typedef struct s_file_expd {
+	int		k;
+	char	**file_name;
+	int		size;
+	int		*is_space;
+	int		*q_types;
+} t_file_expd;
+
+static void	ft_realloc_file(t_file_expd *fxpd, char *s)
 {
 	int		i;
 	int		*new_is_space;
-	char	**new_args;
+	char	**new_file_name;
 	int		*tmpint_free;
 	char	**tmp_free;
-	int 	*new_q_type;
+	int 	*new_q_types;
 
 	i = 0;
-	new_is_space = malloc(sizeof(int) * (*size + 1));
-	new_q_type = malloc(sizeof(int) * (*size + 1));
-	new_args = malloc(sizeof(char *) * (*size + 2));
-	new_args[*size] = 0;
-	while (i < *size)
+	new_is_space = malloc(sizeof(int) * (fxpd->size + 1));
+	new_q_types = malloc(sizeof(int) * (fxpd->size + 1));
+	new_file_name = malloc(sizeof(char *) * (fxpd->size + 2));
+	new_file_name[fxpd->size] = 0;
+	while (i < fxpd->size)
 	{
-		new_q_type[i] = q_type[0][i];
-		new_is_space[i] = is_space[0][i];
-		new_args[i] = args[0][i];
+		new_q_types[i] = fxpd->q_types[i];
+		new_is_space[i] = fxpd->is_space[i];
+		new_file_name[i] = fxpd->file_name[i];
 		i++;
 	}
-	new_args[i] = (s);
-	new_args[*size + 1] = 0;
-	(*size)++;
-	tmp_free = *args;
-	*args = new_args;
-	tmpint_free = is_space[0];
-	*is_space = new_is_space;
-	free(tmpint_free);
-	tmpint_free = q_type[0];
-	*q_type = new_q_type;
+	new_file_name[i] = (s);
+	new_file_name[fxpd->size + 1] = 0;
+	(fxpd->size)++;
+	tmp_free = fxpd->file_name;
+	fxpd->file_name = new_file_name;
+	tmpint_free = fxpd->is_space;
+	fxpd->is_space = new_is_space;
+	free(tmpint_free); 
+	tmpint_free = fxpd->q_types;
+	fxpd->q_types = new_q_types;
 	free(tmpint_free);
 	free(tmp_free);
 	return ;
 }
 
-static void	trim_the_args(char ***args, int size)
+static void	trim_the_file_names(t_file_expd *fxpd)
 {
 	char	*tmp_free;
 
-	tmp_free = args[0][size - 1];
-	args[0][size - 1] = ft_strtrim(args[0][size - 1], " ");
+	tmp_free = fxpd->file_name[fxpd->size - 1];
+	fxpd->file_name[fxpd->size - 1] = ft_strtrim(fxpd->file_name[fxpd->size - 1], " ");
 	free(tmp_free);
 	return ;
 }
 
-static char	*get_keyy(char *str, t_env_list *env, int prev_pos, int *i,
+static char	*get_keyy(char *str, t_env_list *env, t_expd2 *expd2,
 		int status)
 {
-	char	*tmp;
 	int		len;
 
-	(*i)++;
-	tmp = NULL;
-	// i skip the $
+	(expd2->i)++;
+	expd2->tmp = NULL;
 	len = 0;
-	if (str[*i] == '?')
+	if (str[expd2->i] == '?')
 	{
-		(*i)++;
+		(expd2->i)++;
 		return (ft_strdup("?"));
 	}
-	if (!ft_isalpha(str[*i]))
+	if (!ft_isalpha(str[expd2->i]))
 		return (ft_strdup("$"));
-	while (str[*i])
+	while (str[expd2->i])
 	{
-		if (str[*i] == '$' || !ft_isalnum(str[*i]))
-			return (ft_substr(str, prev_pos + 1, *i - prev_pos - 1));
+		if (str[expd2->i] == '$' || (!ft_isalnum(str[expd2->i]) && str[expd2->i] != '_'))
+			return (ft_substr(str, expd2->prev_pos + 1, expd2->i - expd2->prev_pos - 1));
 		len++;
-		(*i)++;
+		(expd2->i)++;
 	}
 	if (len == 0)
 		return (ft_strdup("$"));
-	return (ft_strdup(str + prev_pos + 1));
+	return (ft_strdup(str + expd2->prev_pos + 1));
 }
 
 static int	has_space_at_the_end(char *s)
@@ -103,110 +109,106 @@ static int	has_space_at_the_beginning(char *s)
 	return (0);
 }
 
-static void	expanded_for_single_word(char ***args, char *str, t_env_list *env,
-		int status, int old_is_space, int k, int *size, int old_q_type,
-		int **is_space,int **q_type)
+static void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env,
+		int status, t_redirect *redir)
 {
-	int			i;
-	int			j;
-	int			flag;
-	int			prev_pos;
-	char		**dble;
-	char		*tmp3;
-	char		*tmp;
-	char		*tmp2;
-	t_env_list	*t;
+	t_expd2 expd2;
 
-	i = 0;
-	j = 0;
-	if (old_q_type == SQ)
+	expd2.i = 0;
+	if (redir->q_types[fxpd->k] == SQ)
 	{
-		ft_realloc(args, ft_strdup(str), size, is_space,q_type);
-		is_space[0][*size - 1] = old_is_space;
-		q_type[0][*size - 1] = old_q_type;
+		ft_realloc_file(fxpd, ft_strdup(redir->file_name[fxpd->k]));
+		fxpd->is_space[fxpd->size - 1] = redir->is_space[fxpd->k];
+		fxpd->q_types[fxpd->size - 1] = redir->q_types[fxpd->k];
 		return ;
 	}
-	flag = 0;
-	prev_pos = 0;
-	while (str[i])
+	expd2.flag = 0;
+	expd2.prev_pos = 0;
+	while (redir->file_name[fxpd->k][expd2.i])
 	{
-		j = 0;
-		if (str[i] == '\'')
-			i++;
-		else if (str[i] == '$')
+		expd2.j = 0;
+		if (redir->file_name[fxpd->k][expd2.i] == '\'')
+			expd2.i++;
+		else if (redir->file_name[fxpd->k][expd2.i] == '$')
 		{
-			flag = 1;
-			tmp = ft_substr(str, prev_pos, i - prev_pos);
-			prev_pos = i;
-			if (tmp[0] != 0)
+			expd2.flag = 1;
+			expd2.tmp = ft_substr(redir->file_name[fxpd->k], expd2.prev_pos, expd2.i - expd2.prev_pos);
+			expd2.prev_pos = expd2.i;
+			if (expd2.tmp[0] != 0)
 			{
-				ft_realloc(args, tmp, size, is_space,q_type);
-				is_space[0][*size - 1] = 0;
-				q_type[0][*size - 1] = old_q_type;
+				ft_realloc_file(fxpd, expd2.tmp);
+				fxpd->is_space[fxpd->size - 1] = 0;
+				fxpd->q_types[fxpd->size - 1] = redir->q_types[fxpd->k];
 			}
 			else
-				free(tmp);
-			tmp2 = get_keyy(str, env, prev_pos, &i, status);
-			if (str[i])
-				flag = 0;
-			if (!ft_strcmp(tmp2, "?"))
+				free(expd2.tmp);
+			expd2.tmp2 = get_keyy(redir->file_name[fxpd->k], env, &expd2, status);
+			if (redir->file_name[fxpd->k][expd2.i])
+				expd2.flag = 0;
+			if (!ft_strcmp(expd2.tmp2, "?"))
 			{
-				tmp3 = ft_itoa(status);
-				flag = 0;
+				expd2.tmp3 = ft_itoa(status);
+				expd2.flag = 0;
+			}
+			else if (!ft_strcmp(expd2.tmp2, "$"))
+			{
+				expd2.tmp3 = ft_strdup("$");
+				expd2.flag = 0;
 			}
 			else
 			{
-				t = get_env_value(env, tmp2);
-				if (!t)
+				expd2.t = get_env_value(env, expd2.tmp2);
+				if (!expd2.t)
 				{
-					tmp3 = ft_strdup("");
-					ft_realloc(args, tmp3, size, is_space,q_type);
-					free(tmp2);
-					is_space[0][*size - 1] = 0;
-					q_type[0][*size - 1] = DQ;
-					prev_pos = i;
+					expd2.tmp3 = ft_strdup("");
+					ft_realloc_file(fxpd, expd2.tmp3);
+					free(expd2.tmp2);
+					fxpd->is_space[fxpd->size - 1] = 0;
+					fxpd->q_types[fxpd->size - 1] = DQ;
+					expd2.prev_pos = expd2.i;
 					continue ;
 				}
 				else
-					tmp3 = ft_strdup(t->value);
+					expd2.tmp3 = ft_strdup(expd2.t->value);
 			}
-			free(tmp2);
-			dble = ft_split_for_expand(tmp3, ' ');
-			free(tmp3);
-			while (dble[j])
+			free(expd2.tmp2);
+			expd2.dble = ft_split_for_expand(expd2.tmp3, ' ');
+			free(expd2.tmp3);
+			while (expd2.dble[expd2.j])
 			{
-				ft_realloc(args, dble[j], size, is_space,q_type);
-				is_space[0][*size - 1] = 1;
-				q_type[0][*size - 1] = NQ;
-				if (j == 0)
+				ft_realloc_file(fxpd, expd2.dble[expd2.j]);
+				fxpd->is_space[fxpd->size - 1] = 1;
+				fxpd->q_types[fxpd->size - 1] = NQ;
+				if (expd2.j == 0)
 				{
-					if (has_space_at_the_beginning(args[0][*size - 1])
-						&& *size > 1)
-						is_space[0][*size - 2] = 1;
+					if (has_space_at_the_beginning(fxpd->file_name[fxpd->size - 1])
+						&& fxpd->size > 1)
+						fxpd->is_space[fxpd->size - 2] = 1;
 				}
-				j++;
-				if (dble[j] == NULL)
+				expd2.j++;
+				if (expd2.dble[expd2.j] == NULL)
 				{
-					if (has_space_at_the_end(args[0][*size - 1]))
-						is_space[0][*size - 1] = 1;
+					if (has_space_at_the_end(fxpd->file_name[fxpd->size - 1]))
+						fxpd->is_space[fxpd->size - 1] = 1;
 					else
-						is_space[0][*size - 1] = 0;
+						fxpd->is_space[fxpd->size - 1] = 0;
 				}
-				trim_the_args(args, *size);
+				trim_the_file_names(fxpd);
 			}
-			free(dble);
-			prev_pos = i;
+			free(expd2.dble);
+			expd2.prev_pos = expd2.i;
 		}
 		else
-			i++;
+			expd2.i++;
 	}
-	if (flag == 0)
+	if (expd2.flag == 0)
 	{
-		tmp = ft_substr(str, prev_pos, ft_strlen(str) - prev_pos);
-		ft_realloc(args, tmp, size, is_space,q_type);
-		q_type[0][*size - 1] = old_q_type;
+		expd2.tmp = ft_substr(redir->file_name[fxpd->k], expd2.prev_pos, ft_strlen(redir->file_name[fxpd->k]) - expd2.prev_pos);
+		ft_realloc_file(fxpd, expd2.tmp);
+		fxpd->is_space[fxpd->size - 1] = redir->is_space[fxpd->k];
+		fxpd->q_types[fxpd->size - 1] = redir->q_types[fxpd->k];
 	}
-	is_space[0][*size - 1] = old_is_space;
+	fxpd->is_space[fxpd->size - 1] = redir->is_space[fxpd->k];
 }
 
 static char *join_all_names(char **file_name, int count)
@@ -227,27 +229,23 @@ static char *join_all_names(char **file_name, int count)
 static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 		int status)
 {
-	int		k;
-	char	**file_name;
-	int		size;
-	int		*is_space;
+	t_file_expd fxpd;
 	int		i;
 	int		abg;
-	int *q_type= NULL;
 
-	k = 0;
-	file_name = NULL;
-	size = 0;
-	is_space = NULL;
-	k = 0;
+	fxpd.k = 0;
+	fxpd.file_name = NULL;
+	fxpd.size = 0;
+	fxpd.is_space = NULL;
+	fxpd.q_types = NULL;
+	while (fxpd.k < redir->file_str_count)
+	{
+		expanded_for_single_file(&fxpd, env, status, redir);
+		fxpd.k++;
+	}
+	fxpd.k = 0;
 	i = 0;
 	abg = -1;
-	while (k < redir->file_str_count)
-	{
-		expanded_for_single_word(&file_name, redir->file_name[k], env, status,
-			redir->is_space[k], k, &size, redir->q_types[k], &is_space,&q_type);
-		k++;
-	}
 	while (i < redir->file_str_count)
 	{
 		if (redir->q_types[i] != NQ)
@@ -255,13 +253,13 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 		i++;
 	}
 	i = 0;
-	while (i < size)
+	while (i < fxpd.size)
 	{
-		if (file_name[i][0] != 0)
+		if (fxpd.file_name[i][0] != 0)
 			abg = 0;
 		i++;
 	}
-	// if (abg == -1 || size > 1)
+	// if (abg == -1 || fxpd.size > 1)
 	// {
 	// 	abg = -1;
 	// 	char *tmp = join_all_names(redir->file_name,redir->file_str_count);
@@ -269,18 +267,18 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 	// 	free(tmp);
 	// 	ft_putstr_fd(2, ": ambiguous redirect\n");
 	// }
-	k = 0;
-	while (k < redir->file_str_count)
-		free(redir->file_name[k++]);
+	while (fxpd.k < redir->file_str_count)
+		free(redir->file_name[fxpd.k++]);
 	free(redir->file_name);
-	redir->file_name = file_name;
-	redir->file_str_count = size;
+	redir->file_name = fxpd.file_name;
+	redir->file_str_count = fxpd.size;
 	free(redir->is_space);
-	redir->is_space = is_space;
+	redir->is_space = fxpd.is_space;
 	free(redir->q_types);
-	redir->q_types = q_type;
+	redir->q_types = fxpd.q_types;
 	return abg;
 }
+
 int	expand_file_name(t_ast_tree *node, t_env_list *env, int status)
 {
 	t_redirect *redir = node->redirect;
