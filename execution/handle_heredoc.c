@@ -55,12 +55,10 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_lis
 			break ;
 		}
 		if (exp_flag == 0)
-		{
 			s = expand_heredoc_line(tmp, env, sigarette);
-			ft_putstr_fd(pipe_fd[1], s);
-		}
 		else
-			ft_putstr_fd(pipe_fd[1], tmp);
+			s = tmp;
+		ft_putstr_fd(pipe_fd[1], s);
 		ft_putstr_fd(pipe_fd[1], "\n");
 		free(s);
 		free(tmp);

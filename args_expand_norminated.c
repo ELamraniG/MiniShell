@@ -102,6 +102,10 @@ static int	has_space_at_the_beginning(char *s)
 	return (0);
 }
 
+
+
+// void expand_norm1(expd,astree);
+
 static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
 		int status, t_ast_tree *astree)
 {
