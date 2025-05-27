@@ -13,7 +13,7 @@ static char *get_keyy(char *str, int prev_pos, int *i)
 		return ft_strdup("$");
 	while (str[*i])
 	{
-		if (str[*i] == '$' || !ft_isalnum(str[*i]))
+		if (str[*i] == '$' || (!ft_isalnum(str[*i]) && str[*i] != '_'))
 			return ft_substr(str, prev_pos + 1, *i - prev_pos - 1);
 		len++;
 		(*i)++;
@@ -50,6 +50,8 @@ char *expand_heredoc_line(char *s, t_env_list *env, int status)
 			
 			if (!ft_strcmp(key, "?"))
 				tmp2 = ft_itoa(status);
+			else if (!ft_strcmp(key, "$"))
+				tmp2 = ft_strdup("$");
 			else
 			{
 				t_env_list *env_node = get_env_value(env, key);
@@ -70,18 +72,13 @@ char *expand_heredoc_line(char *s, t_env_list *env, int status)
 			i++;
 	}
 	
-	if (flag == 0 || prev_pos > 0)
+	if (flag == 0)
 	{
 		tmp = ft_substr(s, prev_pos, ft_strlen(s) - prev_pos);
 		tmp_free = str;
 		str = ft_strjoin(str, tmp);
 		free(tmp);
 		free(tmp_free);
-	}
-	else
-	{
-		free(str);
-		return ft_strdup(s);
 	}
 	return str;
 }

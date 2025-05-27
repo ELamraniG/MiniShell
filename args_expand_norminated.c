@@ -65,7 +65,7 @@ static char	*get_keyy(char *str, t_env_list *env, int prev_pos, int *i,
 		return (ft_strdup("$"));
 	while (str[*i])
 	{
-		if (str[*i] == '$' || !ft_isalnum(str[*i]))
+		if (str[*i] == '$' || (!ft_isalnum(str[*i]) && str[*i] != '_'))
 			return (ft_substr(str, prev_pos + 1, *i - prev_pos - 1));
 		len++;
 		(*i)++;
@@ -151,6 +151,11 @@ static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
 			if (!ft_strcmp(tmp2, "?"))
 			{
 				tmp3 = ft_itoa(status);
+				flag = 0;
+			}
+			else if (!ft_strcmp(tmp2, "$"))
+			{
+				tmp3 = ft_strdup("$");
 				flag = 0;
 			}
 			else

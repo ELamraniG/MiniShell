@@ -16,5 +16,3 @@ change back fork to return when failure
 
 
 137 43
-
-///clear all the heredocs after exuting the tree
