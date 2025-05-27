@@ -24,65 +24,65 @@ static char *get_keyy(char *str, int prev_pos, int *i)
 	return (ft_strdup(str + prev_pos + 1));
 }
 
-static void	expand_heredoc_variable(t_heredoc_norm *heredoc, char *s, t_env_list *env, int status)
+static void	expand_heredoc_variable(t_hrdc_norm *hrdc, char *s, t_env_list *env, int status)
 {
-	heredoc->flag = 1;
-	heredoc->tmp = ft_substr(s, heredoc->prev_pos, heredoc->i - heredoc->prev_pos);
-	heredoc->tmp_free = heredoc->str;
-	heredoc->str = ft_strjoin(heredoc->str, heredoc->tmp);
-	free(heredoc->tmp);
-	free(heredoc->tmp_free);
+	hrdc->flag = 1;
+	hrdc->tmp = ft_substr(s, hrdc->prev_pos, hrdc->i - hrdc->prev_pos);
+	hrdc->tmp_free = hrdc->str;
+	hrdc->str = ft_strjoin(hrdc->str, hrdc->tmp);
+	free(hrdc->tmp);
+	free(hrdc->tmp_free);
 	
-	heredoc->prev_pos = heredoc->i;
-	heredoc->key = get_keyy(s, heredoc->prev_pos, &heredoc->i);
+	hrdc->prev_pos = hrdc->i;
+	hrdc->key = get_keyy(s, hrdc->prev_pos, &hrdc->i);
 	
-	if (!ft_strcmp(heredoc->key, "?"))
-		heredoc->tmp2 = ft_itoa(status);
-	else if (!ft_strcmp(heredoc->key, "$"))
-		heredoc->tmp2 = ft_strdup("$");
+	if (!ft_strcmp(hrdc->key, "?"))
+		hrdc->tmp2 = ft_itoa(status);
+	else if (!ft_strcmp(hrdc->key, "$"))
+		hrdc->tmp2 = ft_strdup("$");
 	else
 	{
-		t_env_list *env_node = get_env_value(env, heredoc->key);
+		t_env_list *env_node = get_env_value(env, hrdc->key);
 		if (!env_node)
-			heredoc->tmp2 = ft_strdup("");
+			hrdc->tmp2 = ft_strdup("");
 		else
-			heredoc->tmp2 = ft_strdup(env_node->value);
+			hrdc->tmp2 = ft_strdup(env_node->value);
 	}
 	
-	heredoc->tmp_free = heredoc->str;
-	heredoc->str = ft_strjoin(heredoc->str, heredoc->tmp2);
-	free(heredoc->tmp_free);
-	free(heredoc->key);
-	free(heredoc->tmp2);
-	heredoc->prev_pos = heredoc->i;
+	hrdc->tmp_free = hrdc->str;
+	hrdc->str = ft_strjoin(hrdc->str, hrdc->tmp2);
+	free(hrdc->tmp_free);
+	free(hrdc->key);
+	free(hrdc->tmp2);
+	hrdc->prev_pos = hrdc->i;
 }
 
 char *expand_heredoc_line(char *s, t_env_list *env, int status)
 {
-	t_heredoc_norm heredoc;
+	t_hrdc_norm hrdc;
 
-	heredoc.i = 0;
-	heredoc.prev_pos = 0;
-	heredoc.flag = 0;
-	heredoc.str = ft_strdup("");
+	hrdc.i = 0;
+	hrdc.prev_pos = 0;
+	hrdc.flag = 0;
+	hrdc.str = ft_strdup("");
 	
-	while (s[heredoc.i])
+	while (s[hrdc.i])
 	{
-		if (s[heredoc.i] == '$')
+		if (s[hrdc.i] == '$')
 		{
-			expand_heredoc_variable(&heredoc, s, env, status);
+			expand_heredoc_variable(&hrdc, s, env, status);
 		}
 		else
-			heredoc.i++;
+			hrdc.i++;
 	}
 	
-	if (heredoc.flag == 0)
+	if (hrdc.flag == 0)
 	{
-		heredoc.tmp = ft_substr(s, heredoc.prev_pos, ft_strlen(s) - heredoc.prev_pos);
-		heredoc.tmp_free = heredoc.str;
-		heredoc.str = ft_strjoin(heredoc.str, heredoc.tmp);
-		free(heredoc.tmp);
-		free(heredoc.tmp_free);
+		hrdc.tmp = ft_substr(s, hrdc.prev_pos, ft_strlen(s) - hrdc.prev_pos);
+		hrdc.tmp_free = hrdc.str;
+		hrdc.str = ft_strjoin(hrdc.str, hrdc.tmp);
+		free(hrdc.tmp);
+		free(hrdc.tmp_free);
 	}
-	return heredoc.str;
+	return hrdc.str;
 }

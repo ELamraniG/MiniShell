@@ -14,7 +14,7 @@
 # include <unistd.h>
 
 
-typedef struct s_heredoc_norm {
+typedef struct s_hrdc_norm {
 	int		i;
 	int		prev_pos;
 	int		flag;
@@ -23,7 +23,7 @@ typedef struct s_heredoc_norm {
 	char	*tmp_free;
 	char	*key;
 	char	*tmp2;
-} t_heredoc_norm;
+} t_hrdc_norm;
 
 
 typedef struct s_file_wild_norm {
