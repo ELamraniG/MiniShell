@@ -7,10 +7,11 @@ static void	norm_join_args(int *i, int *j, char ***args2, int count)
 	*j = 0;
 }
 
-void norm_args2(t_ast_tree *astree,int *i,int *j,char ***args2)
+void	norm_args2(t_ast_tree *astree, int *i, int *j, char ***args2)
 {
-	char *tmp;
-		while (*i < astree->arg_counter)
+	char	*tmp;
+
+	while (*i < astree->arg_counter)
 	{
 		if (astree->is_space[*i - 1])
 			args2[0][++(*j)] = ft_strdup(astree->args[*i]);
@@ -44,7 +45,7 @@ char	**join_args_without_spaces(t_ast_tree *astree)
 		return (astree->args);
 	norm_join_args(&i, &j, &args2, count);
 	args2[0] = ft_strdup(astree->args[0]);
-	norm_args2(astree,&i,&j,&args2);
+	norm_args2(astree, &i, &j, &args2);
 	args2[count] = NULL;
 	i = 0;
 	while (i < astree->arg_counter)

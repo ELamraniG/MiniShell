@@ -225,6 +225,8 @@ int handle_file_wildcard(t_ast_tree *node)
 	t_redirect *redir = node->redirect;
 	while (redir)
 	{
+		if(redir->type != HEREDOC)
+		{
 		handle_file_cards(redir);
 		int i = 0;
 		while(i < redir->file_str_count)
@@ -235,6 +237,7 @@ int handle_file_wildcard(t_ast_tree *node)
 			ft_putstr_fd(2,redir->file_name[0]);
 			ft_putstr_fd(2,": ambiguous redirect\n");
 			return -1;
+		}
 		}
 		redir = redir->next;
 	}

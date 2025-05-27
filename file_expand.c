@@ -285,9 +285,12 @@ int	expand_file_name(t_ast_tree *node, t_env_list *env, int status)
 	int abg = 0;
 	while (redir)
 	{
-		abg = I_HATE_EXPANDING_FILE(redir, env, status);
-		if (abg != 0)
-			return -1;
+		if (redir->type != HEREDOC)
+		{
+			abg = I_HATE_EXPANDING_FILE(redir, env, status);
+			if (abg != 0)
+				return -1;
+		}
 		redir = redir->next;
 	}
 	return (0);

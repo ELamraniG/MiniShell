@@ -14,7 +14,7 @@
 #include "../includes/minishell.h"
 
 extern int sigarette;
-static char	*join_all_file_names(t_redirect *redir)
+static char	*join_all_file_names(t_redirect *redir,int *flag)
 {
 	char	*s;
 	char	*tmp_free;
@@ -24,6 +24,8 @@ static char	*join_all_file_names(t_redirect *redir)
 	i = 1;
 	while (i < redir->file_str_count)
 	{
+		if (redir->q_types != NQ)
+			*flag = 1;
 		tmp_free = s;
 		s = ft_strjoin(s, redir->file_name[i]);
 		free(tmp_free);
@@ -37,10 +39,11 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_lis
 	char	*tmp;
 	char	*s;
 	char	*lim;
+	int exp_flag = 0;
 
 	signal(SIGINT, heredoc_child_signal);
 	close(pipe_fd[0]);
-	redir->final_file_name = join_all_file_names(redir);
+	redir->final_file_name = join_all_file_names(redir, &exp_flag);
 	lim = redir->final_file_name;
 	
 	while (1337)
@@ -51,8 +54,13 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_lis
 			free(tmp);
 			break ;
 		}
-		s = expand_heredoc_line(tmp, env, sigarette);
-		ft_putstr_fd(pipe_fd[1], s);
+		if (exp_flag == 0)
+		{
+			s = expand_heredoc_line(tmp, env, sigarette);
+			ft_putstr_fd(pipe_fd[1], s);
+		}
+		else
+			ft_putstr_fd(pipe_fd[1], tmp);
 		ft_putstr_fd(pipe_fd[1], "\n");
 		free(s);
 		free(tmp);
