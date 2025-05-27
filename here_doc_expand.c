@@ -1,5 +1,6 @@
 #include "includes/minishell.h"
 
+
 static char *get_keyy(char *str, int prev_pos, int *i)
 {
 	(*i)++;
@@ -23,62 +24,65 @@ static char *get_keyy(char *str, int prev_pos, int *i)
 	return (ft_strdup(str + prev_pos + 1));
 }
 
+static void	expand_heredoc_variable(t_heredoc_norm *heredoc, char *s, t_env_list *env, int status)
+{
+	heredoc->flag = 1;
+	heredoc->tmp = ft_substr(s, heredoc->prev_pos, heredoc->i - heredoc->prev_pos);
+	heredoc->tmp_free = heredoc->str;
+	heredoc->str = ft_strjoin(heredoc->str, heredoc->tmp);
+	free(heredoc->tmp);
+	free(heredoc->tmp_free);
+	
+	heredoc->prev_pos = heredoc->i;
+	heredoc->key = get_keyy(s, heredoc->prev_pos, &heredoc->i);
+	
+	if (!ft_strcmp(heredoc->key, "?"))
+		heredoc->tmp2 = ft_itoa(status);
+	else if (!ft_strcmp(heredoc->key, "$"))
+		heredoc->tmp2 = ft_strdup("$");
+	else
+	{
+		t_env_list *env_node = get_env_value(env, heredoc->key);
+		if (!env_node)
+			heredoc->tmp2 = ft_strdup("");
+		else
+			heredoc->tmp2 = ft_strdup(env_node->value);
+	}
+	
+	heredoc->tmp_free = heredoc->str;
+	heredoc->str = ft_strjoin(heredoc->str, heredoc->tmp2);
+	free(heredoc->tmp_free);
+	free(heredoc->key);
+	free(heredoc->tmp2);
+	heredoc->prev_pos = heredoc->i;
+}
+
 char *expand_heredoc_line(char *s, t_env_list *env, int status)
 {
-	int i = 0;
-	int prev_pos = 0;
-	int flag = 0;
-	char *str = ft_strdup("");
-	char *tmp;
-	char *tmp_free;
-	char *key;
-	char *tmp2;
+	t_heredoc_norm heredoc;
+
+	heredoc.i = 0;
+	heredoc.prev_pos = 0;
+	heredoc.flag = 0;
+	heredoc.str = ft_strdup("");
 	
-	while (s[i])
+	while (s[heredoc.i])
 	{
-		if (s[i] == '$')
+		if (s[heredoc.i] == '$')
 		{
-			flag = 1;
-			tmp = ft_substr(s, prev_pos, i - prev_pos);
-			tmp_free = str;
-			str = ft_strjoin(str, tmp);
-			free(tmp);
-			free(tmp_free);
-			
-			prev_pos = i;
-			key = get_keyy(s, prev_pos, &i);
-			
-			if (!ft_strcmp(key, "?"))
-				tmp2 = ft_itoa(status);
-			else if (!ft_strcmp(key, "$"))
-				tmp2 = ft_strdup("$");
-			else
-			{
-				t_env_list *env_node = get_env_value(env, key);
-				if (!env_node)
-					tmp2 = ft_strdup("");
-				else
-					tmp2 = ft_strdup(env_node->value);
-			}
-			
-			tmp_free = str;
-			str = ft_strjoin(str, tmp2);
-			free(tmp_free);
-			free(key);
-			free(tmp2);
-			prev_pos = i;
+			expand_heredoc_variable(&heredoc, s, env, status);
 		}
 		else
-			i++;
+			heredoc.i++;
 	}
 	
-	if (flag == 0)
+	if (heredoc.flag == 0)
 	{
-		tmp = ft_substr(s, prev_pos, ft_strlen(s) - prev_pos);
-		tmp_free = str;
-		str = ft_strjoin(str, tmp);
-		free(tmp);
-		free(tmp_free);
+		heredoc.tmp = ft_substr(s, heredoc.prev_pos, ft_strlen(s) - heredoc.prev_pos);
+		heredoc.tmp_free = heredoc.str;
+		heredoc.str = ft_strjoin(heredoc.str, heredoc.tmp);
+		free(heredoc.tmp);
+		free(heredoc.tmp_free);
 	}
-	return str;
+	return heredoc.str;
 }

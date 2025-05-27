@@ -47,31 +47,37 @@ static int	wach_exists(const char *pat, const char *str)
 	return (p == pLen);
 }
 
-static void	ft_realloc(char ***args, char *s, int *size, int **is_space)
+static void	ft_realloc(t_wild_norm *wild, char *s)
 {
 	int		i;
 	int		*new_is_space;
 	char	**new_args;
 	int		*tmpint_free;
 	char	**tmp_free;
+	int 	*new_q_type;
 
 	i = 0;
-	new_is_space = malloc(sizeof(int) * (*size + 1));
-	new_args = malloc(sizeof(char *) * (*size + 2));
-	new_args[*size] = 0;
-	while (i < *size)
+	new_is_space = malloc(sizeof(int) * (wild->size + 1));
+	new_q_type = malloc(sizeof(int) * (wild->size + 1));
+	new_args = malloc(sizeof(char *) * (wild->size + 2));
+	new_args[wild->size] = 0;
+	while (i < wild->size)
 	{
-		new_is_space[i] = is_space[0][i];
-		new_args[i] = args[0][i];
+		new_q_type[i] = wild->q_type[i];
+		new_is_space[i] = wild->is_space[i];
+		new_args[i] = wild->args[i];
 		i++;
 	}
 	new_args[i] = ft_strdup(s);
-	new_args[*size + 1] = 0;
-	(*size)++;
-	tmp_free = *args;
-	*args = new_args;
-	tmpint_free = is_space[0];
-	*is_space = new_is_space;
+	new_args[wild->size + 1] = 0;
+	(wild->size)++;
+	tmp_free = wild->args;
+	wild->args = new_args;
+	tmpint_free = wild->is_space;
+	wild->is_space = new_is_space;
+	free(tmpint_free);
+	tmpint_free = wild->q_type;
+	wild->q_type = new_q_type;
 	free(tmpint_free);
 	free(tmp_free);
 	return ;
@@ -115,13 +121,12 @@ static void sort_all_dirs(char ***all_dirs, int count)
 	}
 }
 
-static void	handle_single_wild_card(char ***args, char *current_arg,
-		int old_is_space, int k, int *size, int **is_space, int q_type)
+static void	handle_single_wild_card(t_wild_norm *wild, char *current_arg,
+		int old_is_space, int old_q_type)
 {
 	DIR				*r;
 	struct dirent	*reads;
 	char			**all_dirs;
-	char			*tmp_free;
 	int				reads_counter;
 	int				j;
 	int				i;
@@ -133,7 +138,7 @@ static void	handle_single_wild_card(char ***args, char *current_arg,
 	i = 0;
 	if (current_arg[0] == '.')
 		point_flag = 1;
-	if (it_has_etoil(current_arg) && q_type == NQ)
+	if (it_has_etoil(current_arg) && old_q_type == NQ)
 	{
 		r = opendir(".");
 		reads = readdir(r);
@@ -146,10 +151,9 @@ static void	handle_single_wild_card(char ***args, char *current_arg,
 		closedir(r);
 		if (reads_counter == 0)
 		{
-			{
-				ft_realloc(args, current_arg, size, is_space);
-				is_space[0][*size - 1] = 1;
-			}
+			ft_realloc(wild, current_arg);
+			wild->is_space[wild->size - 1] = 1;
+			wild->q_type[wild->size - 1] = old_q_type;
 		}
 		else
 		{
@@ -171,8 +175,9 @@ static void	handle_single_wild_card(char ***args, char *current_arg,
 					i++;
 					continue;
 				}
-				ft_realloc(args, all_dirs[i], size, is_space);
-				is_space[0][*size - 1] = 1;
+				ft_realloc(wild, all_dirs[i]);
+				wild->is_space[wild->size - 1] = 1;
+				wild->q_type[wild->size - 1] = NQ;
 				i++;
 			}
 			i = 0;
@@ -182,39 +187,35 @@ static void	handle_single_wild_card(char ***args, char *current_arg,
 	}
 	else
 	{
-		ft_realloc(args, current_arg, size, is_space);
-		is_space[0][*size - 1] = old_is_space;
+		ft_realloc(wild, current_arg);
+		wild->is_space[wild->size - 1] = old_is_space;
+		wild->q_type[wild->size - 1] = old_q_type;
 	}
 }
 
 void	handle_wild_card(t_ast_tree *node)
 {
-	int		k;
-	char	**args;
-	int		size;
-	int		*is_space;
+	t_wild_norm wild;
 
-	k = 0;
-	args = NULL;
-	size = 0;
-	is_space = NULL;
-	k = 0;
-	while (node->args[k])
+	wild.k = 0;
+	wild.args = NULL;
+	wild.size = 0;
+	wild.is_space = NULL;
+	wild.q_type = NULL;
+	while (node->args[wild.k])
 	{
-		handle_single_wild_card(&args, node->args[k], node->is_space[k], k,
-			&size, &is_space, node->q_type[k]);
-		k++;
+		handle_single_wild_card(&wild, node->args[wild.k], node->is_space[wild.k], node->q_type[wild.k]);
+		wild.k++;
 	}
-	k = 0;
-	while (node->args[k])
-		free(node->args[k++]);
-	k = 0;
-	// free(node->args[k]);
+	wild.k = 0;
+	while (node->args[wild.k])
+		free(node->args[wild.k++]);
+	// free(node->args[wild.k]);
 	free(node->args);
-	node->args = args;
-	node->arg_counter = size;
+	node->args = wild.args;
+	node->arg_counter = wild.size;
 	free(node->is_space);
-	node->is_space = is_space;
+	node->is_space = wild.is_space;
 	free(node->q_type);
-	node->q_type = malloc(sizeof(int) * size);
+	node->q_type = wild.q_type;
 }

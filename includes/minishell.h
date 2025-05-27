@@ -14,6 +14,35 @@
 # include <unistd.h>
 
 
+typedef struct s_heredoc_norm {
+	int		i;
+	int		prev_pos;
+	int		flag;
+	char	*str;
+	char	*tmp;
+	char	*tmp_free;
+	char	*key;
+	char	*tmp2;
+} t_heredoc_norm;
+
+
+typedef struct s_file_wild_norm {
+	int		k;
+	char	**args;
+	int		size;
+	int		*is_space;
+	int		*q_types;
+} t_file_wild_norm;
+
+typedef struct s_wild_norm {
+	int		k;
+	char	**args;
+	int		size;
+	int		*is_space;
+	int		*q_type;
+} t_wild_norm;
+
+
 typedef struct s_exp_norm
 {
 	char **args;
@@ -199,4 +228,6 @@ void	print_msg3(char *s);
 void	print_msg4(char *s);
 void	free_node(t_env_list *current);
 t_env_list	*find_key_node(t_env_list *current, char *key, t_env_list **prev);
+
+
 #endif
