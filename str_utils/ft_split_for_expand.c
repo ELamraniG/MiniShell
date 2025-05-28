@@ -148,17 +148,3 @@ char	**ft_split_for_expand(char const *s, char c)
 	do_someth2(s, s2, c,wc);
 	return (s2);
 }
-
-
-
-// int main()
-// {
-// 	char **s = ft_split_for_expand(" ",' ');
-// 		printf("p = %p\n",*s);
-// 	while (*s)
-// 	{
-// 		printf("%s-\n",*s);
-// 		s++;
-// 		printf("p = %p\n",*s);
-// 	}
-// }
