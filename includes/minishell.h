@@ -12,7 +12,23 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+typedef struct s_file_relc
+{
+	int		i;
+	int		*new_is_space;
+	char	**new_file_name;
+	int		*tmpint_free;
+	char	**tmp_free;
+	int 	*new_q_types;
+}t_file_relc;
 
+typedef struct s_file_expd {
+	int		k;
+	char	**file_name;
+	int		size;
+	int		*is_space;
+	int		*q_types;
+} t_file_expd;
 
 typedef struct s_hrdc_norm {
 	int		i;
