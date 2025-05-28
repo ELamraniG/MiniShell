@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                             +#+  +:+      
+/*   By:                                             +#+  +:+
 	+#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 10:00:00                     #+#    #+#             */
@@ -13,7 +13,7 @@
 
 #include "../includes/minishell.h"
 
-extern int sigarette;
+extern int	sigarette;
 
 static int	norm_herd_1(int pipe_fd)
 {
@@ -22,12 +22,13 @@ static int	norm_herd_1(int pipe_fd)
 	return (-1);
 }
 
-static char	*join_all_file_names(t_redirect *redir,int *flag)
+static char	*join_all_file_names(t_redirect *redir, int *flag)
 {
 	char	*s;
 	char	*tmp_free;
 	int		i;
 
+	*flag = 0;
 	s = ft_strdup(redir->file_name[0]);
 	i = 1;
 	while (i < redir->file_str_count)
@@ -42,12 +43,11 @@ static char	*join_all_file_names(t_redirect *redir,int *flag)
 	return (s);
 }
 
-static void	heredoc_norm1919(int pipe_fd, char *s, char *tmp)
+void	normeeker(char *s, int *pipe_fd)
 {
-	ft_putstr_fd(pipe_fd, s);
-	ft_putstr_fd(pipe_fd, "\n");
+	ft_putstr_fd(pipe_fd[1], s);
+	ft_putstr_fd(pipe_fd[1], "\n");
 	free(s);
-	free(tmp);
 }
 
 static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
@@ -55,7 +55,7 @@ static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 	char	*tmp;
 	char	*s;
 	char	*lim;
-	int exp_flag = 0;
+	int		exp_flag;
 
 	signal(SIGINT, heredoc_child_signal);
 	close(pipe_fd[0]);
@@ -73,13 +73,14 @@ static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 			s = expand_heredoc_line(tmp, env, sigarette);
 		else
 			s = tmp;
-		heredoc_norm1919(pipe_fd[1], s, tmp);
+		normeeker(s, pipe_fd);
 	}
 	close(pipe_fd[1]);
 	exit(0);
 }
 
-static int	here_d_norm333(int pipe_fd, pid_t pid, struct termios *original_term)
+static int	here_d_norm333(int pipe_fd, pid_t pid,
+		struct termios *original_term)
 {
 	int	status;
 
@@ -134,7 +135,7 @@ int	handle_heredoc(t_ast_tree *node, int n, t_env_list *env)
 	{
 		if (redir->type == HEREDOC)
 		{
-			if (create_the_dawg(redir,env) == -1)
+			if (create_the_dawg(redir, env) == -1)
 				return (-1);
 		}
 		redir = redir->next;

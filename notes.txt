@@ -1,6 +1,5 @@
 next
 // handle ton of pipes
-//check the default vars into env when env -i
 //at the end add wall extra and remove sanitizer
 
 
@@ -9,9 +8,14 @@ next
 
 
 
- ❌ 432   
- ✅ 2385   
+ ❌ 433   
+ ✅ 2390  
+with wrong expand
 
+
+  ❌ 430   
+✅ 2393   
+with correct expand
 
  home
 ❌ 474   
