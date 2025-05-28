@@ -92,6 +92,13 @@ static int	handle_the_here_dawg(t_redirect *redir)
 	return (0);
 }
 
+static int	norminete_exc_redir(int stdinn, int stdoutt)
+{
+	dup3(stdinn, STDIN_FILENO);
+	dup3(stdoutt, STDOUT_FILENO);
+	return (-1);
+}
+
 int	excute_redirs(t_ast_tree *astree)
 {
 	int	stdinn;
@@ -106,38 +113,22 @@ int	excute_redirs(t_ast_tree *astree)
 		if (tmp->type == OUT_REDIR) 
 		{
 			if (handle_out_redir(tmp) == -1) 
-			{
-				dup3(stdinn, STDIN_FILENO);
-				dup3(stdoutt, STDOUT_FILENO);
-				return (-1);
-			}
+				return (norminete_exc_redir(stdinn, stdoutt));
 		}
 		if (tmp->type == IN_REDIR) 
 		{
 			if (handle_in_redir(tmp) == -1)
-			{
-				dup3(stdinn, STDIN_FILENO);
-				dup3(stdoutt, STDOUT_FILENO);
-				return (-1);
-			}
+				return (norminete_exc_redir(stdinn, stdoutt));
 		}
 		if (tmp->type == APPEND) 
 		{
 			if (handle_append_redir(tmp) == -1) 
-			{
-				dup3(stdinn, STDIN_FILENO);
-				dup3(stdoutt, STDOUT_FILENO);
-				return (-1);
-			}
+				return (norminete_exc_redir(stdinn, stdoutt));
 		}
 		if (tmp->type == HEREDOC) 
 		{
 			if (handle_the_here_dawg(tmp) == -1) 
-			{
-				dup3(stdinn, STDIN_FILENO);
-				dup3(stdoutt, STDOUT_FILENO);
-				return (-1);
-			}
+				return (norminete_exc_redir(stdinn, stdoutt));
 		}
 		tmp = tmp->next; 
 	}
