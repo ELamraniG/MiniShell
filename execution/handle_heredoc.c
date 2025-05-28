@@ -14,6 +14,14 @@
 #include "../includes/minishell.h"
 
 extern int sigarette;
+
+static int	norm_herd_1(int pipe_fd)
+{
+	close(pipe_fd);
+	sigarette = 130;
+	return (-1);
+}
+
 static char	*join_all_file_names(t_redirect *redir,int *flag)
 {
 	char	*s;
@@ -34,7 +42,7 @@ static char	*join_all_file_names(t_redirect *redir,int *flag)
 	return (s);
 }
 
-static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_list *env)
+static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 {
 	char	*tmp;
 	char	*s;
@@ -67,6 +75,18 @@ static void	process_heredoc_content(t_redirect *redir, int pipe_fd[2], t_env_lis
 	exit(0);
 }
 
+static int	here_d_norm333(int pipe_fd, pid_t pid, struct termios *original_term)
+{
+	int	status;
+
+	close(pipe_fd);
+	ignore_signals();
+	waitpid(pid, &status, 0);
+	tcsetattr(STDIN_FILENO, TCSANOW, original_term);
+	handle_main_sigs();
+	return (status);
+}
+
 static int	create_the_dawg(t_redirect *redir, t_env_list *env)
 {
 	int				pipe_fd[2];
@@ -85,24 +105,12 @@ static int	create_the_dawg(t_redirect *redir, t_env_list *env)
 		return (-1);
 	}
 	if (pid == 0)
-		process_heredoc_content(redir, pipe_fd, env);
-	close(pipe_fd[1]);
-	ignore_signals();
-	waitpid(pid, &status, 0);
-	tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
-	handle_main_sigs();
+		do_the_heredoc(redir, pipe_fd, env);
+	status = here_d_norm333(pipe_fd[1], pid, &original_term);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-	{
-		close(pipe_fd[0]);
-		sigarette = 130;
-		return (-1);
-	}
-	else if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
-	{
-		close(pipe_fd[0]);
-		sigarette = 130;
-		return (-1);
-	}
+		return (norm_herd_1(pipe_fd[0]));
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+		return (norm_herd_1(pipe_fd[0]));
 	redir->heredoc = pipe_fd[0];
 	return (0);
 }

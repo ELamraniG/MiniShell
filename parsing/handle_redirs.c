@@ -122,45 +122,44 @@ static void	add_to_list_redirss(t_redirect **ll, int type, t_lex_list **token)
 	}
 }
 
+static void	handle_word_norm(t_h_word *hword, t_lex_list *token, t_ast_tree *node)
+{
+	hword->q_type = NULL;
+	hword->is_space = NULL;
+	hword->i = 0;
+	hword->getting_redirs = NULL;
+	hword->malc = calculate_words(token);
+	hword->args = malloc(sizeof(char *) * (hword->malc + 1));
+	hword->q_type = malloc(sizeof(int) * (hword->malc));
+	hword->is_space = malloc(sizeof(int) * (hword->malc));
+	node->arg_counter = hword->malc;
+	hword->args[hword->malc] = 0;
+}
+
 void	handle_words(t_ast_tree *node, t_lex_list **token)
 {
-	char		**args;
-	int			malc;
-	t_redirect	*getting_redirs;
-	int			i;
-	int			*q_type;
-	int			*is_space;
-	int			r_type;
+	t_h_word	data;
 
-	q_type = NULL;
-	is_space = NULL;
-	i = 0;
-	getting_redirs = NULL;
-	malc = calculate_words(*token);
-	args = malloc(sizeof(char *) * (malc + 1));
-	q_type = malloc(sizeof(int) * (malc));
-	is_space = malloc(sizeof(int) * (malc));
-	node->arg_counter = malc;
-	args[malc] = 0;
+	handle_word_norm(&data, *token, node);
 	while (*token && is_special_for_redirs((*token)->a_type))
 	{
 		if ((*token)->a_type == WORD)
 		{
-			args[i] = ft_strdup((*token)->s);
-			q_type[i] = (*token)->q_type;
-			is_space[i] = (*token)->is_space;
-			i++;
+			data.args[data.i] = ft_strdup((*token)->s);
+			data.q_type[data.i] = (*token)->q_type;
+			data.is_space[data.i] = (*token)->is_space;
+			data.i++;
 			(*token) = (*token)->next;
 		}
 		else if ((*token)->a_type < 4)
 		{
-			r_type = (*token)->a_type;
+			data.r_type = (*token)->a_type;
 			(*token) = (*token)->next;
-			add_to_list_redirss(&getting_redirs, r_type, token);
+			add_to_list_redirss(&data.getting_redirs, data.r_type, token);
 		}
 	}
-	node->is_space = is_space;
-	node->q_type = q_type;
-	node->args = args;
-	node->redirect = getting_redirs;
+	node->is_space = data.is_space;
+	node->q_type = data.q_type;
+	node->args = data.args;
+	node->redirect = data.getting_redirs;
 }

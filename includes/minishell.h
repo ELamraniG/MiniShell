@@ -12,6 +12,8 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+
+
 typedef struct s_wild_relc
 {
 	int		i;
@@ -135,6 +137,16 @@ typedef struct s_redirect
 	struct s_redirect	*next;
 	int					heredoc;
 }						t_redirect;
+typedef struct s_h_word
+{
+	char		**args;
+	int			malc;
+	t_redirect	*getting_redirs;
+	int			i;
+	int			*q_type;
+	int			*is_space;
+	int			r_type;
+}	t_h_word;
 
 typedef struct s_vars
 {
