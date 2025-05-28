@@ -13,7 +13,8 @@
 
 #include "../includes/minishell.h"
 
-	extern int sigarette;
+extern int g_sigarette;
+
 void	ft_handle_sigint(int sig)
 {
 
@@ -22,7 +23,7 @@ void	ft_handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	sigarette = 130;
+	g_sigarette = 130;
 }
 
 void	handle_sig_exec_ve(int sig)

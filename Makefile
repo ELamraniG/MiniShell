@@ -37,7 +37,9 @@ SRC =	str_utils/ft_split.c \
 		built_ins/unset.c \
 		built_ins/exit.c \
 		execution/norminette_exec_tree.c \
+		execution/excuting_redirs_continue.c \
 		execution/excuting_redirs.c \
+		execution/handle_heredoc_continue.c \
 		execution/handle_heredoc.c \
 		execution/norminette_word_msgs.c \
 		args_expand_norminated.c \

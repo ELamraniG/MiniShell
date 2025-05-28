@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 22:03:14 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/28 22:46:58 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,4 +305,14 @@ int			wach_skip(t_lex_list *token);
 int			calculate_words(t_lex_list *token);
 int			count_files(t_lex_list *token);
 void		redir_files(t_lex_list **token, t_redirect *redir);
+int			handle_out_redir(t_redirect *redir);
+int			handle_in_redir(t_redirect *redir);
+int			handle_append_redir(t_redirect *redir);
+int			handle_the_here_dawg(t_redirect *redir);
+int			norminete_exc_redir(int stdinn, int stdoutt);
+int			norm_herd_1(int pipe_fd);
+char		*join_all_file_names(t_redirect *redir, int *flag);
+void		normeeker(char *s, int *pipe_fd);
+void		do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env);
+int			here_d_norm333(int pipe_fd, pid_t pid, struct termios *original_term);
 #endif

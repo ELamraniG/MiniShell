@@ -1,6 +1,6 @@
 #include "includes/minishell.h"
 
-int sigarette = 0;
+int g_sigarette = 0;
 static void clean_all_herdocs(t_ast_tree *astree)
 {
 	if (astree == NULL)
@@ -39,7 +39,7 @@ bash: syntax error: unexpected end of file
 
 void	handlectrlc(int n)
 {
-	sigarette = 130;
+	g_sigarette = 130;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -87,10 +87,10 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 			input = readline("minishell$ ");
-		if (sigarette != 0)
+		if (g_sigarette != 0)
 		{
-			status = sigarette;
-			sigarette = 0;
+			status = g_sigarette;
+			g_sigarette = 0;
 		}
 		i++;
 		if (!input)
@@ -122,10 +122,10 @@ int	main(int ac, char **av, char **env)
 
 		if (handle_heredoc(astree, 0, envv) == -1)
 		{
-			if (sigarette == 130)
+			if (g_sigarette == 130)
 			{
 				status = 1;
-				sigarette = 0;
+				g_sigarette = 0;
 			}
 			free(input);
 			free_tree(astree);

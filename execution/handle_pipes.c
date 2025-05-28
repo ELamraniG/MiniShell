@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_pipes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:48:01 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/25 18:14:21 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/28 22:47:51 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void	norminette_handlepipe1(int *pipes, int *status)
 	*status = 1;
 	perror(NULL);
 }
+
 static void	norminette_handlepipe2(int *pipes, int *exit_code, int pid1,
 		int pid2)
 {
@@ -29,6 +30,7 @@ static void	norminette_handlepipe2(int *pipes, int *exit_code, int pid1,
 	waitpid(pid2, exit_code, 0);
 	handle_main_sigs();
 }
+
 static void	norminette_handlepipe3(int exit_code, int *status)
 {
 	if (WIFEXITED(exit_code))
@@ -67,7 +69,6 @@ void	handle_pipe(t_ast_tree *astree, int *pipes, int *status,
 
 	if (pipe(pipes) == -1)
 		return (*status = 1, perror(NULL));
-	;
 	pid1 = fork();
 	if (pid1 == -1)
 	{

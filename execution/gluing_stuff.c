@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gluing_stuff.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/28 22:16:24 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/28 22:16:57 by jhamdaou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static void	norm_join_args(int *i, int *j, char ***args2, int count)
@@ -70,9 +82,10 @@ static char	*join_files_without_spaces(t_redirect *redir)
 	}
 	return (args2);
 }
+
 void	join_all_redir_files_without_spaces(t_ast_tree *astree)
 {
-	t_redirect *tmp;
+	t_redirect	*tmp;
 
 	tmp = astree->redirect;
 	while (tmp)
