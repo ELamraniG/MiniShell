@@ -6,12 +6,11 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:26:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:26:21 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/28 21:32:31 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 int	wach_valid_tokens(t_lex_list *current, int *status)
 {

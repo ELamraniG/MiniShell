@@ -6,12 +6,11 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:26:21 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:26:22 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/28 21:32:21 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 int	is_redirection(t_type_arg type)
 {
@@ -68,7 +67,7 @@ void	print_syntax(t_lex_list *token, int *status)
 
 int	is_redir_good(t_lex_list *token, int *status)
 {
-		t_lex_list *error_token;
+	t_lex_list	*error_token;
 
 	if (!token->next || token->next->a_type != WORD)
 	{

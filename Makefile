@@ -12,10 +12,13 @@ SRC =	str_utils/ft_split.c \
 		str_utils/string_utils.c \
 		str_utils/ft_strjoin.c \
 		str_utils/ft_itoa.c \
-		parsing/c.c \
+		parsing/lexer.c \
+		parsing/lexer_continue_1.c \
+		parsing/lexer_continue_2.c \
 		parsing/free.c \
 		parsing/list_utils.c \
 		parsing/tree_parsing.c \
+		parsing/handle_redirs_continue.c \
 		parsing/handle_redirs.c \
 		parsing/quotes.c \
 		parsing/handle_syntax_continue_1.c \
