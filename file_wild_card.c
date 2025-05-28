@@ -257,14 +257,14 @@ void	handle_file_cards(t_redirect *redir)
 	redir->q_types = wild.q_type;
 }
 
-static int	check_abg(t_redirect *redir)
+static int	check_abg(t_redirect *redir,int old)
 {
 	int i;
 
 	i = 0;
 	while(i < redir->file_str_count)
 		i++;
-	if (redir->file_str_count > 1)
+	if (redir->file_str_count > old)
 	{
 		ft_putstr_fd(2,"minishell: ");
 		ft_putstr_fd(2,redir->file_name[0]);
@@ -277,12 +277,14 @@ static int	check_abg(t_redirect *redir)
 int handle_file_wildcard(t_ast_tree *node)
 {
 	t_redirect *redir = node->redirect;
+	int old;
 	while (redir)
 	{
 		if(redir->type != HEREDOC)
 		{
+			old = redir->file_str_count;
 			handle_file_cards(redir);
-			if (check_abg(redir) == -1)
+			if (check_abg(redir,old) == -1)
 				return -1;
 		}
 		redir = redir->next;

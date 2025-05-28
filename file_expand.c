@@ -131,7 +131,7 @@ static void	file_expand_norm7(t_file_expd *fxpd, t_expd2 *expd2)
 	expd2->prev_pos = expd2->i;
 }
 
-static void	file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
+static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
 {
 	expd2->tmp2 = get_keyy(redir->file_name[fxpd->k], env, expd2, status);
 	if (redir->file_name[fxpd->k][expd2->i])
@@ -140,11 +140,13 @@ static void	file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *red
 	{
 		expd2->tmp3 = ft_itoa(status);
 		expd2->flag = 0;
+		return 1;
 	}
 	else if (!ft_strcmp(expd2->tmp2, "$"))
 	{
 		expd2->tmp3 = ft_strdup("$");
 		expd2->flag = 0;
+		return 1;
 	}
 	else
 	{
@@ -152,17 +154,19 @@ static void	file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *red
 		if (!expd2->t)
 		{
 			file_expand_norm7(fxpd, expd2);
-			return;
+			return 0;
 		}
 		else
 			expd2->tmp3 = ft_strdup(expd2->t->value);
 	}
 	free(expd2->tmp2);
+	return 0;
 }
 
 static void	file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2)
 {
 	expd2->dble = ft_split_for_expand(expd2->tmp3, ' ');
+	expd2->j = 0;
 	free(expd2->tmp3);
 	while (expd2->dble[expd2->j])
 	{
@@ -191,13 +195,21 @@ static void	file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2)
 static void	file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
 {
 	expd2->flag = 1;
+	int kk;
 	file_expand_norm3(fxpd, expd2, redir);
 	expd2->prev_pos = expd2->i;
-	file_expand_norm4(fxpd, expd2, redir, env, status);
-	if (expd2->t && expd2->t->value)
+	kk = file_expand_norm4(fxpd, expd2, redir, env, status);
+	if (kk == 0)
 	{
-		expd2->j = 0;
-		file_expand_norm5(fxpd, expd2);
+		if (expd2->t && expd2->t->value)
+			file_expand_norm5(fxpd, expd2);
+
+	}
+	else
+	{
+		ft_realloc_file(fxpd, expd2->tmp3);
+		fxpd->is_space[fxpd->size - 1] = 0;
+		fxpd->q_types[fxpd->size - 1] = redir->is_space[fxpd->k];
 	}
 	expd2->prev_pos = expd2->i;
 }
@@ -220,6 +232,7 @@ static void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env,
 	t_expd2 expd2;
 
 	expd2.i = 0;
+	expd2.t = NULL;
 	if (redir->q_types[fxpd->k] == SQ)
 	{
 		file_expandnorm1(fxpd, redir);
@@ -254,32 +267,28 @@ static char *join_all_names(char **file_name, int count)
 	return tmp;
 }
 
-static void	check_abg(t_redirect *redir, t_file_expd *fxpd, int *abg)
+static void	check_abg(t_redirect *redir, t_file_expd *fxpd, int *abg,int old)
 {
 	int i;
+	int count_empty = 0;
 
 	i = 0;
-	*abg = -1;
+	*abg = 0;
+	if (old == redir->file_str_count)
+		*abg = 0;
+	i = 0;
 	while (i < redir->file_str_count)
 	{
-		if (redir->q_types[i] != NQ)
-			*abg = 0;
+		if (redir->file_name[i][0] == 0)
+			count_empty++;
 		i++;
 	}
-	i = 0;
-	while (i < fxpd->size)
-	{
-		if (fxpd->file_name[i][0] != 0)
-			*abg = 0;
-		i++;
-	}
+	if (count_empty == redir->file_str_count)
+		*abg = -1;
 }
 
-static void	cleanup_and_assign_file_data(t_redirect *redir, t_file_expd *fxpd)
+static void	file(t_redirect *redir, t_file_expd *fxpd)
 {
-	while (fxpd->k < redir->file_str_count)
-		free(redir->file_name[fxpd->k++]);
-	free(redir->file_name);
 	redir->file_name = fxpd->file_name;
 	redir->file_str_count = fxpd->size;
 	free(redir->is_space);
@@ -292,8 +301,9 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 		int status)
 {
 	t_file_expd fxpd;
-	int		abg;
-
+	int old;
+	int abg = 0;
+	char **old_fl = redir->file_name;
 	fxpd.k = 0;
 	fxpd.file_name = NULL;
 	fxpd.size = 0;
@@ -301,12 +311,22 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 	fxpd.q_types = NULL;
 	while (fxpd.k < redir->file_str_count)
 	{
+		old = redir->file_str_count;
 		expanded_for_single_file(&fxpd, env, status, redir);
 		fxpd.k++;
 	}
 	fxpd.k = 0;
-	check_abg(redir, &fxpd, &abg);
-	cleanup_and_assign_file_data(redir, &fxpd);
+	file(redir, &fxpd);
+	check_abg(redir, &fxpd, &abg,old);
+	if (abg != 0)
+	{
+		ft_putstr_fd(2,"minishell: ");
+		ft_putstr_fd(2,old_fl[0]);
+		ft_putstr_fd(2,": ambiguous redirect\n");
+	}
+	while (fxpd.k < old)
+		free(old_fl[fxpd.k++]);
+	free(old_fl);
 	return abg;
 }
 
@@ -320,6 +340,7 @@ int	expand_file_name(t_ast_tree *node, t_env_list *env, int status)
 		{
 			abg = I_HATE_EXPANDING_FILE(redir, env, status);
 			if (abg != 0)
+			
 				return -1;
 		}
 		redir = redir->next;
