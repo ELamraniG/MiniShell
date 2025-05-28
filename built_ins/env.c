@@ -76,10 +76,21 @@ void	process_env_loop(char **env, t_env_list **env_list)
 
 void	set_up_env(char **env, t_env_list **env_list)
 {
-	if (!env || !*env || !env_list)
+	char	*cwd;
+
+	if (!env_list)
 		return ;
 	*env_list = NULL;
-	process_env_loop(env, env_list);
+	if (!env || !env[0])
+	{
+		cwd = getcwd(NULL, 0);
+		insert_node(env_list, ft_strdup("PWD"), cwd, 1);
+		insert_node(env_list, ft_strdup("SHLVL"), ft_strdup("1"), 1);
+		insert_node(env_list, ft_strdup("_"), ft_strdup("/usr/bin/env"), 1);
+		insert_node(env_list, ft_strdup("PATH"), ft_strdup("/usr/local/bin:/usr/bin:/bin"), 1);
+	}
+	else
+		process_env_loop(env, env_list);
 }
 
 int	print_env(t_env_list *env_list)

@@ -1,15 +1,12 @@
 next
 // handle ton of pipes
-//add the default vars into env when env -i
+//check the default vars into env when env -i
 //at the end add wall extra and remove sanitizer
-check abg file name later??
-2237 580
 
 
+❌ 35   
+✅ 145  
 
-
-137 43
-check the if later
 
 
  ❌ 432   
