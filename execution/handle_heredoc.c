@@ -42,14 +42,6 @@ static char	*join_all_file_names(t_redirect *redir,int *flag)
 	return (s);
 }
 
-static void	heredoc_norm1919(int pipe_fd, char *s, char *tmp)
-{
-	ft_putstr_fd(pipe_fd, s);
-	ft_putstr_fd(pipe_fd, "\n");
-	free(s);
-	free(tmp);
-}
-
 static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 {
 	char	*tmp;
@@ -61,6 +53,7 @@ static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 	close(pipe_fd[0]);
 	redir->final_file_name = join_all_file_names(redir, &exp_flag);
 	lim = redir->final_file_name;
+	
 	while (1337)
 	{
 		tmp = readline("> ");
@@ -73,7 +66,9 @@ static void	do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env)
 			s = expand_heredoc_line(tmp, env, sigarette);
 		else
 			s = tmp;
-		heredoc_norm1919(pipe_fd[1], s, tmp);
+		ft_putstr_fd(pipe_fd[1], s);
+		ft_putstr_fd(pipe_fd[1], "\n");
+		free(s);
 	}
 	close(pipe_fd[1]);
 	exit(0);

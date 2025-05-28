@@ -7,8 +7,8 @@ typedef struct s_relc
 	char	**new_args;
 	int		*tmpint_free;
 	char	**tmp_free;
-	int 	*new_q_type;
-}t_relc;
+	int		*new_q_type;
+}			t_relc;
 
 static void	free_relc(t_relc *relc)
 {
@@ -39,10 +39,10 @@ void	ft_realloc(t_expd_norm *expd, char *s)
 	expd->args = relc.new_args;
 	relc.tmpint_free = expd->is_space;
 	expd->is_space = relc.new_is_space;
-	free(relc.tmpint_free); 
+	free(relc.tmpint_free);
 	relc.tmpint_free = expd->q_type;
 	expd->q_type = relc.new_q_type;
-	return free_relc(&relc);
+	return (free_relc(&relc));
 }
 
 static void	trim_the_args(t_expd_norm *expd)
@@ -55,10 +55,9 @@ static void	trim_the_args(t_expd_norm *expd)
 	return ;
 }
 
-static char	*get_keyy(char *str, t_env_list *env, t_expd2 *expd2,
-		int status)
+static char	*get_keyy(char *str, t_env_list *env, t_expd2 *expd2, int status)
 {
-	int		len;
+	int	len;
 
 	(expd2->i)++;
 	expd2->tmp = NULL;
@@ -72,8 +71,10 @@ static char	*get_keyy(char *str, t_env_list *env, t_expd2 *expd2,
 		return (ft_strdup("$"));
 	while (str[expd2->i])
 	{
-		if (str[expd2->i] == '$' || (!ft_isalnum(str[expd2->i]) && str[expd2->i] != '_'))
-			return (ft_substr(str, expd2->prev_pos + 1, expd2->i - expd2->prev_pos - 1));
+		if (str[expd2->i] == '$' || (!ft_isalnum(str[expd2->i])
+				&& str[expd2->i] != '_'))
+			return (ft_substr(str, expd2->prev_pos + 1, expd2->i
+					- expd2->prev_pos - 1));
 		len++;
 		(expd2->i)++;
 	}
@@ -110,7 +111,6 @@ static int	has_space_at_the_beginning(char *s)
 	return (0);
 }
 
-
 static void	expandnorm1(t_expd_norm *expd, t_ast_tree *astree)
 {
 	ft_realloc(expd, ft_strdup(astree->args[expd->k]));
@@ -120,7 +120,8 @@ static void	expandnorm1(t_expd_norm *expd, t_ast_tree *astree)
 
 static void	expand_norm3(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree)
 {
-	expd2->tmp = ft_substr(astree->args[expd->k], expd2->prev_pos, expd2->i - expd2->prev_pos);
+	expd2->tmp = ft_substr(astree->args[expd->k], expd2->prev_pos, expd2->i
+			- expd2->prev_pos);
 	if (expd2->tmp[0] != 0)
 	{
 		ft_realloc(expd, expd2->tmp);
@@ -141,7 +142,8 @@ static void	expand_norm7(t_expd_norm *expd, t_expd2 *expd2)
 	expd2->prev_pos = expd2->i;
 }
 
-static void	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree, t_env_list *env, int status)
+static int	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
+		t_env_list *env, int status)
 {
 	expd2->tmp2 = get_keyy(astree->args[expd->k], env, expd2, status);
 	if (astree->args[expd->k][expd2->i])
@@ -150,11 +152,13 @@ static void	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree, 
 	{
 		expd2->tmp3 = ft_itoa(status);
 		expd2->flag = 0;
+		return (1);
 	}
 	else if (!ft_strcmp(expd2->tmp2, "$"))
 	{
 		expd2->tmp3 = ft_strdup("$");
 		expd2->flag = 0;
+		return (1);
 	}
 	else
 	{
@@ -162,12 +166,13 @@ static void	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree, 
 		if (!expd2->t)
 		{
 			expand_norm7(expd, expd2);
-			return;
+			return (0);
 		}
 		else
 			expd2->tmp3 = ft_strdup(expd2->t->value);
 	}
 	free(expd2->tmp2);
+	return (0);
 }
 
 static void	expand_norm5(t_expd_norm *expd, t_expd2 *expd2)
@@ -198,16 +203,28 @@ static void	expand_norm5(t_expd_norm *expd, t_expd2 *expd2)
 	free(expd2->dble);
 }
 
-static void	expand_norm2(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree, t_env_list *env, int status)
+static void	expand_norm2(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
+		t_env_list *env, int status)
 {
+	int	kk;
+
 	expd2->flag = 1;
 	expand_norm3(expd, expd2, astree);
 	expd2->prev_pos = expd2->i;
-	expand_norm4(expd, expd2, astree, env, status);
-	if (expd2->t && expd2->t->value)
+	kk = expand_norm4(expd, expd2, astree, env, status);
+	if (kk == 0)
 	{
-		expd2->j = 0;
-		expand_norm5(expd, expd2);
+		if (expd2->t && expd2->t->value)
+		{
+			expd2->j = 0;
+			expand_norm5(expd, expd2);
+		}
+	}
+	else
+	{
+		ft_realloc(expd, expd2->tmp3);
+		expd->is_space[expd->size - 1] = 0;
+		expd->q_type[expd->size - 1] = astree->is_space[expd->k];
 	}
 	expd2->prev_pos = expd2->i;
 }
@@ -216,7 +233,8 @@ static void	expand_norm6(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree)
 {
 	if (expd2->flag == 0)
 	{
-		expd2->tmp = ft_substr(astree->args[expd->k], expd2->prev_pos, ft_strlen(astree->args[expd->k]) - expd2->prev_pos);
+		expd2->tmp = ft_substr(astree->args[expd->k], expd2->prev_pos,
+				ft_strlen(astree->args[expd->k]) - expd2->prev_pos);
 		ft_realloc(expd, expd2->tmp);
 		expd->is_space[expd->size - 1] = astree->is_space[expd->k];
 		expd->q_type[expd->size - 1] = astree->q_type[expd->k];
@@ -227,9 +245,10 @@ static void	expand_norm6(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree)
 static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
 		int status, t_ast_tree *astree)
 {
-	t_expd2 expd2;
+	t_expd2	expd2;
 
 	expd2.i = 0;
+	expd2.t = NULL;
 	if (astree->q_type[expd->k] == SQ)
 	{
 		expandnorm1(expd, astree);
@@ -249,11 +268,9 @@ static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
 	expand_norm6(expd, &expd2, astree);
 }
 
-
-
 void	I_HATE_EXPANDING(t_ast_tree *astree, t_env_list *env, int status)
 {
-	t_expd_norm expd;
+	t_expd_norm	expd;
 
 	expd.k = 0;
 	expd.args = NULL;
@@ -263,7 +280,7 @@ void	I_HATE_EXPANDING(t_ast_tree *astree, t_env_list *env, int status)
 	expd.q_type = NULL;
 	while (astree->args[expd.k])
 	{
-		expanded_for_single_word(&expd,env, status,astree);
+		expanded_for_single_word(&expd, env, status, astree);
 		expd.k++;
 	}
 	expd.k = 0;
