@@ -64,18 +64,20 @@ int	handle_path(char **args, t_env_list *env)
 	splited_path = ft_split(path, ':');
 	while (splited_path[i])
 	{
-		if (norm_path2(splited_path, args, i) == 1)
+		if (norm_path2(splited_path, args, i++) == 1)
 			return (1);
-		i++;
 	}
 	i = 0;
 	while (splited_path[i])
 		free(splited_path[i++]);
-	free(splited_path);
-	return (-1);
+	return (free(splited_path), -1);
 }
 
-
+void normeee(t_env_list **t,char *tmp)
+{
+	free(tmp);
+	*t = (*t)->next;
+}
 
 char	**turn_env_to_chars(t_env_list *env)
 {
@@ -100,23 +102,22 @@ char	**turn_env_to_chars(t_env_list *env)
 		s[i] = ft_strjoin(tmp->key, "=");
 		tmp_free = s[i];
 		s[i] = ft_strjoin(s[i], tmp->value);
-		free(tmp_free);
 		i++;
-		tmp = tmp->next;
+		normeee(&tmp,tmp_free);
 	}
-	s[i] = NULL;
-	i = 0;
-	return (s);
+	return (s[i] = NULL, s);
 }
 
-static void	handle_andd(t_ast_tree *astree, int *status, t_env_list **env, int in_pipe)
+static void	handle_andd(t_ast_tree *astree, int *status, t_env_list **env,
+		int in_pipe)
 {
 	excute_the_damn_tree(astree->left, status, env, in_pipe);
 	if (*status == 0)
 		excute_the_damn_tree(astree->right, status, env, in_pipe);
 }
 
-static void	handle_orr(t_ast_tree *astree, int *status, t_env_list **env, int in_pipe)
+static void	handle_orr(t_ast_tree *astree, int *status, t_env_list **env,
+		int in_pipe)
 {
 	excute_the_damn_tree(astree->left, status, env, in_pipe);
 	if (*status != 0)
@@ -153,15 +154,14 @@ static void	handle_empty_command_with_redir(t_ast_tree *astree, int *status,
 	dup3(stdoutt, STDOUT_FILENO);
 }
 
-
-
-void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env, int in_pipe)
+void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env,
+		int in_pipe)
 {
-	int			pipes[2];
-	int			exit_code;
-	char		*tmp;
-	int			stdinn;
-	int			stdoutt;
+	int		pipes[2];
+	int		exit_code;
+	char	*tmp;
+	int		stdinn;
+	int		stdoutt;
 
 	if (!astree)
 		return ;

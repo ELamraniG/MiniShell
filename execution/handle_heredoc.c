@@ -27,8 +27,8 @@ static char	*join_all_file_names(t_redirect *redir, int *flag)
 	char	*s;
 	char	*tmp_free;
 	int		i;
-	*flag = 0;
 
+	*flag = 0;
 	s = ft_strdup(redir->file_name[0]);
 	i = 1;
 	while (i < redir->file_str_count)
@@ -122,7 +122,7 @@ static int	create_the_dawg(t_redirect *redir, t_env_list *env)
 
 int	handle_heredoc(t_ast_tree *node, int n, t_env_list *env)
 {
-	t_redirect *redir;
+	t_redirect	*redir;
 
 	if (!node)
 		return (0);
