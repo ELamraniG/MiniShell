@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:41 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 17:47:27 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:00:00 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	exit_shell(char **args, int status)
 			ft_putstr_fd(2, "bash: exit: ");
 			ft_putstr_fd(2, args[1]);
 			ft_putstr_fd(2, ": numeric argument required\n");
-			return (255);
+			exit(255);
 		}
 		if (args[2])
 		{
