@@ -109,21 +109,22 @@ char	**turn_env_to_chars(t_env_list *env)
 	return (s);
 }
 
-static void	handle_andd(t_ast_tree *astree, int *status, t_env_list **env)
+static void	handle_andd(t_ast_tree *astree, int *status, t_env_list **env, int in_pipe)
 {
-	excute_the_damn_tree(astree->left, status, env);
+	excute_the_damn_tree(astree->left, status, env, in_pipe);
 	if (*status == 0)
-		excute_the_damn_tree(astree->right, status, env);
+		excute_the_damn_tree(astree->right, status, env, in_pipe);
 }
-static void	handle_orr(t_ast_tree *astree, int *status, t_env_list **env)
+
+static void	handle_orr(t_ast_tree *astree, int *status, t_env_list **env, int in_pipe)
 {
-	excute_the_damn_tree(astree->left, status, env);
+	excute_the_damn_tree(astree->left, status, env, in_pipe);
 	if (*status != 0)
-		excute_the_damn_tree(astree->right, status, env);
+		excute_the_damn_tree(astree->right, status, env, in_pipe);
 }
 
 static void	handle_empty_command_with_redir(t_ast_tree *astree, int *status,
-		t_env_list **env)
+		t_env_list **env, int in_pipe)
 {
 	int	stdinn;
 	int	stdoutt;
@@ -143,9 +144,9 @@ static void	handle_empty_command_with_redir(t_ast_tree *astree, int *status,
 		return (dup3(stdoutt, STDOUT_FILENO));
 	}
 	if (astree->left)
-		excute_the_damn_tree(astree->left, status, env);
+		excute_the_damn_tree(astree->left, status, env, in_pipe);
 	else if (astree->right)
-		excute_the_damn_tree(astree->right, status, env);
+		excute_the_damn_tree(astree->right, status, env, in_pipe);
 	else
 		*status = 0;
 	dup3(stdinn, STDIN_FILENO);
@@ -154,7 +155,7 @@ static void	handle_empty_command_with_redir(t_ast_tree *astree, int *status,
 
 
 
-void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
+void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env, int in_pipe)
 {
 	int			pipes[2];
 	int			exit_code;
@@ -167,12 +168,16 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env)
 	if (astree->type == PIPE)
 		handle_pipe(astree, pipes, status, env);
 	else if (astree->type == AND)
-		handle_andd(astree, status, env);
+		handle_andd(astree, status, env, in_pipe);
 	else if (astree->type == OR)
-		handle_orr(astree, status, env);
+		handle_orr(astree, status, env, in_pipe);
 	else if (astree->type < 4)
-		handle_empty_command_with_redir(astree, status, env);
+		handle_empty_command_with_redir(astree, status, env, in_pipe);
 	else if (astree->type == WORD)
-		norminette_handle_word(astree,env,status);
-
+	{
+		if (in_pipe)
+			norminette_handle_word2(astree, env, status);
+		else
+			norminette_handle_word1(astree, env, status);
+	}
 }

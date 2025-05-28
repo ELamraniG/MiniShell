@@ -52,7 +52,7 @@ static int	norm_handlepipe4(t_ast_tree *astree, int *pipes, int *status,
 	{
 		dup3(pipes[0], STDIN_FILENO);
 		close(pipes[1]);
-		excute_the_damn_tree(astree->right, status, env);
+		excute_the_damn_tree(astree->right, status, env, 1);
 		exit(*status);
 	}
 	return (pid2);
@@ -78,7 +78,7 @@ void	handle_pipe(t_ast_tree *astree, int *pipes, int *status,
 	{
 		dup3(pipes[1], STDOUT_FILENO);
 		close(pipes[0]);
-		excute_the_damn_tree(astree->left, status, env);
+		excute_the_damn_tree(astree->left, status, env, 1);
 		exit(*status);
 	}
 	if ((pid2 = norm_handlepipe4(astree, pipes, status, env)) && pid2 == -1)
