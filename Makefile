@@ -45,7 +45,8 @@ SRC =	str_utils/ft_split.c \
 		execution/built_in_calling.c \
 		execution/gluing_stuff.c \
 		execution/handle_pipes.c \
-		execution/norminette_word.c \
+		execution/norminette_word1.c \
+		execution/norminette_word2.c \
 
 OBJ = $(SRC:.c=.o)
 

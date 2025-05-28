@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   norminette_word.c                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:59:48 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/26 15:59:54 by moel-amr         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
 
 static int	word_norm(t_ast_tree *astree, t_env_list **env, int *status,
@@ -81,7 +69,7 @@ static void	norm_word3(t_stdindo stddd, int *status)
 	perror(NULL);
 }
 
-void	norm_word_166(t_ast_tree *astree, t_env_list **env, char ***env_char)
+static void	norm_word_166(t_ast_tree *astree, t_env_list **env, char ***env_char)
 {
 	struct stat	l;
 	int			p;
@@ -100,7 +88,7 @@ void	norm_word_166(t_ast_tree *astree, t_env_list **env, char ***env_char)
 	*env_char = turn_env_to_chars(*env);
 }
 
-void	failed_exec_v(t_ast_tree *astree, char ***env_char)
+static void	failed_exec_v(t_ast_tree *astree, char ***env_char)
 {
 	int	i;
 
@@ -115,12 +103,10 @@ void	failed_exec_v(t_ast_tree *astree, char ***env_char)
 	exit(127);
 }
 
-void	norminette_handle_word(t_ast_tree *astree, t_env_list **env,
+void	norminette_handle_word2(t_ast_tree *astree, t_env_list **env,
 		int *status)
 {
 	t_stdindo	stddd;
-	int			pid1;
-	int			exit_code;
 	char		**env_char;
 
 	stddd.stdinn = dup(STDIN_FILENO);
@@ -128,16 +114,7 @@ void	norminette_handle_word(t_ast_tree *astree, t_env_list **env,
 	if (word_norm(astree, env, status, stddd) == -1 || word_norm2(astree, stddd,
 			status, env) == -1)
 		return ;
-	pid1 = fork();
-	if (pid1 == -1)
-		return (norm_word3(stddd, status));
-	if (pid1 == 0)
-	{
-		norm_word_166(astree, env, &env_char);
-		execve(astree->args[0], astree->args, env_char);
-		failed_exec_v(astree, &env_char);
-	}
-	ignore_signals();
-	waitpid(pid1, &exit_code, 0);
-	norm_word4(stddd, status, exit_code);
+	norm_word_166(astree, env, &env_char);
+	execve(astree->args[0], astree->args, env_char);
+	failed_exec_v(astree, &env_char);
 }

@@ -223,7 +223,7 @@ void					free_args(t_ast_tree *root);
 void					free_reds(t_redirect *red);
 int						handle_path(char **args, t_env_list *env);
 void					excute_the_damn_tree(t_ast_tree *astree, int *status,
-							t_env_list **env);
+							t_env_list **env, int in_pipe);
 void					dup3(int new, int original);
 char					**turn_env_to_chars(t_env_list *env);
 int						exec_export(t_env_list **env, char **args);
@@ -256,7 +256,9 @@ char					*expand_heredoc_line(char *line, t_env_list *env,
 void					handle_wild_card(t_ast_tree *node);
 void					handle_pipe(t_ast_tree *astree, int *pipes, int *status,
 							t_env_list **env);
-void					norminette_handle_word(t_ast_tree *astree,
+void					norminette_handle_word1(t_ast_tree *astree,
+							t_env_list **env, int *status);
+void					norminette_handle_word2(t_ast_tree *astree,
 							t_env_list **env, int *status);
 char					**join_args_without_spaces(t_ast_tree *astree);
 int						is_built_in(char *cmd);
