@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   norminette_word.c                                  :+:      :+:    :+:   */
+/*   norminette_word1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:59:48 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/26 15:59:54 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/28 22:53:49 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ static void	norm_word3(t_stdindo stddd, int *status)
 	perror(NULL);
 }
 
-static void	norm_word_166(t_ast_tree *astree, t_env_list **env, char ***env_char)
+static void	norm_word_166(t_ast_tree *astree, t_env_list **env,
+							char ***env_char)
 {
 	struct stat	l;
 	int			p;

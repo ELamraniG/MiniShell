@@ -36,6 +36,7 @@ SRC =	str_utils/ft_split.c \
 		built_ins/export.c \
 		built_ins/unset.c \
 		built_ins/exit.c \
+		execution/norminette_exec_tree_continue.c \
 		execution/norminette_exec_tree.c \
 		execution/excuting_redirs_continue.c \
 		execution/excuting_redirs.c \
