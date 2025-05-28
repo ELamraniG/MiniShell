@@ -281,5 +281,26 @@ void	print_msg4(char *s);
 void	free_node(t_env_list *current);
 t_env_list	*find_key_node(t_env_list *current, char *key, t_env_list **prev);
 
+int	is_redirection(t_type_arg type);
+int	is_and_or(t_type_arg type);
+int	check_paren(t_lex_list *token);
+void	print_syntax(t_lex_list *token, int *status);
+int	is_redir_good(t_lex_list *token, int *status);
+int	wach_valid_tokens(t_lex_list *current, int *status);
+
+int	check_empty_parentheses(t_lex_list *token, int *status);
+int	word_paren(t_lex_list *token, int *status);
+
+int	check_operator_before_close_paren(t_lex_list *token, int *status);
+int	check_pipe_after_open_paren(t_lex_list *token, int *status);
+int	check_parenth_problm(t_lex_list *token, int *status);
+int	check_close_paren_word(t_lex_list *token, int *status);
+int	validate_parentheses(t_lex_list *token, int *status);
+int	check_redirs(t_lex_list *token, int *status);
+int	chec_pipe(t_lex_list *current, int *status);
+int	check_and_or(t_lex_list *current, int *status);
+int	check_token(t_lex_list *current, int *status);
+int	check_syntax(t_lex_list *token, int *status);
+
 
 #endif
