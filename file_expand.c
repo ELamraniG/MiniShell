@@ -254,7 +254,7 @@ static char *join_all_names(char **file_name, int count)
 	return tmp;
 }
 
-static void	check_ambiguous_redirect(t_redirect *redir, t_file_expd *fxpd, int *abg)
+static void	check_abg(t_redirect *redir, t_file_expd *fxpd, int *abg)
 {
 	int i;
 
@@ -305,7 +305,7 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 		fxpd.k++;
 	}
 	fxpd.k = 0;
-	check_ambiguous_redirect(redir, &fxpd, &abg);
+	check_abg(redir, &fxpd, &abg);
 	cleanup_and_assign_file_data(redir, &fxpd);
 	return abg;
 }

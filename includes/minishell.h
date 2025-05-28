@@ -12,6 +12,16 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+typedef struct s_wild_relc
+{
+	int		i;
+	int		*new_is_space;
+	char	**new_args;
+	int		*tmpint_free;
+	char	**tmp_free;
+	int 	*new_q_type;
+}t_wild_relc;
+
 typedef struct s_file_relc
 {
 	int		i;
