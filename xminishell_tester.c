@@ -28,7 +28,7 @@ int	main(int ac, char **av, char **env)
 	
 	mainn.here_doc = 0;
 	mainn.status = 0;
-	mainn.i = 0;
+
 	
 	set_up_env(env, &envv);
 
@@ -65,7 +65,6 @@ int	main(int ac, char **av, char **env)
 			mainn.status = g_sigarette;
 			g_sigarette = 0;
 		}
-		mainn.i++;
 		if (!input)
 		{
 			free(input);
