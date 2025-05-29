@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
 void	clean_all_herdocs(t_ast_tree *astree)
 {

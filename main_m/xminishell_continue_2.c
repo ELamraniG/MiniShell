@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
 int	handle_token(t_lex_list **tokens, char **input, int *status)
 {
