@@ -148,11 +148,11 @@ bonus: $(NAME_BONUS)
 
 $(NAME_BONUS): $(OBJ_BONUS) 
 	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIB_RL) -o $(NAME_BONUS)
+%_bonus.o: %_bonus.c includes_bonus/minishell_bonus.h
+	$(CC) $(CFLAGS) $(INCLUDE_RL) -c $< -o $@
 %.o: %.c includes/minishell.h
 	$(CC) $(CFLAGS) $(INCLUDE_RL) -c $< -o $@
 
-%_bonus.o: %_bonus.c #includes_bonus/minishell_bonus.h
-	$(CC) $(CFLAGS) $(INCLUDE_RL) -c $< -o $@
 
 clean:
 	rm -rf $(OBJ)
