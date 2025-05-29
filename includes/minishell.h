@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 21:24:33 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:03:17 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -424,5 +424,22 @@ void					file_expand_norm7(t_file_expd *fxpd, t_expd2 *expd2);
 void					expanded_for_single_file(t_file_expd *fxpd,
 							t_env_list *env, t_redirect *redir);
 void					check_abg_1(t_redirect *redir, int *abg, int old);
+void	free_wild_relc(t_wild_relc *relc);
+int	hndl_str_mth2(const char *pat, t_exit_norm *sm);
+int	wach_exists2(const char *pat, const char *str);
+void	ft_realloc_wild(t_wild_norm *wild, char *s);
+int	it_has_etoil2(char *str);
+
+void sort_all_dirs_wild(char ***all_dirs, int count);
+void	handle_single_wild_card2(t_wild_norm *wild, char *current_arg,
+		int old_is_space, int old_q_type);
+void	handle_wild_card(t_ast_tree *node);
+void	wild_card_norm1(t_wild_norm *wild, char *current_arg, int old_q_type, int point_flag);
+int		wild_card_norm2(char *current_arg);
+char	**wild_card_norm3(char *current_arg, int reads_counter);
+void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int point_flag);
+void	wild_card_norm5(t_wild_norm *wild, char *current_arg, int old_is_space, int old_q_type);
+
+
 
 #endif
