@@ -138,8 +138,11 @@ SRC_BONUS =	str_utils_bonus/ft_split_bonus.c \
 
 
 OBJ = $(SRC:.c=.o)
+
 OBJ_BONUS = $(SRC_BONUS:.c=.o)
+
 all: $(NAME)
+
 $(NAME): $(OBJ) 
 	$(CC) $(CFLAGS) $(OBJ) $(LIB_RL) -o $(NAME)
 
