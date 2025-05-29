@@ -36,8 +36,14 @@ void	is_tty(char **input)
 		*input = readline("minishell$ ");
 }
 
+void	is_tt2(t_env_list **env)
+{
+	rl_clear_history();
+	free_env_list(*env);
+}
+
 void	exec_tree_cleandoc_free_tree_frinput(t_ast_tree **astree, int *status,
-		t_env_list **envv,char **input)
+		t_env_list **envv, char **input)
 {
 	excute_the_damn_tree(*astree, status, envv, 0);
 	clean_all_herdocs(*astree);
@@ -95,17 +101,11 @@ int	main(int ac, char **av, char **env)
 			free_tree(astree);
 			continue ;
 		}
-		exec_tree_cleandoc_free_tree_frinput(&astree, &mainn.status,&envv,&input);
-		// excute_the_damn_tree(astree, &mainn.status, &envv, 0);
-		// clean_all_herdocs(astree);
-		// free_tree(astree);
-		// free(input);
-		if (!isatty(STDIN_FILENO))
-		{
-			rl_clear_history();
-			free_env_list(envv);
-			return (mainn.status);
-		}
+		exec_tree_cleandoc_free_tree_frinput(&astree, &mainn.status, &envv,
+			&input);
+		if (!isatty(STDIN_FILENO))	
+			return (is_tt2(&env),mainn.status);
+
 	}
 	rl_clear_history();
 	free_env_list(envv);

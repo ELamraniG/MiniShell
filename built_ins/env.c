@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:29 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:30:14 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:45:53 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,7 @@ void	process_env_loop(char **env, t_env_list **env_list)
 void	set_up_env(char **env, t_env_list **env_list)
 {
 	char	*cwd;
-	char	*path;
 
-	path = ft_strdup("/usr/local/bin:/usr/bin:/bin");
 	if (!env_list)
 		return ;
 	*env_list = NULL;
@@ -89,7 +87,7 @@ void	set_up_env(char **env, t_env_list **env_list)
 		insert_node(env_list, ft_strdup("PWD"), cwd, 1);
 		insert_node(env_list, ft_strdup("SHLVL"), ft_strdup("1"), 1);
 		insert_node(env_list, ft_strdup("_"), ft_strdup("/usr/bin/env"), 1);
-		insert_node(env_list, ft_strdup("PATH"), ft_strdup(path), 1);
+		insert_node(env_list, ft_strdup("PATH"), ft_strdup("/usr/local/bin:/usr/bin:/bin"), 1);
 	}
 	else
 		process_env_loop(env, env_list);
