@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_wild_cards_continue.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:47:11 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 21:47:12 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:15:33 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ char	**wild_card_norm3(char *current_arg, int reads_counter)
 	return (all_dirs);
 }
 
-void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int point_flag)
+void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter,
+		int point_flag)
 {
 	int	i;
 
@@ -62,7 +63,7 @@ void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int 
 		if (point_flag == 0 && all_dirs[i][0] == '.')
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		ft_realloc_wild(wild, all_dirs[i]);
 		wild->is_space[wild->size - 1] = 1;
@@ -71,14 +72,16 @@ void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int 
 	}
 }
 
-void	wild_card_norm5(t_wild_norm *wild, char *current_arg, int old_is_space, int old_q_type)
+void	wild_card_norm5(t_wild_norm *wild, char *current_arg, int old_is_space,
+		int old_q_type)
 {
 	ft_realloc_wild(wild, current_arg);
 	wild->is_space[wild->size - 1] = old_is_space;
 	wild->q_type[wild->size - 1] = old_q_type;
 }
 
-void	wild_card_norm1(t_wild_norm *wild, char *current_arg, int old_q_type, int point_flag)
+void	wild_card_norm1(t_wild_norm *wild, char *current_arg, int old_q_type,
+		int point_flag)
 {
 	char	**all_dirs;
 	int		reads_counter;

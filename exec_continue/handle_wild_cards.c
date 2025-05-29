@@ -3,33 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   handle_wild_cards.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:37:16 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 21:52:32 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:15:19 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-
-void sort_all_dirs_wild(char ***all_dirs, int count)
+void	sort_all_dirs_wild(char ***all_dirs, int count)
 {
-	int i = 0;
-	int j = 0;
-	char *tmp;
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = 0;
+	j = 0;
 	if (count == 1)
-		return;
+		return ;
 	while (i < count)
 	{
 		j = i + 1;
 		while (j < count)
 		{
-			if (ft_strcmp(all_dirs[0][i],all_dirs[0][j]) > 0)
+			if (ft_strcmp(all_dirs[0][i], all_dirs[0][j]) > 0)
 			{
-					tmp = all_dirs[0][i];
-					all_dirs[0][i] = all_dirs[0][j];
-					all_dirs[0][j] = tmp;
+				tmp = all_dirs[0][i];
+				all_dirs[0][i] = all_dirs[0][j];
+				all_dirs[0][j] = tmp;
 			}
 			j++;
 		}
@@ -40,8 +42,9 @@ void sort_all_dirs_wild(char ***all_dirs, int count)
 void	handle_single_wild_card2(t_wild_norm *wild, char *current_arg,
 		int old_is_space, int old_q_type)
 {
-	int point_flag = 0;
+	int	point_flag;
 
+	point_flag = 0;
 	if (current_arg[0] == '.')
 		point_flag = 1;
 	if (it_has_etoil2(current_arg) && old_q_type == NQ)
@@ -52,7 +55,7 @@ void	handle_single_wild_card2(t_wild_norm *wild, char *current_arg,
 
 void	handle_wild_card(t_ast_tree *node)
 {
-	t_wild_norm wild;
+	t_wild_norm	wild;
 
 	wild.k = 0;
 	wild.args = NULL;
@@ -61,7 +64,8 @@ void	handle_wild_card(t_ast_tree *node)
 	wild.q_type = NULL;
 	while (node->args[wild.k])
 	{
-		handle_single_wild_card2(&wild, node->args[wild.k], node->is_space[wild.k], node->q_type[wild.k]);
+		handle_single_wild_card2(&wild, node->args[wild.k],
+			node->is_space[wild.k], node->q_type[wild.k]);
 		wild.k++;
 	}
 	wild.k = 0;
