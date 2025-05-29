@@ -24,7 +24,6 @@ void	init_norm(t_norm_m *mainn, int ac, char **av, t_ast_tree **astree)
 	av = NULL;
 	mainn->here_doc = 0;
 	mainn->status = 0;
-	mainn->i = 0;
 	*astree = NULL;
 	handle_main_sigs();
 }
@@ -35,6 +34,15 @@ void	is_tty(char **input)
 		*input = readline("");
 	else
 		*input = readline("minishell$ ");
+}
+
+void	exec_tree_cleandoc_free_tree_frinput(t_ast_tree **astree, int *status,
+		t_env_list **envv,char **input)
+{
+	excute_the_damn_tree(*astree, status, envv, 0);
+	clean_all_herdocs(*astree);
+	free_tree(*astree);
+	free(*input);
 }
 
 int	main(int ac, char **av, char **env)
@@ -56,12 +64,8 @@ int	main(int ac, char **av, char **env)
 			mainn.status = g_sigarette;
 			g_sigarette = 0;
 		}
-		mainn.i++;
 		if (!input)
-		{
-			free(input);
 			break ;
-		}
 		if (input[0])
 			add_history(input);
 		tokens = lexing_the_thing(input, &mainn.status);
@@ -91,10 +95,11 @@ int	main(int ac, char **av, char **env)
 			free_tree(astree);
 			continue ;
 		}
-		excute_the_damn_tree(astree, &mainn.status, &envv, 0);
-		clean_all_herdocs(astree);
-		free_tree(astree);
-		free(input);
+		exec_tree_cleandoc_free_tree_frinput(&astree, &mainn.status,&envv,&input);
+		// excute_the_damn_tree(astree, &mainn.status, &envv, 0);
+		// clean_all_herdocs(astree);
+		// free_tree(astree);
+		// free(input);
 		if (!isatty(STDIN_FILENO))
 		{
 			rl_clear_history();
