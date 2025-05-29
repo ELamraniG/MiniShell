@@ -1,11 +1,14 @@
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
-
-static void	free_wild_relc(t_wild_relc *relc)
+typedef struct s_file_wild_relc
 {
-	free(relc->tmpint_free);
-	free(relc->tmp_free);
-}
+	int		i;
+	int		*new_is_space;
+	char	**new_args;
+	int		*tmpint_free;
+	char	**tmp_free;
+	int		*new_q_types;
+}t_file_wild_relc;
 
 static int	wach_exists(const char *pat, const char *str)
 {
@@ -20,43 +23,58 @@ static int	wach_exists(const char *pat, const char *str)
 	star = -1, match = -1;
 	while (s < sLen)
 	{
+		// Match character
 		if (p < pLen && pat[p] == str[s])
 		{
 			s++;
 			p++;
 		}
+		// Match '*'
 		else if (p < pLen && pat[p] == '*')
 		{
 			star = p;
 			match = s;
 			p++;
 		}
+		// Backtrack if previous '*' exists
 		else if (star != -1)
 		{
 			p = star + 1;
 			match++;
 			s = match;
 		}
+		// No match
 		else
+		{
 			return (0);
+		}
 	}
+	// Check for remaining characters in pattern
 	while (p < pLen && pat[p] == '*')
+	{
 		p++;
+	}
 	return (p == pLen);
+}
+
+static void	free_file_wild_relc(t_file_wild_relc *relc)
+{
+	free(relc->tmpint_free);
+	free(relc->tmp_free);
 }
 
 static void	ft_realloc(t_wild_norm *wild, char *s)
 {
-	t_wild_relc	relc;
+	t_file_wild_relc	relc;
 
 	relc.i = 0;
 	relc.new_is_space = malloc(sizeof(int) * (wild->size + 1));
-	relc.new_q_type = malloc(sizeof(int) * (wild->size + 1));
+	relc.new_q_types = malloc(sizeof(int) * (wild->size + 1));
 	relc.new_args = malloc(sizeof(char *) * (wild->size + 2));
 	relc.new_args[wild->size] = 0;
 	while (relc.i < wild->size)
 	{
-		relc.new_q_type[relc.i] = wild->q_type[relc.i];
+		relc.new_q_types[relc.i] = wild->q_type[relc.i];
 		relc.new_is_space[relc.i] = wild->is_space[relc.i];
 		relc.new_args[relc.i] = wild->args[relc.i];
 		relc.i++;
@@ -70,11 +88,11 @@ static void	ft_realloc(t_wild_norm *wild, char *s)
 	wild->is_space = relc.new_is_space;
 	free(relc.tmpint_free);
 	relc.tmpint_free = wild->q_type;
-	wild->q_type = relc.new_q_type;
-	return free_wild_relc(&relc);
+	wild->q_type = relc.new_q_types;
+	return free_file_wild_relc(&relc);
 }
 
-int	it_has_etoil(char *str)
+static int	it_has_etoil(char *str)
 {
 	int	i;
 
@@ -112,7 +130,7 @@ static void sort_all_dirs(char ***all_dirs, int count)
 	}
 }
 
-static int	wild_card_norm2(char *current_arg)
+static int	file_wild_norm2(char *current_arg)
 {
 	DIR				*r;
 	struct dirent	*reads;
@@ -131,7 +149,7 @@ static int	wild_card_norm2(char *current_arg)
 	return (reads_counter);
 }
 
-static char	**wild_card_norm3(char *current_arg, int reads_counter)
+static char	**file_wild_norm3(char *current_arg, int reads_counter)
 {
 	DIR				*r;
 	struct dirent	*reads;
@@ -152,7 +170,7 @@ static char	**wild_card_norm3(char *current_arg, int reads_counter)
 	return (all_dirs);
 }
 
-static void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int point_flag)
+static void	file_wild_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int point_flag)
 {
 	int	i;
 
@@ -171,19 +189,19 @@ static void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counte
 	}
 }
 
-static void	wild_card_norm5(t_wild_norm *wild, char *current_arg, int old_is_space, int old_q_type)
+static void	file_wild_norm5(t_wild_norm *wild, char *current_arg, int old_is_space, int old_q_type)
 {
 	ft_realloc(wild, current_arg);
 	wild->is_space[wild->size - 1] = old_is_space;
 	wild->q_type[wild->size - 1] = old_q_type;
 }
 
-static void	wild_card_norm1(t_wild_norm *wild, char *current_arg, int old_q_type, int point_flag)
+static void	file_wild_norm1(t_wild_norm *wild, char *current_arg, int old_q_type, int point_flag)
 {
 	char	**all_dirs;
 	int		reads_counter;
 
-	reads_counter = wild_card_norm2(current_arg);
+	reads_counter = file_wild_norm2(current_arg);
 	if (reads_counter == 0)
 	{
 		ft_realloc(wild, current_arg);
@@ -192,9 +210,9 @@ static void	wild_card_norm1(t_wild_norm *wild, char *current_arg, int old_q_type
 	}
 	else
 	{
-		all_dirs = wild_card_norm3(current_arg, reads_counter);
+		all_dirs = file_wild_norm3(current_arg, reads_counter);
 		sort_all_dirs(&all_dirs, reads_counter);
-		wild_card_norm4(wild, all_dirs, reads_counter, point_flag);
+		file_wild_norm4(wild, all_dirs, reads_counter, point_flag);
 		free(all_dirs);
 	}
 }
@@ -207,12 +225,12 @@ static void	handle_single_wild_card(t_wild_norm *wild, char *current_arg,
 	if (current_arg[0] == '.')
 		point_flag = 1;
 	if (it_has_etoil(current_arg) && old_q_type == NQ)
-		wild_card_norm1(wild, current_arg, old_q_type, point_flag);
+		file_wild_norm1(wild, current_arg, old_q_type, point_flag);
 	else
-		wild_card_norm5(wild, current_arg, old_is_space, old_q_type);
+		file_wild_norm5(wild, current_arg, old_is_space, old_q_type);
 }
 
-void	handle_wild_card(t_ast_tree *node)
+void	handle_file_cards(t_redirect *redir)
 {
 	t_wild_norm wild;
 
@@ -221,19 +239,55 @@ void	handle_wild_card(t_ast_tree *node)
 	wild.size = 0;
 	wild.is_space = NULL;
 	wild.q_type = NULL;
-	while (node->args[wild.k])
+	while (redir->file_name[wild.k])
 	{
-		handle_single_wild_card(&wild, node->args[wild.k], node->is_space[wild.k], node->q_type[wild.k]);
+		handle_single_wild_card(&wild, redir->file_name[wild.k], 
+			redir->is_space[wild.k], redir->q_types[wild.k]);
 		wild.k++;
 	}
 	wild.k = 0;
-	while (node->args[wild.k])
-		free(node->args[wild.k++]);
-	free(node->args);
-	node->args = wild.args;
-	node->arg_counter = wild.size;
-	free(node->is_space);
-	node->is_space = wild.is_space;
-	free(node->q_type);
-	node->q_type = wild.q_type;
+	while (redir->file_name[wild.k])
+		free(redir->file_name[wild.k++]);
+	free(redir->file_name);
+	redir->file_name = wild.args;
+	redir->file_str_count = wild.size;
+	free(redir->is_space);
+	redir->is_space = wild.is_space;
+	free(redir->q_types);
+	redir->q_types = wild.q_type;
+}
+
+static int	check_abg(t_redirect *redir,int old)
+{
+	int i;
+
+	i = 0;
+	while(i < redir->file_str_count)
+		i++;
+	if (redir->file_str_count > old)
+	{
+		ft_putstr_fd(2,"minishell: ");
+		ft_putstr_fd(2,redir->file_name[0]);
+		ft_putstr_fd(2,": ambiguous redirect\n");
+		return -1;
+	}
+	return 1;
+}
+
+int handle_file_wildcard(t_ast_tree *node)
+{
+	t_redirect *redir = node->redirect;
+	int old;
+	while (redir)
+	{
+		if(redir->type != HEREDOC)
+		{
+			old = redir->file_str_count;
+			handle_file_cards(redir);
+			if (check_abg(redir,old) == -1)
+				return -1;
+		}
+		redir = redir->next;
+	}
+	return 1;
 }

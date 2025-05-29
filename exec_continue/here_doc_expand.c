@@ -1,5 +1,4 @@
-#include "includes/minishell.h"
-
+#include "../includes/minishell.h"
 
 static char *get_keyy(char *str, int prev_pos, int *i)
 {

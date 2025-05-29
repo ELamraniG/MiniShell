@@ -43,15 +43,17 @@ SRC =	str_utils/ft_split.c \
 		execution/handle_heredoc_continue.c \
 		execution/handle_heredoc.c \
 		execution/norminette_word_msgs.c \
-		args_expand_norminated.c \
-		file_expand.c \
-		here_doc_expand.c \
+		exec_continue/args_expand_norminated.c \
+		exec_continue/args_expand_norminated_continue.c \
+		exec_continue/args_expand_norminated_continue_2.c \
+		exec_continue/file_expand.c \
+		exec_continue/here_doc_expand.c \
 		execution/signals.c \
 		execution/signals_continue.c \
 		str_utils/ft_strtrim.c \
-		handle_wild_cards.c \
+		exec_continue/handle_wild_cards.c \
 		str_utils/ft_atoi.c \
-		file_wild_card.c \
+		exec_continue/file_wild_card.c \
 		execution/built_in_calling.c \
 		execution/gluing_stuff.c \
 		execution/handle_pipes.c \

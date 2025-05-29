@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:59:48 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 16:26:45 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:10:47 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	word_norminette(t_ast_tree *astree, t_env_list **env, int *status,
 		t_stdindo stddd)
 {
-	I_HATE_EXPANDING(astree, *env, *status);
+	i_hate_expanding(astree, *env, *status);
 	if (expand_file_name(astree, *env, *status) == -1)
 	{
 		*status = 1;

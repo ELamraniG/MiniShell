@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:33:04 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 16:42:12 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:10:53 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	word_norm(t_ast_tree *astree, t_env_list **env, int *status,
 		t_stdindo stddd)
 {
-	I_HATE_EXPANDING(astree, *env, *status);
+	i_hate_expanding(astree, *env, *status);
 	if (expand_file_name(astree, *env, *status) == -1)
 	{
 		*status = 1;

@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 16:50:00 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:10:55 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,16 @@ typedef struct s_lex_list
 	int					is_space;
 }						t_lex_list;
 
+typedef struct s_relc
+{
+	int		i;
+	int		*new_is_space;
+	char	**new_args;
+	int		*tmpint_free;
+	char	**tmp_free;
+	int		*new_q_type;
+}			t_relc;
+
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_itoa(int n);
 void		free_lex_list(t_lex_list *token);
@@ -262,7 +272,7 @@ void		reset_signals(void);
 void		ignore_signals(void);
 void		print_export(t_env_list *env_list);
 char		**ft_split_for_expand(char const *s, char c);
-void		I_HATE_EXPANDING(t_ast_tree *node, t_env_list *env, int status);
+void		i_hate_expanding(t_ast_tree *node, t_env_list *env, int status);
 int			expand_file_name(t_ast_tree *node, t_env_list *env, int status);
 char		*ft_strtrim(char const *s1, char const *set);
 char		*expand_heredoc_line(char *line, t_env_list *env, int status);
@@ -335,4 +345,20 @@ void		norm_word_166(t_ast_tree *astree, t_env_list **env,
 				char ***env_char);
 void		failed_exec_v(t_ast_tree *astree, char ***env_char);
 void		ignore_signals(void);
+int			has_space_at_the_beginning_2(char *s);
+void		trim_the_args(t_expd_norm *expd);
+void		expand_norminette_3(t_expd_norm *expd, t_expd2 *expd2,
+							t_ast_tree *astree);
+int			expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
+		t_env_list *env, int status);
+void		expand_norm1(t_expd_norm *expd, t_ast_tree *astree);
+int			has_space_at_the_end_2(char *s);
+char		*get_key_2(char *str, t_expd2 *expd2);
+void		ft_realloc2(t_expd_norm *expd, char *s);
+int			has_space_at_the_end2(char *s);
+char		*get_keyy2(char *str, t_expd2 *expd2);
+void		trim_the_file_names(t_file_expd *fxpd);
+void		ft_realloc_file(t_file_expd *fxpd, char *s);
+void		free_relc(t_file_relc *relc);
+
 #endif

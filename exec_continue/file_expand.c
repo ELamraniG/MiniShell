@@ -1,13 +1,13 @@
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
 
-static void free_relc(t_file_relc *relc)
+void	free_relc(t_file_relc *relc)
 {
 	free(relc->tmpint_free);
 	free(relc->tmp_free);
 }
 
-static void	ft_realloc_file(t_file_expd *fxpd, char *s)
+void	ft_realloc_file(t_file_expd *fxpd, char *s)
 {
 	t_file_relc	relc;
 
@@ -36,7 +36,7 @@ static void	ft_realloc_file(t_file_expd *fxpd, char *s)
 	return free_relc(&relc);
 }
 
-static void	trim_the_file_names(t_file_expd *fxpd)
+void	trim_the_file_names(t_file_expd *fxpd)
 {
 	char	*tmp_free;
 
@@ -46,7 +46,7 @@ static void	trim_the_file_names(t_file_expd *fxpd)
 	return ;
 }
 
-static char	*get_keyy(char *str, t_expd2 *expd2)
+char	*get_keyy2(char *str, t_expd2 *expd2)
 {
 	int		len;
 
@@ -72,7 +72,7 @@ static char	*get_keyy(char *str, t_expd2 *expd2)
 	return (ft_strdup(str + expd2->prev_pos + 1));
 }
 
-static int	has_space_at_the_end(char *s)
+int	has_space_at_the_end2(char *s)
 {
 	int	strl;
 
@@ -132,7 +132,7 @@ static void	file_expand_norm7(t_file_expd *fxpd, t_expd2 *expd2)
 
 static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
 {
-	expd2->tmp2 = get_keyy(redir->file_name[fxpd->k], expd2);
+	expd2->tmp2 = get_keyy2(redir->file_name[fxpd->k], expd2);
 	if (redir->file_name[fxpd->k][expd2->i])
 		expd2->flag = 0;
 	if (!ft_strcmp(expd2->tmp2, "?"))
@@ -181,7 +181,7 @@ static void	file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2)
 		expd2->j++;
 		if (expd2->dble[expd2->j] == NULL)
 		{
-			if (has_space_at_the_end(fxpd->file_name[fxpd->size - 1]))
+			if (has_space_at_the_end2(fxpd->file_name[fxpd->size - 1]))
 				fxpd->is_space[fxpd->size - 1] = 1;
 			else
 				fxpd->is_space[fxpd->size - 1] = 0;
@@ -281,7 +281,7 @@ static void	file(t_redirect *redir, t_file_expd *fxpd)
 	redir->q_types = fxpd->q_types;
 }
 
-static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
+static int	i_hate_expanding_file(t_redirect *redir, t_env_list *env,
 		int status)
 {
 	t_file_expd fxpd;
@@ -322,7 +322,7 @@ int	expand_file_name(t_ast_tree *node, t_env_list *env, int status)
 	{
 		if (redir->type != HEREDOC)
 		{
-			abg = I_HATE_EXPANDING_FILE(redir, env, status);
+			abg = i_hate_expanding_file(redir, env, status);
 			if (abg != 0)
 			
 				return -1;
