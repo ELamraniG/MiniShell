@@ -81,6 +81,17 @@ int	handle_token(t_lex_list **tokens, char **input, int *status)
 	return (0);
 }
 
+		syntax_error_norminated(t_lex_list **tokens,int *status,char **input)
+		{
+			if (!handle_syntax_errors(*tokens, status))
+		{
+			free(*input);
+			free_lex_list(*tokens);
+			return 0;
+		}
+		return 1;
+		}
+
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
@@ -102,12 +113,14 @@ int	main(int ac, char **av, char **env)
 			add_history(input);
 		if (handle_token(&tokens, &input, &mainn.status) == -1)
 			continue ;
-		if (!handle_syntax_errors(tokens, &mainn.status))
-		{
-			free(input);
-			free_lex_list(tokens);
-			continue ;
-		}
+		if (!syntax_error_norminated(&tokens,&mainn.status,&input))
+			continue;
+		// if (!handle_syntax_errors(tokens, &mainn.status))
+		// {
+		// 	free(input);
+		// 	free_lex_list(tokens);
+		// 	continue ;
+		// }
 		norm_tre_tok(&tokens, &astree);
 		if (handle_heredoc(astree, 0, envv) == -1)
 		{
