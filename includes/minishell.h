@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 22:39:59 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:43:59 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -454,6 +454,16 @@ void	file_wild_norm5(t_wild_norm *wild, char *current_arg,
 void	do_i_j(int *i, int *k);
 void	ft_free_split(char **s, int i);
 int	ft_word_count_expand(const char *str, char c);
+void	clean_all_herdocs(t_ast_tree *astree);
+
+void	init_norm(t_norm_m *mainn, int ac, char **av, t_ast_tree **astree);
+void	is_tty(char **input);
+void	is_tt2(t_env_list **env);
+void	exec_tree_ndrest(t_ast_tree **astree, int *status, t_env_list **envv,
+		char **input);
+int	handle_token(t_lex_list **tokens, char **input, int *status);
+int	syntax_err_normted(t_lex_list **tokens, int *status, char **input);
+
 
 
 #endif

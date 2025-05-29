@@ -26,7 +26,9 @@ SRC =	str_utils/ft_split.c \
 		parsing/handle_syntax_continue_2.c \
 		parsing/handle_syntax_continue_3.c \
 		parsing/handle_syntax.c \
-		xminishell_tester.c \
+		xminishell.c \
+		xminishell_continue_1.c \
+		xminishell_continue_2.c \
 		built_ins/helper_env.c \
 		built_ins/env.c \
 		built_ins/list_utils.c \
