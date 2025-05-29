@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 22:51:08 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:14:00 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,7 @@ int			check_and_or(t_lex_list *current, int *status);
 int			check_token(t_lex_list *current, int *status);
 int			check_syntax(t_lex_list *token, int *status);
 void		arg_type(t_lex_list *token);
-static int	get_next_quote(char *str, int *i, char c, int *status);
+int			get_next_quote(char *str, int *i, char c, int *status);
 int			is_special(char c);
 int			is_quote(char c);
 void		skip_spaces(char *str, int *i, int *j);

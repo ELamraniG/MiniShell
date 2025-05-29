@@ -44,31 +44,6 @@ static int	word_norm2(t_ast_tree *astree, t_stdindo stddd, int *status,
 	return (0);
 }
 
-static void	norm_word4(t_stdindo stddd, int *status, int exit_code)
-{
-	handle_main_sigs();
-	if (WIFEXITED(exit_code))
-		*status = WEXITSTATUS(exit_code);
-	else if (WIFSIGNALED(exit_code))
-	{
-		*status = 128 + WTERMSIG(exit_code);
-		if (WTERMSIG(exit_code) == SIGQUIT)
-			ft_putstr_fd(2, "Quit: 3\n");
-		if (WTERMSIG(exit_code) == SIGINT)
-			ft_putstr_fd(2, "\n");
-	}
-	dup3(stddd.stdinn, STDIN_FILENO);
-	dup3(stddd.stdoutt, STDOUT_FILENO);
-}
-
-static void	norm_word3(t_stdindo stddd, int *status)
-{
-	close(stddd.stdinn);
-	close(stddd.stdoutt);
-	*status = 1;
-	perror(NULL);
-}
-
 static void	norm_word_166(t_ast_tree *astree, t_env_list **env, char ***env_char)
 {
 	struct stat	l;

@@ -16,31 +16,6 @@ static void clean_all_herdocs(t_ast_tree *astree)
 	clean_all_herdocs(astree->right);
 
 }
-void	print_lex(t_lex_list *temp)
-{
-	while (temp)
-	{
-		printf("Token: |%s|, Type: %d\n", temp->s, temp->a_type);
-		temp = temp->next;
-	}
-}
-
-void	print_tree(t_ast_tree *tree, int deep)
-{
-	int			i;
-	t_redirect	*t;
-	print_tree(tree->left, deep + 1);
-	print_tree(tree->right, deep + 1);
-}
-
-void	handlectrlc(int n)
-{
-	g_sigarette = 130;
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
 
 int	main(int ac, char **av, char **env)
 {

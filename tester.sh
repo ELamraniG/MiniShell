@@ -3,8 +3,8 @@
 # Change if you store the tester in another PATH
 export MINISHELL_PATH=./
 export EXECUTABLE=minishell
-RUNDIR=/home/roote/pp/shell/lastshell/tester
-# RUNDIR=/Users/moel-amr/Desktop/1733/minishell/tester
+# RUNDIR=/home/roote/pp/shell/lastshell/tester
+RUNDIR=/Users/moel-amr/Desktop/1733/minishell/tester
 # RUNDIR=/Users/jhamdaou/Desktop/minishell/tester
 
 NL=$'\n'

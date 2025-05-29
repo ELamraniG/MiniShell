@@ -46,8 +46,7 @@ static void	trim_the_file_names(t_file_expd *fxpd)
 	return ;
 }
 
-static char	*get_keyy(char *str, t_env_list *env, t_expd2 *expd2,
-		int status)
+static char	*get_keyy(char *str, t_expd2 *expd2)
 {
 	int		len;
 
@@ -133,7 +132,7 @@ static void	file_expand_norm7(t_file_expd *fxpd, t_expd2 *expd2)
 
 static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
 {
-	expd2->tmp2 = get_keyy(redir->file_name[fxpd->k], env, expd2, status);
+	expd2->tmp2 = get_keyy(redir->file_name[fxpd->k], expd2);
 	if (redir->file_name[fxpd->k][expd2->i])
 		expd2->flag = 0;
 	if (!ft_strcmp(expd2->tmp2, "?"))
@@ -252,22 +251,7 @@ static void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env,
 	file_expand_norm6(fxpd, &expd2, redir);
 }
 
-static char *join_all_names(char **file_name, int count)
-{
-	char *tmp = ft_strdup("");
-	char *tmp_free;
-	int i = 0;
-	while (i < count)
-	{
-		tmp_free = tmp;
-		tmp = ft_strjoin(tmp,file_name[i]);
-		free(tmp_free);
-		i++;
-	}
-	return tmp;
-}
-
-static void	check_abg(t_redirect *redir, t_file_expd *fxpd, int *abg,int old)
+static void	check_abg(t_redirect *redir, int *abg,int old)
 {
 	int i;
 	int count_empty = 0;
@@ -317,7 +301,7 @@ static int	I_HATE_EXPANDING_FILE(t_redirect *redir, t_env_list *env,
 	}
 	fxpd.k = 0;
 	file(redir, &fxpd);
-	check_abg(redir, &fxpd, &abg,old);
+	check_abg(redir, &abg,old);
 	if (abg != 0)
 	{
 		ft_putstr_fd(2,"minishell: ");

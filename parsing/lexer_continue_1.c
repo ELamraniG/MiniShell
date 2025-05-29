@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_continue_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:39:10 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:43:52 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:14:13 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	get_next_quote(char *str, int *i, char c, int *status)
+int	get_next_quote(char *str, int *i, char c, int *status)
 {
 	(*i)++;
 	while (str[*i] && str[*i] != c)

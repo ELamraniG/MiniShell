@@ -55,7 +55,7 @@ static void	trim_the_args(t_expd_norm *expd)
 	return ;
 }
 
-static char	*get_keyy(char *str, t_env_list *env, t_expd2 *expd2, int status)
+static char	*get_keyy(char *str, t_expd2 *expd2)
 {
 	int	len;
 
@@ -145,7 +145,7 @@ static void	expand_norm7(t_expd_norm *expd, t_expd2 *expd2)
 static int	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
 		t_env_list *env, int status)
 {
-	expd2->tmp2 = get_keyy(astree->args[expd->k], env, expd2, status);
+	expd2->tmp2 = get_keyy(astree->args[expd->k], expd2);
 	if (astree->args[expd->k][expd2->i])
 		expd2->flag = 0;
 	if (!ft_strcmp(expd2->tmp2, "?"))

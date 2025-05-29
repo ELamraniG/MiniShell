@@ -1,14 +1,14 @@
 #include "includes/minishell.h"
 
-int g_sigarette = 0;
+int			g_sigarette = 0;
 
-
-
-static void clean_all_herdocs(t_ast_tree *astree)
+static void	clean_all_herdocs(t_ast_tree *astree)
 {
+	t_redirect	*redir;
+
 	if (astree == NULL)
-		return;
-	t_redirect *redir = astree->redirect;
+		return ;
+	redir = astree->redirect;
 	while (redir)
 	{
 		close(redir->heredoc);
@@ -16,36 +16,41 @@ static void clean_all_herdocs(t_ast_tree *astree)
 	}
 	clean_all_herdocs(astree->left);
 	clean_all_herdocs(astree->right);
+}
 
+void	init_norm(t_norm_m *mainn, int ac, char **av, t_ast_tree **astree)
+{
+	ac = 0;
+	av = NULL;
+	mainn->here_doc = 0;
+	mainn->status = 0;
+	mainn->i = 0;
+	*astree = NULL;
+	handle_main_sigs();
+}
+
+void	is_tty(char **input)
+{
+	if (!isatty(STDIN_FILENO))
+		*input = readline("");
+	else
+		*input = readline("minishell$ ");
 }
 
 int	main(int ac, char **av, char **env)
 {
-	char *input;
-	t_lex_list *tokens;
-	t_ast_tree *astree;
-	t_env_list *envv = NULL;
-	t_norm_m mainn;
-	
-	mainn.here_doc = 0;
-	mainn.status = 0;
-	mainn.i = 0;
-	
+	char		*input;
+	t_lex_list	*tokens;
+	t_ast_tree	*astree;
+	t_env_list	*envv;
+	t_norm_m	mainn;
+
+	envv = NULL;
+	init_norm(&mainn, ac, av, &astree);
 	set_up_env(env, &envv);
-
-	ac = 0;
-	av = NULL;
-
-	astree = NULL;
-
-	handle_main_sigs();
-
-	while (1)
-	{	
-		if (!isatty(STDIN_FILENO))
-			input = readline("");
-		else
-			input = readline("minishell$ ");
+	while (1337)
+	{
+		is_tty(&input);
 		if (g_sigarette != 0)
 		{
 			mainn.status = g_sigarette;
@@ -59,14 +64,12 @@ int	main(int ac, char **av, char **env)
 		}
 		if (input[0])
 			add_history(input);
-
 		tokens = lexing_the_thing(input, &mainn.status);
 		if (!tokens)
 		{
 			free(input);
 			continue ;
 		}
-
 		set_the_arg_type(tokens);
 		if (!handle_syntax_errors(tokens, &mainn.status))
 		{
@@ -86,9 +89,9 @@ int	main(int ac, char **av, char **env)
 			}
 			free(input);
 			free_tree(astree);
-			continue;
+			continue ;
 		}
-		excute_the_damn_tree(astree, &mainn.status, &envv,0);
+		excute_the_damn_tree(astree, &mainn.status, &envv, 0);
 		clean_all_herdocs(astree);
 		free_tree(astree);
 		free(input);

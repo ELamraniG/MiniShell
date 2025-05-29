@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   norminette_exec_tree.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 22:51:09 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 22:53:04 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:14:43 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,6 @@ void	excute_the_damn_tree(t_ast_tree *astree, int *status, t_env_list **env,
 		int in_pipe)
 {
 	int		pipes[2];
-	int		exit_code;
-	char	*tmp;
-	int		stdinn;
-	int		stdoutt;
 
 	if (!astree)
 		return ;

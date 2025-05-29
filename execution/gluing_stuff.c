@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gluing_stuff.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 22:16:24 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 22:16:57 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:17:14 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	norm_args2(t_ast_tree *astree, int *i, int *j, char ***args2)
 char	**join_args_without_spaces(t_ast_tree *astree)
 {
 	char	**args2;
-	char	*tmp;
 	int		i;
 	int		j;
 	int		count;
