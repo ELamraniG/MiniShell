@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_exp.c                                       :+:      :+:    :+:   */
+/*   helper_exp_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:45 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 17:49:32 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:08:05 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	print_msg(char *args)
 {

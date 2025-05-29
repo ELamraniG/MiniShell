@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   free_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:34:15 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:35:41 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:11:33 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	free_lex_list(t_lex_list *token)
 {

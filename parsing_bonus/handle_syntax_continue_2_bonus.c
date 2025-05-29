@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_syntax_continue_2.c                         :+:      :+:    :+:   */
+/*   handle_syntax_continue_2_bonus.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:26:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:32:31 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:11:46 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 int	wach_valid_tokens(t_lex_list *current, int *status)
 {

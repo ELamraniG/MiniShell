@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_utils.c                                       :+:      :+:    :+:   */
+/*   list_utils_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:48 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 19:33:44 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:08:08 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	insert_node_first(t_env_list **d, char *key, char *value, int flag)
 {

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xminishell.c                                       :+:      :+:    :+:   */
+/*   xminishell_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:50:02 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 22:43:13 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:11:24 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 int			g_sigarette = 0;
 

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_wild_cards_continue.c                       :+:      :+:    :+:   */
+/*   handle_wild_cards_continue_bonus.c                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:47:11 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 22:15:33 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:39 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 int	wild_card_norm2(char *current_arg)
 {

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_wild_cards_continue_2.c                     :+:      :+:    :+:   */
+/*   handle_wild_cards_continue_2_bonus.c               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:46:51 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 21:52:27 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:36 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	free_wild_relc(t_wild_relc *relc)
 {

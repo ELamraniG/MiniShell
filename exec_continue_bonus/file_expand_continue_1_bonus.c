@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_expand_continue_1.c                           :+:      :+:    :+:   */
+/*   file_expand_continue_1_bonus.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:39:22 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 21:39:27 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:16 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	free_relc(t_file_relc *relc)
 {

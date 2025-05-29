@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   norminette_word1.c                                 :+:      :+:    :+:   */
+/*   norminette_word1_bonus.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:59:48 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 17:10:47 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:10:54 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 static int	word_norminette(t_ast_tree *astree, t_env_list **env, int *status,
 		t_stdindo stddd)

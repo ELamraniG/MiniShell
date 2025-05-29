@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   excuting_redirs_continue.c                         :+:      :+:    :+:   */
+/*   excuting_redirs_continue_bonus.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 22:15:03 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 22:15:11 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:51 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 int	handle_out_redir(t_redirect *redir)
 {

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_wild_cards.c                                :+:      :+:    :+:   */
+/*   handle_wild_cards_bonus.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:37:16 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 22:15:19 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:34 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	sort_all_dirs_wild(char ***all_dirs, int count)
 {

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_for_expand.c                              :+:      :+:    :+:   */
+/*   ft_split_for_expand_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:46:19 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 22:39:06 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:12:20 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 static int	do_some1_cont(const char *s, char **s2, char c, t_sp_norm *nor)
 {

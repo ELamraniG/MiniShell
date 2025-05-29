@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_expand_continue_2.c                           :+:      :+:    :+:   */
+/*   file_expand_continue_2_bonus.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:39:35 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 21:40:43 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:19 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 int	has_space_beginning(char *s)
 {

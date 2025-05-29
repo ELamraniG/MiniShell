@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_syntax.c                                    :+:      :+:    :+:   */
+/*   handle_syntax_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:16:46 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/28 21:26:09 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:11:41 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 int	check_and_or(t_lex_list *current, int *status)
 {

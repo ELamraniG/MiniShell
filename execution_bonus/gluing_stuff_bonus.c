@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gluing_stuff.c                                     :+:      :+:    :+:   */
+/*   gluing_stuff_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 22:16:24 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 16:17:14 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:54 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 static void	norm_join_args(int *i, int *j, char ***args2, int count)
 {

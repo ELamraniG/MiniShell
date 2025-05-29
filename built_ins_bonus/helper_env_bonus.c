@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_env.c                                       :+:      :+:    :+:   */
+/*   helper_env_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:48 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 19:33:59 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:08:02 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	free_node(t_env_list *current)
 {

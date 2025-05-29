@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc_expand.c                                  :+:      :+:    :+:   */
+/*   here_doc_expand_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 20:49:37 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 20:51:04 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:41 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 static char	*get_keyy(char *str, int prev_pos, int *i)
 {

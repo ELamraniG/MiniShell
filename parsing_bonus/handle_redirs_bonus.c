@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_redirs.c                                    :+:      :+:    :+:   */
+/*   handle_redirs_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:16:40 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/28 21:48:08 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:11:36 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 static void	add_to_list_redirss(t_redirect **ll, int type, t_lex_list **token)
 {

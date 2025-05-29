@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_wild_card.c                                   :+:      :+:    :+:   */
+/*   file_wild_card_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:44:10 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 22:33:59 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:24 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	file_wild_norm1(t_wild_norm *wild, char *current_arg,
 		int old_q_type, int point_flag)

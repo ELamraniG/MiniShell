@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   norminette_exec_tree.c                             :+:      :+:    :+:   */
+/*   norminette_exec_tree_bonus.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 22:51:09 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 22:37:33 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:10:44 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 char	**turn_env_to_chars(t_env_list *env)
 {

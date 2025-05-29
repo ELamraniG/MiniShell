@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xminishell_continue1.c                             :+:      :+:    :+:   */
+/*   xminishell_continue_1_bonus.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:42:16 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 22:42:20 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:11:26 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 void	clean_all_herdocs(t_ast_tree *astree)
 {

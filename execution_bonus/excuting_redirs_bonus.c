@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   excuting_redirs.c                                  :+:      :+:    :+:   */
+/*   excuting_redirs_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:06:09 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/28 22:15:01 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 23:09:49 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes_bonus/minishell_bonus.h"
 
 static int	norminete_redir(t_redirect *tmp, int stdinn, int stdoutt)
 {
