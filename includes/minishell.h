@@ -29,7 +29,6 @@ typedef struct s_norm_m
 {
 	int	here_doc;
 	int	status;
-	int	i;
 }	t_norm_m;
 
 typedef struct s_sp_norm
@@ -329,7 +328,10 @@ int			norminete_exc_redir(int stdinn, int stdoutt);
 int			norm_herd_1(int pipe_fd);
 char		*join_all_file_names(t_redirect *redir, int *flag);
 void		normeeker(char *s, int *pipe_fd);
-void	normeee(t_env_list **t, char *tmp);
+void		normeee(t_env_list **t, char *tmp);
 void		do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env);
 int			here_d_norm333(int pipe_fd, pid_t pid, struct termios *original_term);
+void		norm_word_166(t_ast_tree *astree, t_env_list **env,
+							char ***env_char);
+void	failed_exec_v(t_ast_tree *astree, char ***env_char);
 #endif
