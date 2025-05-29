@@ -51,6 +51,19 @@ void	exec_tree_cleandoc_free_tree_frinput(t_ast_tree **astree, int *status,
 	free(*input);
 }
 
+void	norm_tre_tok(t_lex_list **tokens, t_ast_tree **astree)
+{
+	remove_quotes(*tokens);
+	*astree = create_ast_tree(*tokens);
+	free_lex_list(*tokens);
+}
+
+void	norm_sig(int *status)
+{
+	*status = g_sigarette;
+	g_sigarette = 0;
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
@@ -66,10 +79,7 @@ int	main(int ac, char **av, char **env)
 	{
 		is_tty(&input);
 		if (g_sigarette != 0)
-		{
-			mainn.status = g_sigarette;
-			g_sigarette = 0;
-		}
+			norm_sig(&mainn.status);
 		if (!input)
 			break ;
 		if (input[0])
@@ -87,9 +97,7 @@ int	main(int ac, char **av, char **env)
 			free_lex_list(tokens);
 			continue ;
 		}
-		remove_quotes(tokens);
-		astree = create_ast_tree(tokens);
-		free_lex_list(tokens);
+		norm_tre_tok(&tokens, &astree);
 		if (handle_heredoc(astree, 0, envv) == -1)
 		{
 			if (g_sigarette == 130)
@@ -103,11 +111,8 @@ int	main(int ac, char **av, char **env)
 		}
 		exec_tree_cleandoc_free_tree_frinput(&astree, &mainn.status, &envv,
 			&input);
-		if (!isatty(STDIN_FILENO))	
-			return (is_tt2(&env),mainn.status);
-
+		if (!isatty(STDIN_FILENO))
+			return (is_tt2(&envv), mainn.status);
 	}
-	rl_clear_history();
-	free_env_list(envv);
-	return (mainn.status);
+	return (is_tt2(&envv), mainn.status);
 }
