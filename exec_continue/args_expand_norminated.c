@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args_expand_norminated.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:51:54 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 17:35:33 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:26:25 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ static void	expand_norm5(t_expd_norm *expd, t_expd2 *expd2)
 }
 
 static void	expand_norm2(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
-		t_env_list *env, int status)
+		t_env_list *env)
 {
 	int	kk;
 
 	expd2->flag = 1;
 	expand_norminette_3(expd, expd2, astree);
 	expd2->prev_pos = expd2->i;
-	kk = expand_norm4(expd, expd2, astree, env, status);
+	kk = expand_norm4(expd, expd2, astree, env);
 	if (kk == 0)
 	{
 		if (expd2->t && expd2->t->value)
@@ -79,8 +79,7 @@ static void	expand_norm6(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree)
 	expd->is_space[expd->size - 1] = astree->is_space[expd->k];
 }
 
-static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
-		int status, t_ast_tree *astree)
+static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env, t_ast_tree *astree)
 {
 	t_expd2	expd2;
 
@@ -98,7 +97,7 @@ static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
 		if (astree->args[expd->k][expd2.i] == '\'')
 			expd2.i++;
 		else if (astree->args[expd->k][expd2.i] == '$')
-			expand_norm2(expd, &expd2, astree, env, status);
+			expand_norm2(expd, &expd2, astree, env);
 		else
 			expd2.i++;
 	}
@@ -115,9 +114,10 @@ void	i_hate_expanding(t_ast_tree *astree, t_env_list *env, int status)
 	expd.is_space = NULL;
 	expd.k = 0;
 	expd.q_type = NULL;
+	expd.status = status;
 	while (astree->args[expd.k])
 	{
-		expanded_for_single_word(&expd, env, status, astree);
+		expanded_for_single_word(&expd, env, astree);
 		expd.k++;
 	}
 	expd.k = 0;

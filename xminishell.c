@@ -11,7 +11,8 @@ static void	clean_all_herdocs(t_ast_tree *astree)
 	redir = astree->redirect;
 	while (redir)
 	{
-		close(redir->heredoc);
+		if (redir->heredoc != -1)
+			close(redir->heredoc);
 		redir = redir->next;
 	}
 	clean_all_herdocs(astree->left);
@@ -42,7 +43,7 @@ void	is_tt2(t_env_list **env)
 	free_env_list(*env);
 }
 
-void	exec_tree_cleandoc_free_tree_frinput(t_ast_tree **astree, int *status,
+void	exec_tree_cl_free_tree_frinput(t_ast_tree **astree, int *status,
 		t_env_list **envv, char **input)
 {
 	excute_the_damn_tree(*astree, status, envv, 0);
@@ -81,16 +82,16 @@ int	handle_token(t_lex_list **tokens, char **input, int *status)
 	return (0);
 }
 
-int		syntax_error_norminated(t_lex_list **tokens,int *status,char **input)
-		{
-			if (!handle_syntax_errors(*tokens, status))
-		{
-			free(*input);
-			free_lex_list(*tokens);
-			return 0;
-		}
-		return 1;
-		}
+int	syntax_error_norminated(t_lex_list **tokens, int *status, char **input)
+{
+	if (!handle_syntax_errors(*tokens, status))
+	{
+		free(*input);
+		free_lex_list(*tokens);
+		return (0);
+	}
+	return (1);
+}
 
 int	main(int ac, char **av, char **env)
 {
@@ -113,14 +114,8 @@ int	main(int ac, char **av, char **env)
 			add_history(input);
 		if (handle_token(&tokens, &input, &mainn.status) == -1)
 			continue ;
-		if (!syntax_error_norminated(&tokens,&mainn.status,&input))
-			continue;
-		// if (!handle_syntax_errors(tokens, &mainn.status))
-		// {
-		// 	free(input);
-		// 	free_lex_list(tokens);
-		// 	continue ;
-		// }
+		if (!syntax_error_norminated(&tokens, &mainn.status, &input))
+			continue ;
 		norm_tre_tok(&tokens, &astree);
 		if (handle_heredoc(astree, 0, envv) == -1)
 		{
@@ -130,8 +125,7 @@ int	main(int ac, char **av, char **env)
 			free_tree(astree);
 			continue ;
 		}
-		exec_tree_cleandoc_free_tree_frinput(&astree, &mainn.status, &envv,
-			&input);
+		exec_tree_cl_free_tree_frinput(&astree, &mainn.status, &envv, &input);
 		if (!isatty(STDIN_FILENO))
 			return (is_tt2(&envv), mainn.status);
 	}

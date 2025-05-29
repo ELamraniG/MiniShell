@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:35:29 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 19:09:32 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:26:38 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	expand_norm7(t_expd_norm *expd, t_expd2 *expd2)
 }
 
 int	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
-		t_env_list *env, int status)
+		t_env_list *env)
 {
 	expd2->tmp2 = get_key_2(astree->args[expd->k], expd2);
 	if (astree->args[expd->k][expd2->i])
@@ -67,7 +67,7 @@ int	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
 	if (!ft_strcmp(expd2->tmp2, "?"))
 	{
 		free(expd2->tmp2);
-		expd2->tmp3 = ft_itoa(status);
+		expd2->tmp3 = ft_itoa(expd->status);
 		expd2->flag = 0;
 		return (1);
 	}

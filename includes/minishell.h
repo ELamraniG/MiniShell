@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 17:10:55 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:32:52 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_file_expd {
 	int		size;
 	int		*is_space;
 	int		*q_types;
+		int status;
 }t_file_expd;
 
 typedef struct s_hrdc_norm {
@@ -99,7 +100,8 @@ typedef struct s_exp_norm
 	int		*is_space;
 	int		*q_type;
 	int		k;
-	int		size;
+	int		size;	
+	int status;
 }t_expd_norm;
 
 typedef enum e_type_arg
@@ -350,7 +352,7 @@ void		trim_the_args(t_expd_norm *expd);
 void		expand_norminette_3(t_expd_norm *expd, t_expd2 *expd2,
 							t_ast_tree *astree);
 int			expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
-		t_env_list *env, int status);
+		t_env_list *env);
 void		expand_norm1(t_expd_norm *expd, t_ast_tree *astree);
 int			has_space_at_the_end_2(char *s);
 char		*get_key_2(char *str, t_expd2 *expd2);

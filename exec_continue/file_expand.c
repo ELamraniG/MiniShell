@@ -130,7 +130,7 @@ static void	file_expand_norm7(t_file_expd *fxpd, t_expd2 *expd2)
 	expd2->prev_pos = expd2->i;
 }
 
-static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
+static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env)
 {
 	expd2->tmp2 = get_keyy2(redir->file_name[fxpd->k], expd2);
 	if (redir->file_name[fxpd->k][expd2->i])
@@ -138,7 +138,7 @@ static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redi
 	if (!ft_strcmp(expd2->tmp2, "?"))
 	{
 		free(expd2->tmp2);
-		expd2->tmp3 = ft_itoa(status);
+		expd2->tmp3 = ft_itoa(fxpd->status);
 		expd2->flag = 0;
 		return 1;
 	}
@@ -193,13 +193,13 @@ static void	file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2)
 	free(expd2->dble);
 }
 
-static void	file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env, int status)
+static void	file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env)
 {
 	expd2->flag = 1;
 	int kk;
 	file_expand_norm3(fxpd, expd2, redir);
 	expd2->prev_pos = expd2->i;
-	kk = file_expand_norm4(fxpd, expd2, redir, env, status);
+	kk = file_expand_norm4(fxpd, expd2, redir, env);
 	if (kk == 0)
 	{
 		if (expd2->t && expd2->t->value)
@@ -227,8 +227,7 @@ static void	file_expand_norm6(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *red
 	fxpd->is_space[fxpd->size - 1] = redir->is_space[fxpd->k];
 }
 
-static void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env,
-		int status, t_redirect *redir)
+static void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env, t_redirect *redir)
 {
 	t_expd2 expd2;
 
@@ -246,7 +245,7 @@ static void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env,
 		if (redir->file_name[fxpd->k][expd2.i] == '\'')
 			expd2.i++;
 		else if (redir->file_name[fxpd->k][expd2.i] == '$')
-			file_expand_norm2(fxpd, &expd2, redir, env, status);
+			file_expand_norm2(fxpd, &expd2, redir, env);
 		else
 			expd2.i++;
 	}
@@ -295,10 +294,11 @@ static int	i_hate_expanding_file(t_redirect *redir, t_env_list *env,
 	fxpd.size = 0;
 	fxpd.is_space = NULL;
 	fxpd.q_types = NULL;
+	fxpd.status = status;
 	while (fxpd.k < redir->file_str_count)
 	{
 		old = redir->file_str_count;
-		expanded_for_single_file(&fxpd, env, status, redir);
+		expanded_for_single_file(&fxpd, env, redir);
 		fxpd.k++;
 	}
 	fxpd.k = 0;
