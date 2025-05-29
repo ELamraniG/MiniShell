@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:29 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 17:56:17 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 20:48:39 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ void	set_up_env(char **env, t_env_list **env_list)
 		insert_node(env_list, ft_strdup("PWD"), cwd, 1);
 		insert_node(env_list, ft_strdup("SHLVL"), ft_strdup("1"), 1);
 		insert_node(env_list, ft_strdup("_"), ft_strdup("/usr/bin/env"), 1);
-		insert_node(env_list, ft_strdup("PATH"), ft_strdup("/usr/local/bin:/usr/bin:/bin"), 1);
+		insert_node(env_list, ft_strdup("PATH"),
+			ft_strdup("/usr/local/bin:/usr/bin:/bin"), 1);
 	}
 	else
 		process_env_loop(env, env_list);
@@ -103,5 +104,5 @@ int	print_env(t_env_list *env_list)
 			printf("%s=%s\n", env_list->key, env_list->value);
 		env_list = env_list->next;
 	}
-	return (0); 
+	return (0);
 }

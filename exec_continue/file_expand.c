@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_expand.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 20:46:57 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/05/29 20:46:57 by moel-amr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
-
-
 
 static void	file(t_redirect *redir, t_file_expd *fxpd)
 {
@@ -12,13 +22,23 @@ static void	file(t_redirect *redir, t_file_expd *fxpd)
 	redir->q_types = fxpd->q_types;
 }
 
+static void	norm559944(char *s)
+{
+	ft_putstr_fd(2, "minishell: ");
+	ft_putstr_fd(2, s);
+	ft_putstr_fd(2, ": ambiguous redirect\n");
+}
+
 static int	i_hate_expanding_file(t_redirect *redir, t_env_list *env,
 		int status)
 {
-	t_file_expd fxpd;
-	int old;
-	int abg = 0;
-	char **old_fl = redir->file_name;
+	t_file_expd	fxpd;
+	int			old;
+	int			abg;
+	char		**old_fl;
+
+	abg = 0;
+	old_fl = redir->file_name;
 	fxpd.k = 0;
 	fxpd.file_name = NULL;
 	fxpd.size = 0;
@@ -33,13 +53,9 @@ static int	i_hate_expanding_file(t_redirect *redir, t_env_list *env,
 	}
 	fxpd.k = 0;
 	file(redir, &fxpd);
-	check_abg_1(redir, &abg,old);
+	check_abg_1(redir, &abg, old);
 	if (abg != 0)
-	{
-		ft_putstr_fd(2,"minishell: ");
-		ft_putstr_fd(2,old_fl[0]);
-		ft_putstr_fd(2,": ambiguous redirect\n");
-	}
+		norm559944(old_fl[0]);
 	while (fxpd.k < old)
 		free(old_fl[fxpd.k++]);
 	return (free(old_fl), abg);
@@ -55,8 +71,8 @@ int	expand_file_name(t_ast_tree *node, t_env_list *env, int status)
 		{
 			abg = i_hate_expanding_file(redir, env, status);
 			if (abg != 0)
-			
-				return -1;
+
+				return (-1);
 		}
 		redir = redir->next;
 	}

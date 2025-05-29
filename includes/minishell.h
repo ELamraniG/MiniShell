@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 20:36:37 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 21:24:33 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,26 @@ typedef struct s_relc
 	char				**tmp_free;
 	int					*new_q_type;
 }						t_relc;
+
+typedef struct s_file_wild_relc
+{
+	int		i;
+	int		*new_is_space;
+	char	**new_args;
+	int		*tmpint_free;
+	char	**tmp_free;
+	int		*new_q_types;
+}t_file_wild_relc;
+
+typedef struct s_exit_norm
+{
+	int		star;
+	int		match;
+	int		s_len;
+	int		p_len;
+	int		s;
+	int		p;
+}			t_exit_norm;
 
 char					*ft_strjoin(char *s1, char *s2);
 char					*ft_itoa(int n);

@@ -6,43 +6,48 @@ static void	free_wild_relc(t_wild_relc *relc)
 	free(relc->tmpint_free);
 	free(relc->tmp_free);
 }
+static int	hndl_str_mth(const char *pat, t_exit_norm *sm)
+{
+	if (sm->p < sm->p_len && pat[sm->p] == '*')
+	{
+		sm->star = sm->p;
+		sm->match = sm->s;
+		(sm->p)++;
+		return (1);
+	}
+	else if (sm->star != -1)
+	{
+		sm->p = sm->star + 1;
+		(sm->match)++;
+		sm->s = sm->match;
+		return (1);
+	}
+	return (0);
+}
 
 static int	wach_exists(const char *pat, const char *str)
 {
-	int	sLen;
-	int	pLen;
-	int	s = 0, p;
-	int	star = -1, match;
+	t_exit_norm	sm;
 
-	sLen = ft_strlen(str);
-	pLen = ft_strlen(pat);
-	s = 0, p = 0;
-	star = -1, match = -1;
-	while (s < sLen)
+	sm.s_len = ft_strlen(str);
+	sm.p_len = ft_strlen(pat);
+	sm.s = 0;
+	sm.p = 0;
+	sm.star = -1;
+	sm.match = -1;
+	while (sm.s < sm.s_len)
 	{
-		if (p < pLen && pat[p] == str[s])
+		if (sm.p < sm.p_len && pat[sm.p] == str[sm.s])
 		{
-			s++;
-			p++;
+			sm.s++;
+			sm.p++;
 		}
-		else if (p < pLen && pat[p] == '*')
-		{
-			star = p;
-			match = s;
-			p++;
-		}
-		else if (star != -1)
-		{
-			p = star + 1;
-			match++;
-			s = match;
-		}
-		else
+		else if (!hndl_str_mth(pat, &sm))
 			return (0);
 	}
-	while (p < pLen && pat[p] == '*')
-		p++;
-	return (p == pLen);
+	while (sm.p < sm.p_len && pat[sm.p] == '*')
+		sm.p++;
+	return (sm.p == sm.p_len);
 }
 
 static void	ft_realloc(t_wild_norm *wild, char *s)
