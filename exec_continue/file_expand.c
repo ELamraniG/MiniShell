@@ -137,12 +137,14 @@ static int file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redi
 		expd2->flag = 0;
 	if (!ft_strcmp(expd2->tmp2, "?"))
 	{
+		free(expd2->tmp2);
 		expd2->tmp3 = ft_itoa(status);
 		expd2->flag = 0;
 		return 1;
 	}
 	else if (!ft_strcmp(expd2->tmp2, "$"))
 	{
+		free(expd2->tmp2);
 		expd2->tmp3 = ft_strdup("$");
 		expd2->flag = 0;
 		return 1;

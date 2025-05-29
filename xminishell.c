@@ -81,7 +81,7 @@ int	handle_token(t_lex_list **tokens, char **input, int *status)
 	return (0);
 }
 
-		syntax_error_norminated(t_lex_list **tokens,int *status,char **input)
+int		syntax_error_norminated(t_lex_list **tokens,int *status,char **input)
 		{
 			if (!handle_syntax_errors(*tokens, status))
 		{

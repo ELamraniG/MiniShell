@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:35 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:30:33 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:05:22 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,9 @@ int	change_dir(char **args, t_env_list *env)
 	char		*old;
 	t_env_list	*home;
 	t_env_list	*pwd;
-	t_env_list	*old_pwd;
 
 	home = get_env_value(env, "HOME");
 	pwd = get_env_value(env, "PWD");
-	old_pwd = get_env_value(env, "OLDPWD");
 	old = getcwd(NULL, 0);
 	if (!args || !args[0] || ft_strcmp(args[0], "cd") != 0)
 		return (1);

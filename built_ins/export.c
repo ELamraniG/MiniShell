@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:46:43 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/26 19:27:06 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:06:21 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	handle_export(char **args, t_env_list **env, int i, int *j)
 				print_msg(args[i]);
 				break ;
 			}
-			if (j > 0 && args[i][(*j) - 1] == '+')
+			if (*j > 0 && args[i][(*j) - 1] == '+')
 			{
 				if (handle_join(args[i], env, *j) == 1)
 					break ;

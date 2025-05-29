@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirs_continue.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:48:13 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/28 21:48:21 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:01:09 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ int	count_files(t_lex_list *token)
 void	redir_files(t_lex_list **token, t_redirect *redir)
 {
 	int			i;
-	t_lex_list	*current;
 	int			count;
 
 	i = 0;
@@ -87,7 +86,6 @@ void	redir_files(t_lex_list **token, t_redirect *redir)
 	redir->q_types[i] = (*token)->q_type;
 	redir->is_space[i] = (*token)->is_space;
 	i++;
-	current = *token;
 	*token = (*token)->next;
 	while (i < count)
 	{
@@ -95,7 +93,6 @@ void	redir_files(t_lex_list **token, t_redirect *redir)
 		redir->q_types[i] = (*token)->q_type;
 		redir->is_space[i] = (*token)->is_space;
 		i++;
-		current = *token;
 		*token = (*token)->next;
 	}
 }

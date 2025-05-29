@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args_expand_norminated_continue_2.c                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:35:29 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 17:48:52 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:09:32 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,14 @@ int	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
 		expd2->flag = 0;
 	if (!ft_strcmp(expd2->tmp2, "?"))
 	{
+		free(expd2->tmp2);
 		expd2->tmp3 = ft_itoa(status);
 		expd2->flag = 0;
 		return (1);
 	}
 	else if (!ft_strcmp(expd2->tmp2, "$"))
 	{
+		free(expd2->tmp2);
 		expd2->tmp3 = ft_strdup("$");
 		expd2->flag = 0;
 		return (1);
