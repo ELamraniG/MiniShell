@@ -91,8 +91,8 @@ void	norminette_handle_word1(t_ast_tree *astree, t_env_list **env,
 
 	stddd.stdinn = dup(STDIN_FILENO);
 	stddd.stdoutt = dup(STDOUT_FILENO);
-	if (word_norminette(astree, env, status, stddd) == -1 || word_norminette2(astree, stddd,
-			status, env) == -1)
+	if (word_norminette(astree, env, status, stddd) == -1
+		|| word_norminette2(astree, stddd, status, env) == -1)
 		return ;
 	pid1 = fork();
 	if (pid1 == -1)

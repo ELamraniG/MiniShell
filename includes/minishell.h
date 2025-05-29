@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 16:14:00 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:36:59 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,5 +333,6 @@ void		do_the_heredoc(t_redirect *redir, int pipe_fd[2], t_env_list *env);
 int			here_d_norm333(int pipe_fd, pid_t pid, struct termios *original_term);
 void		norm_word_166(t_ast_tree *astree, t_env_list **env,
 							char ***env_char);
-void	failed_exec_v(t_ast_tree *astree, char ***env_char);
+void		failed_exec_v(t_ast_tree *astree, char ***env_char);
+void		ignore_signals(void);
 #endif

@@ -3,21 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                             +#+  +:+      
-	+#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/14 10:00:00                     #+#    #+#             */
-/*   Updated: 2025/05/14 10:00:00                     ###   ########.fr       */
+/*   Created: 2025/05/29 16:33:38 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/29 16:36:01 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-extern int g_sigarette;
+extern int	g_sigarette;
 
 void	ft_handle_sigint(int sig)
 {
-
 	(void)sig;
 	ft_putstr_fd(1, "\n");
 	rl_on_new_line();
@@ -37,13 +35,9 @@ void	handle_sig_exec_ve(int sig)
 
 void	heredoc_child_signal(int sig)
 {
-
-
 	(void)sig;
 	ft_putstr_fd(1, "\n");
-	
 	rl_clear_history();
-	
 	exit(1);
 }
 
@@ -57,12 +51,5 @@ void	handle_main_sigs(void)
 void	reset_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);  
-}
-
-
-void	ignore_signals(void)
-{
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_DFL);
 }

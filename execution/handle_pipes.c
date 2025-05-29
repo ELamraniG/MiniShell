@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:48:01 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/28 22:47:51 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:38:04 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ void	handle_pipe(t_ast_tree *astree, int *pipes, int *status,
 		excute_the_damn_tree(astree->left, status, env, 1);
 		exit(*status);
 	}
-	if ((pid2 = norm_handlepipe4(astree, pipes, status, env)) && pid2 == -1)
+	pid2 = norm_handlepipe4(astree, pipes, status, env);
+	if (pid2 == -1)
 		return ;
 	norminette_handlepipe2(pipes, &exit_code, pid1, pid2);
 	norminette_handlepipe3(exit_code, status);

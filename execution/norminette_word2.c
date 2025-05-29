@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   norminette_word2.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 16:33:04 by jhamdaou          #+#    #+#             */
+/*   Updated: 2025/05/29 16:33:05 by jhamdaou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	word_norm(t_ast_tree *astree, t_env_list **env, int *status,
@@ -44,7 +56,8 @@ static int	word_norm2(t_ast_tree *astree, t_stdindo stddd, int *status,
 	return (0);
 }
 
-static void	norm_word_166(t_ast_tree *astree, t_env_list **env, char ***env_char)
+static void	norm_word_166(t_ast_tree *astree, t_env_list **env,
+							char ***env_char)
 {
 	struct stat	l;
 	int			p;

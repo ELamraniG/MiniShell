@@ -47,6 +47,7 @@ SRC =	str_utils/ft_split.c \
 		file_expand.c \
 		here_doc_expand.c \
 		execution/signals.c \
+		execution/signals_continue.c \
 		str_utils/ft_strtrim.c \
 		handle_wild_cards.c \
 		str_utils/ft_atoi.c \
