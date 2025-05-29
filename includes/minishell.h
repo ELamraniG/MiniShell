@@ -24,6 +24,15 @@
 # include <termios.h>
 # include <unistd.h>
 
+
+typedef struct s_norm_m
+{
+	int	here_doc;
+	int	status;
+	int	i;
+}	t_norm_m;
+
+
 typedef struct s_wild_relc
 {
 	int		i;

@@ -1,6 +1,7 @@
 #include "includes/minishell.h"
 
 int g_sigarette = 0;
+
 static void clean_all_herdocs(t_ast_tree *astree)
 {
 	if (astree == NULL)
@@ -28,11 +29,6 @@ void	print_tree(t_ast_tree *tree, int deep)
 {
 	int			i;
 	t_redirect	*t;
-/*
-> bash: unexpected EOF while looking for matching `"'
-bash: syntax error: unexpected end of file
-*/
-	// }
 	print_tree(tree->left, deep + 1);
 	print_tree(tree->right, deep + 1);
 }
@@ -49,18 +45,20 @@ void	handlectrlc(int n)
 int	main(int ac, char **av, char **env)
 {
 	char *input;
-	int here_doc = 0;
 	t_lex_list *tokens;
-	int status = 0;
 	t_ast_tree *astree;
 	t_lex_list *lopo;
-	
 	t_env_list *envv = NULL;
+	t_norm_m mainn;
+	
+	mainn.here_doc = 0;
+	mainn.status = 0;
+	mainn.i = 0;
+	
 	set_up_env(env, &envv);
 
 	ac = 0;
 	av = NULL;
-	int i = 0;
 	astree = NULL;
 
 	handle_main_sigs();
@@ -89,10 +87,10 @@ int	main(int ac, char **av, char **env)
 			input = readline("minishell$ ");
 		if (g_sigarette != 0)
 		{
-			status = g_sigarette;
+			mainn.status = g_sigarette;
 			g_sigarette = 0;
 		}
-		i++;
+		mainn.i++;
 		if (!input)
 		{
 			free(input);
@@ -101,7 +99,7 @@ int	main(int ac, char **av, char **env)
 		if (input[0])
 			add_history(input);
 
-		tokens = lexing_the_thing(input, &status);
+		tokens = lexing_the_thing(input, &mainn.status);
 		if (!tokens)
 		{
 			free(input);
@@ -110,7 +108,7 @@ int	main(int ac, char **av, char **env)
 
 		set_the_arg_type(tokens);
 		lopo = tokens;
-		if (!handle_syntax_errors(tokens, &status))
+		if (!handle_syntax_errors(tokens, &mainn.status))
 		{
 			free(input);
 			free_lex_list(tokens);
@@ -124,26 +122,25 @@ int	main(int ac, char **av, char **env)
 		{
 			if (g_sigarette == 130)
 			{
-				status = 1;
+				mainn.status = 1;
 				g_sigarette = 0;
 			}
 			free(input);
 			free_tree(astree);
 			continue;
 		}
-		excute_the_damn_tree(astree, &status, &envv,0);
+		excute_the_damn_tree(astree, &mainn.status, &envv,0);
 		clean_all_herdocs(astree);
 		free_tree(astree);
 		free(input);
-		//is this a must ? check before pushing
 		if (!isatty(STDIN_FILENO))
 		{
 			rl_clear_history();
 			free_env_list(envv);
-			return (status);
+			return (mainn.status);
 		}
 	}
 	rl_clear_history();
 	free_env_list(envv);
-	return (status);
+	return (mainn.status);
 }
