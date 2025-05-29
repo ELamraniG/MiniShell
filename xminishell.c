@@ -64,6 +64,23 @@ void	norm_sig(int *status)
 	g_sigarette = 0;
 }
 
+void	norm_sig12(int *status)
+{
+	*status = 1;
+	g_sigarette = 0;
+}
+int	handle_token(t_lex_list **tokens, char **input, int *status)
+{
+	*tokens = lexing_the_thing(*input, status);
+	if (!tokens)
+	{
+		free(*input);
+		return (-1);
+	}
+	set_the_arg_type(*tokens);
+	return (0);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
@@ -72,7 +89,6 @@ int	main(int ac, char **av, char **env)
 	t_env_list	*envv;
 	t_norm_m	mainn;
 
-	envv = NULL;
 	init_norm(&mainn, ac, av, &astree);
 	set_up_env(env, &envv);
 	while (1337)
@@ -84,13 +100,8 @@ int	main(int ac, char **av, char **env)
 			break ;
 		if (input[0])
 			add_history(input);
-		tokens = lexing_the_thing(input, &mainn.status);
-		if (!tokens)
-		{
-			free(input);
+		if (handle_token(&tokens, &input, &mainn.status) == -1)
 			continue ;
-		}
-		set_the_arg_type(tokens);
 		if (!handle_syntax_errors(tokens, &mainn.status))
 		{
 			free(input);
@@ -101,10 +112,7 @@ int	main(int ac, char **av, char **env)
 		if (handle_heredoc(astree, 0, envv) == -1)
 		{
 			if (g_sigarette == 130)
-			{
-				mainn.status = 1;
-				g_sigarette = 0;
-			}
+				norm_sig12(&mainn.status);
 			free(input);
 			free_tree(astree);
 			continue ;

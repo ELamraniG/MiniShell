@@ -23,33 +23,26 @@ static int	wach_exists(const char *pat, const char *str)
 	star = -1, match = -1;
 	while (s < sLen)
 	{
-		// Match character
 		if (p < pLen && pat[p] == str[s])
 		{
 			s++;
 			p++;
 		}
-		// Match '*'
 		else if (p < pLen && pat[p] == '*')
 		{
 			star = p;
 			match = s;
 			p++;
 		}
-		// Backtrack if previous '*' exists
 		else if (star != -1)
 		{
 			p = star + 1;
 			match++;
 			s = match;
 		}
-		// No match
 		else
-		{
 			return (0);
-		}
 	}
-	// Check for remaining characters in pattern
 	while (p < pLen && pat[p] == '*')
 	{
 		p++;
