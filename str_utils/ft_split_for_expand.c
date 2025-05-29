@@ -1,12 +1,5 @@
 #include "../includes/minishell.h"
 
-typedef struct s_sp_norm
-{
-	int	i;
-	int	j;
-	int	k;
-	int	wc;
-}	t_sp_norm;
 
 static void	do_i_j(int *i, int *k)
 {

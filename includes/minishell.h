@@ -32,6 +32,13 @@ typedef struct s_norm_m
 	int	i;
 }	t_norm_m;
 
+typedef struct s_sp_norm
+{
+	int	i;
+	int	j;
+	int	k;
+	int	wc;
+}	t_sp_norm;
 
 typedef struct s_wild_relc
 {
