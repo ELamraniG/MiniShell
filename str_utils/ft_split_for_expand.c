@@ -3,51 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_for_expand.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:46:19 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/29 21:46:19 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:39:06 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static void	do_i_j(int *i, int *k)
-{
-	(*i)++;
-	(*k)++;
-}
-
-static void	ft_free(char **s, int i)
-{
-	while (i >= 0)
-	{
-		free(s[i]);
-		i--;
-	}
-	free(s);
-}
-
-static int	ft_word_count(const char *str, char c)
-{
-	int	i;
-	int	wc;
-
-	wc = 0;
-	i = 0;
-	while (str[i])
-	{
-		while (str[i] && (str[i] == c))
-			i++;
-		if (str[i])
-			wc++;
-		while (str[i] && !(str[i] == c))
-			i++;
-	}
-	if (wc == 0 && str[0] == ' ')
-		return (1);
-	return (wc);
-}
 
 static int	do_some1_cont(const char *s, char **s2, char c, t_sp_norm *nor)
 {
@@ -65,7 +28,7 @@ static int	do_some1_cont(const char *s, char **s2, char c, t_sp_norm *nor)
 			s2[nor->j] = malloc(sizeof(char) * (nor->k + 1));
 			if (!s2[nor->j])
 			{
-				ft_free(s2, nor->j - 1);
+				ft_free_split(s2, nor->j - 1);
 				return (0);
 			}
 			(nor->j)++;
@@ -91,7 +54,7 @@ static int	do_someth1(const char *s, char **s2, char c, int wc)
 		s2[nor.j] = malloc(sizeof(char) * (nor.k + 1));
 		if (!s2[nor.j])
 		{
-			ft_free(s2, nor.j - 1);
+			ft_free_split(s2, nor.j - 1);
 			return (0);
 		}
 		nor.j++;
@@ -154,7 +117,7 @@ char	**ft_split_for_expand(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	wc = ft_word_count(s, c);
+	wc = ft_word_count_expand(s, c);
 	s2 = malloc(sizeof(char *) * (wc + 1));
 	if (!s2)
 		return (NULL);

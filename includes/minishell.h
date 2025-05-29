@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 21:52:18 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 22:03:17 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:39:59 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -439,7 +439,21 @@ int		wild_card_norm2(char *current_arg);
 char	**wild_card_norm3(char *current_arg, int reads_counter);
 void	wild_card_norm4(t_wild_norm *wild, char **all_dirs, int reads_counter, int point_flag);
 void	wild_card_norm5(t_wild_norm *wild, char *current_arg, int old_is_space, int old_q_type);
-
+int	hndl_str_mth(const char *pat, t_exit_norm *sm);
+int	wach_exist_card(const char *pat, const char *str);
+void	free_file_wild_relc(t_file_wild_relc *relc);
+void	ft_realloc_filew(t_wild_norm *wild, char *s);
+int	it_has_star(char *str);
+void	sort_all_direction(char ***all_dirs, int count);
+int	file_wild_norm2(char *current_arg);
+char	**file_wild_norm3(char *current_arg, int reads_counter);
+void	file_wild_norm4(t_wild_norm *wild, char **all_dirs,
+		int reads_counter, int point_flag);
+void	file_wild_norm5(t_wild_norm *wild, char *current_arg,
+		int old_is_space, int old_q_type);
+void	do_i_j(int *i, int *k);
+void	ft_free_split(char **s, int i);
+int	ft_word_count_expand(const char *str, char c);
 
 
 #endif

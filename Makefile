@@ -1,6 +1,6 @@
 # LIB_RL = -lreadline
-LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
-INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
+LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
+INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address -g  #later on add -Wall ....  		# args_expand.c \
@@ -8,6 +8,7 @@ CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address -g  #later on add -Wall ....
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
 		str_utils/ft_split_for_expand.c \
+		str_utils/ft_split_for_expand_continue.c \
 		str_utils/put_str.c \
 		str_utils/string_utils.c \
 		str_utils/ft_strjoin.c \
@@ -59,6 +60,8 @@ SRC =	str_utils/ft_split.c \
 		exec_continue/handle_wild_cards_continue_2.c \
 		str_utils/ft_atoi.c \
 		exec_continue/file_wild_card.c \
+		exec_continue/file_wild_card_continue.c \
+		exec_continue/file_wild_card_continue_2.c \
 		execution/built_in_calling.c \
 		execution/gluing_stuff.c \
 		execution/handle_pipes.c \
