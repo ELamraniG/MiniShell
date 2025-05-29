@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_expand_continue_3.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 21:41:08 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/05/29 21:41:08 by moel-amr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2)
@@ -29,10 +41,12 @@ void	file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2)
 	free(expd2->dble);
 }
 
-void	file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env)
+void	file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir,
+		t_env_list *env)
 {
+	int	kk;
+
 	expd2->flag = 1;
-	int kk;
 	file_expand_norm3(fxpd, expd2, redir);
 	expd2->prev_pos = expd2->i;
 	kk = file_expand_norm4(fxpd, expd2, redir, env);
@@ -40,7 +54,6 @@ void	file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_e
 	{
 		if (expd2->t && expd2->t->value)
 			file_expand_norm5(fxpd, expd2);
-
 	}
 	else
 	{
@@ -55,7 +68,8 @@ void	file_expand_norm6(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir)
 {
 	if (expd2->flag == 0)
 	{
-		expd2->tmp = ft_substr(redir->file_name[fxpd->k], expd2->prev_pos, ft_strlen(redir->file_name[fxpd->k]) - expd2->prev_pos);
+		expd2->tmp = ft_substr(redir->file_name[fxpd->k], expd2->prev_pos,
+				ft_strlen(redir->file_name[fxpd->k]) - expd2->prev_pos);
 		ft_realloc_file(fxpd, expd2->tmp);
 		fxpd->is_space[fxpd->size - 1] = redir->is_space[fxpd->k];
 		fxpd->q_types[fxpd->size - 1] = redir->q_types[fxpd->k];
@@ -63,9 +77,10 @@ void	file_expand_norm6(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir)
 	fxpd->is_space[fxpd->size - 1] = redir->is_space[fxpd->k];
 }
 
-void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env, t_redirect *redir)
+void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env,
+		t_redirect *redir)
 {
-	t_expd2 expd2;
+	t_expd2	expd2;
 
 	expd2.i = 0;
 	expd2.t = NULL;
@@ -88,11 +103,12 @@ void	expanded_for_single_file(t_file_expd *fxpd, t_env_list *env, t_redirect *re
 	file_expand_norm6(fxpd, &expd2, redir);
 }
 
-void	check_abg_1(t_redirect *redir, int *abg,int old)
+void	check_abg_1(t_redirect *redir, int *abg, int old)
 {
-	int i;
-	int count_empty = 0;
+	int	i;
+	int	count_empty;
 
+	count_empty = 0;
 	i = 0;
 	*abg = 0;
 	if (old == redir->file_str_count)

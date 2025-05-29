@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/24 16:18:28 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/22 16:07:52 by moel-amr         ###   ########.fr       */
+/*   Created: 2025/05/29 21:46:36 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/05/29 21:48:37 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
@@ -37,7 +36,6 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	}
 	return (dlen + slen);
 }
-
 
 static char	*ft_alo(char *str, size_t slen)
 {

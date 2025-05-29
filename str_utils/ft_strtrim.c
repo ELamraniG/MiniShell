@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/24 16:55:04 by moel-amr          #+#    #+#             */
-/*   Updated: 2025/05/24 17:53:35 by moel-amr         ###   ########.fr       */
+/*   Created: 2025/05/29 21:46:42 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/05/29 21:48:26 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 static int	is_set(char c, char const *str)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	while (str[i])
 	{
 		if (str[i] == c)

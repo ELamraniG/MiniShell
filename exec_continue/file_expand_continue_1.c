@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_expand_continue_1.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 21:39:22 by moel-amr          #+#    #+#             */
+/*   Updated: 2025/05/29 21:39:27 by moel-amr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	free_relc(t_file_relc *relc)
@@ -29,10 +41,10 @@ void	ft_realloc_file(t_file_expd *fxpd, char *s)
 	fxpd->file_name = relc.new_file_name;
 	relc.tmpint_free = fxpd->is_space;
 	fxpd->is_space = relc.new_is_space;
-	free(relc.tmpint_free); 
+	free(relc.tmpint_free);
 	relc.tmpint_free = fxpd->q_types;
 	fxpd->q_types = relc.new_q_types;
-	return free_relc(&relc);
+	return (free_relc(&relc));
 }
 
 void	trim_the_file_names(t_file_expd *fxpd)
@@ -40,14 +52,15 @@ void	trim_the_file_names(t_file_expd *fxpd)
 	char	*tmp_free;
 
 	tmp_free = fxpd->file_name[fxpd->size - 1];
-	fxpd->file_name[fxpd->size - 1] = ft_strtrim(fxpd->file_name[fxpd->size - 1], " ");
+	fxpd->file_name[fxpd->size - 1] = ft_strtrim(fxpd->file_name[fxpd->size
+			- 1], " ");
 	free(tmp_free);
 	return ;
 }
 
 char	*get_keyy2(char *str, t_expd2 *expd2)
 {
-	int		len;
+	int	len;
 
 	(expd2->i)++;
 	expd2->tmp = NULL;
@@ -61,8 +74,10 @@ char	*get_keyy2(char *str, t_expd2 *expd2)
 		return (ft_strdup("$"));
 	while (str[expd2->i])
 	{
-		if (str[expd2->i] == '$' || (!ft_isalnum(str[expd2->i]) && str[expd2->i] != '_'))
-			return (ft_substr(str, expd2->prev_pos + 1, expd2->i - expd2->prev_pos - 1));
+		if (str[expd2->i] == '$' || (!ft_isalnum(str[expd2->i])
+				&& str[expd2->i] != '_'))
+			return (ft_substr(str, expd2->prev_pos + 1, expd2->i
+					- expd2->prev_pos - 1));
 		len++;
 		(expd2->i)++;
 	}

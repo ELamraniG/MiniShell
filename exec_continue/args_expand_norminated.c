@@ -6,7 +6,7 @@
 /*   By: moel-amr <moel-amr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:51:54 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 19:26:25 by moel-amr         ###   ########.fr       */
+/*   Updated: 2025/05/29 21:35:41 by moel-amr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ static void	expand_norm6(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree)
 	expd->is_space[expd->size - 1] = astree->is_space[expd->k];
 }
 
-static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env, t_ast_tree *astree)
+static void	expanded_for_single_word(t_expd_norm *expd, t_env_list *env,
+		t_ast_tree *astree)
 {
 	t_expd2	expd2;
 
