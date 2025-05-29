@@ -6,7 +6,7 @@
 /*   By: jhamdaou <jhamdaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:33:04 by jhamdaou          #+#    #+#             */
-/*   Updated: 2025/05/29 16:33:05 by jhamdaou         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:42:12 by jhamdaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	word_norm2(t_ast_tree *astree, t_stdindo stddd, int *status,
 	return (0);
 }
 
-static void	norm_word_166(t_ast_tree *astree, t_env_list **env,
+static void	norminette_word_166(t_ast_tree *astree, t_env_list **env,
 							char ***env_char)
 {
 	struct stat	l;
@@ -76,7 +76,7 @@ static void	norm_word_166(t_ast_tree *astree, t_env_list **env,
 	*env_char = turn_env_to_chars(*env);
 }
 
-static void	failed_exec_v(t_ast_tree *astree, char ***env_char)
+static void	failed_execute_v(t_ast_tree *astree, char ***env_char)
 {
 	int	i;
 
@@ -102,7 +102,7 @@ void	norminette_handle_word2(t_ast_tree *astree, t_env_list **env,
 	if (word_norm(astree, env, status, stddd) == -1 || word_norm2(astree, stddd,
 			status, env) == -1)
 		return ;
-	norm_word_166(astree, env, &env_char);
+	norminette_word_166(astree, env, &env_char);
 	execve(astree->args[0], astree->args, env_char);
-	failed_exec_v(astree, &env_char);
+	failed_execute_v(astree, &env_char);
 }
