@@ -1,6 +1,6 @@
 # LIB_RL = -lreadline
-LIB_RL = -L/goinfre/moel-amr/homebrew/opt/readline/lib -lreadline
-INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
+LIB_RL = -L/goinfre/jhamdaou/homebrew/opt/readline/lib -lreadline
+INCLUDE_RL = -I/goinfre/jhamdaou/homebrew/opt/readline/include
 NAME = minishell
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address -g  #later on add -Wall ....  		# args_expand.c \
@@ -47,6 +47,9 @@ SRC =	str_utils/ft_split.c \
 		exec_continue/args_expand_norminated_continue.c \
 		exec_continue/args_expand_norminated_continue_2.c \
 		exec_continue/file_expand.c \
+		exec_continue/file_expand_continue_1.c \
+		exec_continue/file_expand_continue_2.c \
+		exec_continue/file_expand_continue_3.c \
 		exec_continue/here_doc_expand.c \
 		execution/signals.c \
 		execution/signals_continue.c \

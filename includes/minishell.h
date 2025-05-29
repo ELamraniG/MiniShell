@@ -362,5 +362,15 @@ char		*get_keyy2(char *str, t_expd2 *expd2);
 void		trim_the_file_names(t_file_expd *fxpd);
 void		ft_realloc_file(t_file_expd *fxpd, char *s);
 void		free_relc(t_file_relc *relc);
+int			has_space_beginning(char *s);
+void		file_expandnorm1(t_file_expd *fxpd, t_redirect *redir);
+void		file_expand_norm2(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env);
+void		file_expand_norm3(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir);
+int 		file_expand_norm4(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir, t_env_list *env);
+void		file_expand_norm5(t_file_expd *fxpd, t_expd2 *expd2);
+void		file_expand_norm6(t_file_expd *fxpd, t_expd2 *expd2, t_redirect *redir);
+void		file_expand_norm7(t_file_expd *fxpd, t_expd2 *expd2);
+void		expanded_for_single_file(t_file_expd *fxpd, t_env_list *env, t_redirect *redir);
+void		check_abg_1(t_redirect *redir, int *abg,int old);
 
 #endif

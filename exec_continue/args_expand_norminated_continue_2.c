@@ -66,10 +66,9 @@ int	expand_norm4(t_expd_norm *expd, t_expd2 *expd2, t_ast_tree *astree,
 		expd2->flag = 0;
 	if (!ft_strcmp(expd2->tmp2, "?"))
 	{
-		free(expd2->tmp2);
 		expd2->tmp3 = ft_itoa(expd->status);
 		expd2->flag = 0;
-		return (1);
+		return (free(expd2->tmp2), 1);
 	}
 	else if (!ft_strcmp(expd2->tmp2, "$"))
 	{
