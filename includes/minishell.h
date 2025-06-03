@@ -468,5 +468,9 @@ int						handle_token(t_lex_list **tokens, char **input,
 							int *status);
 int						syntax_err_normted(t_lex_list **tokens, int *status,
 							char **input);
+void	empty_tree(t_ast_tree *astree, int *status, t_env_list **env,
+		int in_pipe);
+	void	empty_pipe(t_ast_tree *astree, int *pipes, int *status,
+		t_env_list **env);
 
 #endif

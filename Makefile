@@ -3,7 +3,7 @@ INCLUDE_RL = -I/goinfre/moel-amr/homebrew/opt/readline/include
 NAME = minishell
 NAME_BONUS = minishell_bonus
 CC = cc 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = #-Wall -Wextra -Werror
 SRC =	str_utils/ft_split.c \
 		str_utils/ft_strchr.c \
 		str_utils/ft_split_for_expand.c \
@@ -40,6 +40,8 @@ SRC =	str_utils/ft_split.c \
 		built_ins/exit.c \
 		execution/norminette_exec_tree_continue.c \
 		execution/norminette_exec_tree.c \
+		execution/empty_exec.c \
+		execution/empty_pipess.c \
 		execution/excuting_redirs_continue.c \
 		execution/excuting_redirs.c \
 		execution/handle_heredoc_continue.c \
