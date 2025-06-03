@@ -61,6 +61,7 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 	char		*s;
 	t_vars		t;
 
+	s = NULL;
 	init_t_vars(&t, &tokens);
 	while (str[t.i])
 	{
@@ -72,7 +73,8 @@ t_lex_list	*lexing_the_thing(char *str, int *status)
 			free_lex_list(tokens);
 			return (NULL);
 		}
-		s = ft_substr(str, t.j, t.i - t.j);
+		if (t.j != t.i)
+			s = ft_substr(str, t.j, t.i - t.j);
 		if (s)
 			add_to_list(&tokens, s, t.quote, t.is_space);
 		t.j = t.i;
