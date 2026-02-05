@@ -68,12 +68,6 @@ int	main(int ac, char **av, char **env)
 		norm_tre_tok(&aaa.tokens, &aaa.astree);
 		if (handle_herdc_norm(&aaa) == -1)
 			continue ;
-		empty_tree(aaa.astree, &aaa.mainn.status, &aaa.envv, 0);
-		if (aaa.mainn.status == 1)
-		{
-			printf("here\n\n");
-			perror("FORK");
-		}
 		exec_tree_ndrest(&aaa.astree, &aaa.mainn.status, &aaa.envv, &aaa.input);
 		if (!isatty(STDIN_FILENO))
 			return (is_tt2(&aaa.envv), aaa.mainn.status);

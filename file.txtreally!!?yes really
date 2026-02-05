@@ -1,0 +1,26 @@
+total 200
+drwxrwxrwx+ 19 codespace root       4096 Feb  5 14:22 .
+drwxr-xrwx+  5 codespace root       4096 Feb  5 13:42 ..
+lrwxrwxrwx   1 codespace root         93 Feb  5 13:41 .clang-format -> /Users/moel-amr/Library/Python/3.9/lib/python/site-packages/c_formatter_42/data/.clang-format
+drwxrwxrwx+  8 codespace root       4096 Feb  5 14:00 .git
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 .vscode
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 42_minishell_tester
+-rw-rw-rw-   1 codespace root       5818 Feb  5 13:41 Makefile
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:42 built_ins
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 built_ins_bonus
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:44 exec_continue
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 exec_continue_bonus
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:44 execution
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 execution_bonus
+-rw-rw-r--   1 codespace codespace     0 Feb  5 14:23 file.txtreally!!?yes really
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 includes
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 includes_bonus
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 main_bonus
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:42 main_m
+-rwxrwxrwx   1 codespace codespace 83168 Feb  5 13:44 minishell
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:42 parsing
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 parsing_bonus
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:44 str_utils
+drwxrwxrwx+  2 codespace root       4096 Feb  5 13:41 str_utils_bonus
+-rw-rw-rw-   1 codespace root      11037 Feb  5 13:41 test.sh
+-rwxrwxrwx   1 codespace root      14788 Feb  5 13:41 tester.sh
