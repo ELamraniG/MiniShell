@@ -12,14 +12,18 @@
 
 #include "../includes/minishell.h"
 
-int	empty_pipe(t_ast_tree *astree, int *pipes, int *status,
+void	empty_pipe(t_ast_tree *astree, int *pipes, int *status,
 		t_env_list **env)
 {
 	int	pid1;
 	int	pid2;
 	int exit_code;
 	if (pipe(pipes) == -1)
-		return (*status = 1, perror(NULL));
+	{
+		*status = 1;
+		perror(NULL);
+		return ;
+	}
 	close(pipes[0]);
 	close(pipes[1]);
 	pid1 = fork();
@@ -61,5 +65,5 @@ int	empty_pipe(t_ast_tree *astree, int *pipes, int *status,
 	ft_putstr_fd(2,ft_itoa(*status));
 	ft_putstr_fd(2,"\n");
 	if (*status == 1)
-		return 1;
+		return ;
 }
